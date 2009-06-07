@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SortedCompletions</key>
+	<array>
+		<dict>
+			<key>keyword</key>
+			<string></string>
+			<key>name</key>
+			<string>(Default)</string>
+			<key>shortcutURL</key>
+			<string>http://www.google.com/search?q=%%&amp;ie=UTF-8&amp;oe=UTF-8</string>
+		</dict>
+		<dict>
+			<key>keyword</key>
+			<string>define</string>
+			<key>name</key>
+			<string>Definition from Dictionary.com</string>
+			<key>shortcutURL</key>
+			<string>http://dictionary.reference.com/search?q=%%</string>
+		</dict>
+		<dict>
+			<key>keyword</key>
+			<string>map</string>
+			<key>name</key>
+			<string>Google Maps</string>
+			<key>shortcutURL</key>
+			<string>http://maps.google.com/maps?f=q&amp;hl=en&amp;geocode=&amp;q=%%&amp;ie=UTF8&amp;z=11&amp;iwloc=addr</string>
+		</dict>
+		<dict>
+			<key>keyword</key>
+			<string>wiki</string>
+			<key>name</key>
+			<string>Wikipedia</string>
+			<key>shortcutURL</key>
+			<string>http://en.wikipedia.org/w/wiki.phtml?search=%%</string>
+		</dict>
+		<dict>
+			<key>keyword</key>
+			<string>xkcd</string>
+			<key>name</key>
+			<string>xkcd</string>
+			<key>shortcutURL</key>
+			<string>http://www.ohnorobot.com/index.pl?comic=56&amp;s=%%&amp;search=Search</string>
+		</dict>
+	</array>
+</dict>
+</plist>

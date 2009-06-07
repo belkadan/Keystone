@@ -1,0 +1,643 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8C3A30920F7EA8BB00C37703 /* FakeCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */; };
+		8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */; };
+		8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A31400F7EB20E00C37703 /* KeystoneController.m */; };
+		8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
+		8C3A33BA0F7EE24F00C37703 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
+		8C3A33BE0F7EE26C00C37703 /* SortedArrayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */; };
+		8C6F065E0F981C1900216A72 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		8C6F06640F981C1900216A72 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
+		8C6F06650F981C1900216A72 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
+		8C6F06660F981C1900216A72 /* FakeCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */; };
+		8C6F06690F981C1900216A72 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
+		8C6F066B0F981C1900216A72 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		8C6F06880F981D1D00216A72 /* KeystoneNamesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F06860F981D1D00216A72 /* KeystoneNamesController.m */; };
+		8C6F068B0F983A7B00216A72 /* NameItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F068A0F983A7B00216A72 /* NameItem.m */; };
+		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
+		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
+		8C986F530F80526400383384 /* Preferences.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* Preferences.icns */; };
+		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
+		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
+		8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29B470F7EF1C400D146C3 /* defaults.plist */; };
+		8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */; };
+		8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
+		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		32DBCF630370AF2F00C91783 /* Keystone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keystone_Prefix.pch; sourceTree = "<group>"; };
+		8C3A30900F7EA8BB00C37703 /* FakeCompletionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FakeCompletionItem.h; sourceTree = "<group>"; };
+		8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FakeCompletionItem.m; sourceTree = "<group>"; };
+		8C3A309E0F7EABE500C37703 /* QueryCompletionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryCompletionItem.h; sourceTree = "<group>"; };
+		8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryCompletionItem.m; sourceTree = "<group>"; };
+		8C3A313F0F7EB20E00C37703 /* KeystoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeystoneController.h; sourceTree = "<group>"; };
+		8C3A31400F7EB20E00C37703 /* KeystoneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeystoneController.m; sourceTree = "<group>"; };
+		8C3A320B0F7EC33500C37703 /* SortedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortedArray.h; sourceTree = "<group>"; };
+		8C3A320C0F7EC33500C37703 /* SortedArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortedArray.m; sourceTree = "<group>"; };
+		8C3A33AA0F7EE21900C37703 /* KeystoneTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeystoneTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C3A33AB0F7EE21900C37703 /* KeystoneTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KeystoneTests-Info.plist"; sourceTree = "<group>"; };
+		8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortedArrayTests.m; sourceTree = "<group>"; };
+		8C6F066F0F981C1900216A72 /* Keystone Names.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keystone Names.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C6F06700F981C1900216A72 /* Info-Names.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Names.plist"; sourceTree = "<group>"; };
+		8C6F06860F981D1D00216A72 /* KeystoneNamesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeystoneNamesController.m; sourceTree = "<group>"; };
+		8C6F06870F981D1D00216A72 /* KeystoneNamesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeystoneNamesController.h; sourceTree = "<group>"; };
+		8C6F06890F983A7B00216A72 /* NameItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NameItem.h; sourceTree = "<group>"; };
+		8C6F068A0F983A7B00216A72 /* NameItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NameItem.m; sourceTree = "<group>"; };
+		8C6F08140F98559E00216A72 /* FacebookREST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookREST.h; sourceTree = "<group>"; };
+		8C6F08150F98559E00216A72 /* FacebookREST.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookREST.m; sourceTree = "<group>"; };
+		8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllerAdditions.h; sourceTree = "<group>"; };
+		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
+		8C986F520F80526400383384 /* Preferences.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Preferences.icns; sourceTree = "<group>"; };
+		8CB6143F0F8046B800A84155 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8CD11C860FBFAA250063607C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
+		8CD29B430F7EF0AB00D146C3 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/defaults.plist; sourceTree = "<group>"; };
+		8CD29BCE0F7EFCCB00D146C3 /* CompletionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionHandler.h; sourceTree = "<group>"; };
+		8CD29C160F7EFE8F00D146C3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/KeystonePreferences.xib; sourceTree = "<group>"; };
+		8CD29C1F0F7EFF8000D146C3 /* NSPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSPreferences.h; sourceTree = "<group>"; };
+		8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.h; path = ../Disassembly/Safari.4.h; sourceTree = SOURCE_ROOT; };
+		8CDE7C6D0F7E054F004CFE14 /* CompletionControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllers.h; sourceTree = "<group>"; };
+		8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		8D5B49B6048680CD000E48DA /* Keystone.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Keystone.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8C3A33A70F7EE21900C37703 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C6F066A0F981C1900216A72 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C6F066B0F981C1900216A72 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D5B49B3048680CD000E48DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
+				8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* Keystone */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Keystone Core */,
+				8C6F06370F981B6000216A72 /* Keystone Queries */,
+				8C6F06590F981C0000216A72 /* Keystone Names */,
+				32C88E010371C26100C91783 /* Other Sources */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				8C3A33BB0F7EE25200C37703 /* Tests */,
+				089C1671FE841209C02AAC07 /* Frameworks and Libraries */,
+				19C28FB8FE9D52D311CA2CBB /* Products */,
+			);
+			name = Keystone;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
+				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
+			);
+			name = "Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B7048680CD000E48DA /* Info.plist */,
+				8C6F06700F981C1900216A72 /* Info-Names.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+				8CB614410F8046BC00A84155 /* Localizable.strings */,
+				8CD29B470F7EF1C400D146C3 /* defaults.plist */,
+				8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */,
+				8C986F520F80526400383384 /* Preferences.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Keystone Core */ = {
+			isa = PBXGroup;
+			children = (
+				8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */,
+				8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */,
+				8C3A30900F7EA8BB00C37703 /* FakeCompletionItem.h */,
+				8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */,
+				8C3A320B0F7EC33500C37703 /* SortedArray.h */,
+				8C3A320C0F7EC33500C37703 /* SortedArray.m */,
+				8CD29BCE0F7EFCCB00D146C3 /* CompletionHandler.h */,
+				8CDE7C6D0F7E054F004CFE14 /* CompletionControllers.h */,
+				8CD29C1F0F7EFF8000D146C3 /* NSPreferences.h */,
+			);
+			name = "Keystone Core";
+			sourceTree = "<group>";
+		};
+		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8CD11C860FBFAA250063607C /* WebKit.framework */,
+				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				089C167FFE841241C02AAC07 /* AppKit.framework */,
+				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
+				089C1672FE841209C02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FB8FE9D52D311CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D5B49B6048680CD000E48DA /* Keystone.bundle */,
+				8C3A33AA0F7EE21900C37703 /* KeystoneTests.octest */,
+				8C6F066F0F981C1900216A72 /* Keystone Names.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		32C88E010371C26100C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */,
+				8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */,
+				8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */,
+				32DBCF630370AF2F00C91783 /* Keystone_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		8C3A33BB0F7EE25200C37703 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */,
+				8C3A33AB0F7EE21900C37703 /* KeystoneTests-Info.plist */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		8C6F06370F981B6000216A72 /* Keystone Queries */ = {
+			isa = PBXGroup;
+			children = (
+				8C3A309E0F7EABE500C37703 /* QueryCompletionItem.h */,
+				8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */,
+				8C3A313F0F7EB20E00C37703 /* KeystoneController.h */,
+				8C3A31400F7EB20E00C37703 /* KeystoneController.m */,
+			);
+			name = "Keystone Queries";
+			sourceTree = "<group>";
+		};
+		8C6F06590F981C0000216A72 /* Keystone Names */ = {
+			isa = PBXGroup;
+			children = (
+				8C6F06870F981D1D00216A72 /* KeystoneNamesController.h */,
+				8C6F06860F981D1D00216A72 /* KeystoneNamesController.m */,
+				8C6F06890F983A7B00216A72 /* NameItem.h */,
+				8C6F068A0F983A7B00216A72 /* NameItem.m */,
+				8C6F08140F98559E00216A72 /* FacebookREST.h */,
+				8C6F08150F98559E00216A72 /* FacebookREST.m */,
+			);
+			name = "Keystone Names";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8C3A33A90F7EE21900C37703 /* KeystoneTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C3A33AE0F7EE21A00C37703 /* Build configuration list for PBXNativeTarget "KeystoneTests" */;
+			buildPhases = (
+				8C3A33A50F7EE21900C37703 /* Resources */,
+				8C3A33A60F7EE21900C37703 /* Sources */,
+				8C3A33A70F7EE21900C37703 /* Frameworks */,
+				8C3A33A80F7EE21900C37703 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KeystoneTests;
+			productName = KeystoneTests;
+			productReference = 8C3A33AA0F7EE21900C37703 /* KeystoneTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+		8C6F065C0F981C1900216A72 /* Keystone Names */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C6F066C0F981C1900216A72 /* Build configuration list for PBXNativeTarget "Keystone Names" */;
+			buildPhases = (
+				8C6F065D0F981C1900216A72 /* Resources */,
+				8C6F06630F981C1900216A72 /* Sources */,
+				8C6F066A0F981C1900216A72 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Keystone Names";
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = Keystone;
+			productReference = 8C6F066F0F981C1900216A72 /* Keystone Names.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		8D5B49AC048680CD000E48DA /* Keystone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "Keystone" */;
+			buildPhases = (
+				8D5B49AF048680CD000E48DA /* Resources */,
+				8D5B49B1048680CD000E48DA /* Sources */,
+				8D5B49B3048680CD000E48DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Keystone;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = Keystone;
+			productReference = 8D5B49B6048680CD000E48DA /* Keystone.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "Keystone" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* Keystone */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D5B49AC048680CD000E48DA /* Keystone */,
+				8C6F065C0F981C1900216A72 /* Keystone Names */,
+				8C3A33A90F7EE21900C37703 /* KeystoneTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8C3A33A50F7EE21900C37703 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C6F065D0F981C1900216A72 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C6F065E0F981C1900216A72 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D5B49AF048680CD000E48DA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */,
+				8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */,
+				8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */,
+				8CB614420F8046BC00A84155 /* Localizable.strings in Resources */,
+				8C986F530F80526400383384 /* Preferences.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8C3A33A80F7EE21900C37703 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8C3A33A60F7EE21900C37703 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C3A33BA0F7EE24F00C37703 /* SortedArray.m in Sources */,
+				8C3A33BE0F7EE26C00C37703 /* SortedArrayTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8C6F06630F981C1900216A72 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C6F06640F981C1900216A72 /* CompletionControllerAdditions.m in Sources */,
+				8C6F06650F981C1900216A72 /* JRSwizzle.m in Sources */,
+				8C6F06660F981C1900216A72 /* FakeCompletionItem.m in Sources */,
+				8C6F06690F981C1900216A72 /* SortedArray.m in Sources */,
+				8C6F06880F981D1D00216A72 /* KeystoneNamesController.m in Sources */,
+				8C6F068B0F983A7B00216A72 /* NameItem.m in Sources */,
+				8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D5B49B1048680CD000E48DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */,
+				8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */,
+				8C3A30920F7EA8BB00C37703 /* FakeCompletionItem.m in Sources */,
+				8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */,
+				8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */,
+				8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		8CB614410F8046BC00A84155 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8CB6143F0F8046B800A84155 /* English */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		8CD29B470F7EF1C400D146C3 /* defaults.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8CD29B430F7EF0AB00D146C3 /* English */,
+			);
+			name = defaults.plist;
+			sourceTree = "<group>";
+		};
+		8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8CD29C160F7EFE8F00D146C3 /* English */,
+			);
+			name = KeystonePreferences.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB913B08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Keystone_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = Keystone;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		1DEB913C08733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Keystone_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Application Support/SIMBL/Plugins";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = Keystone;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		1DEB913F08733D840010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB914008733D840010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		8C3A33AC0F7EE21A00C37703 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "KeystoneTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = KeystoneTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		8C3A33AD0F7EE21A00C37703 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "KeystoneTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = KeystoneTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		8C6F066D0F981C1900216A72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Keystone_Prefix.pch;
+				INFOPLIST_FILE = "Info-Names.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = "Keystone Names";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		8C6F066E0F981C1900216A72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Keystone_Prefix.pch;
+				INFOPLIST_FILE = "Info-Names.plist";
+				INSTALL_PATH = "$(HOME)/Library/Application Support/SIMBL/Plugins";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = "Keystone Names";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "Keystone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913B08733D840010E9CD /* Debug */,
+				1DEB913C08733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "Keystone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB913F08733D840010E9CD /* Debug */,
+				1DEB914008733D840010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C3A33AE0F7EE21A00C37703 /* Build configuration list for PBXNativeTarget "KeystoneTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C3A33AC0F7EE21A00C37703 /* Debug */,
+				8C3A33AD0F7EE21A00C37703 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8C6F066C0F981C1900216A72 /* Build configuration list for PBXNativeTarget "Keystone Names" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C6F066D0F981C1900216A72 /* Debug */,
+				8C6F066E0F981C1900216A72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
