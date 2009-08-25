@@ -19,6 +19,7 @@
 @interface ComBelkadanKeystone_URLCompletionController (ComBelkadanKeystone_SafariURLCompletionControllerMethods)
 - (NSString *)queryString;
 
+- (NSTextField *)_sourceField;
 - (NSString *)sourceFieldString;
 - (void)setSourceFieldString:(NSString *)newString;
 - (void)replaceSourceFieldCharactersInRange:(NSRange)range withString:(NSString *)replacement selectingFromIndex:(NSInteger)fromIndex;
@@ -58,13 +59,16 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
     
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSeparator:);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSelectable:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsChecked:);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, reflectSelectedListItem);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, activateSelectedListItem);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, displayedStringForListItem:column:row:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, doSourceFieldCommandBySelector:);
 		
-		// will fail if on Safari 4.0.0-2, which already has this method around
-		// our version is a placeholder
+		// will fail if on Safari 4.0.0-2, which already has these method around
+		// our versions are placeholders that "do the right thing" based on the Safari 4.0.3 context
     COPY_METHOD(thisClass, completionControllerClass, completionListActsLikeMenu);
+    COPY_METHOD(thisClass, completionControllerClass, sourceField);
   }
 }
 
@@ -175,6 +179,16 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
   }
 }
 
+- (BOOL)ComBelkadanKeystone_listItemIsChecked:(ComBelkadanKeystone_FakeCompletionItem *)item {
+  if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
+    return NO; // no check marks on Keystone completion items
+    
+  } else {
+    return [self ComBelkadanKeystone_listItemIsChecked:item];
+  }
+}
+
+
 /*!
  * Swizzle-wrapped to handle fake completion items. Updates the location bar to
  * show the currently highlighted completion item.
@@ -237,7 +251,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
  * is set up to err on the side of caution and not replace the action method at all.
  */
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(NSTextField *)sender {
-	NSString *query = [[sender stringValue] retain];
+	NSString *query = [[sender stringValue] copy];
 	[sender setStringValue:@""];
 	[self sourceFieldTextDidChange];
 
@@ -252,6 +266,32 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 	[query release];
 
   [[sender delegate] goToToolbarLocation:sender];
+}
+
+- (BOOL)ComBelkadanKeystone_doSourceFieldCommandBySelector:(SEL)command {
+	if (command == @selector(cancelOperation:) && [self respondsToSelector:@selector(_sourceField)]) {
+		// only on Safari 4.0.3 -- earlier versions get this right already and this screws it up
+		// desired cancel behavior: one cancel closes completion window, two resets location bar
+		NSString *query = [self queryString];
+		NSUInteger queryLength = [query length];
+		
+		if (queryLength > 0) {
+			NSTextField *sourceField = [self _sourceField];
+			NSString *value = [[sourceField stringValue] copy];
+			
+			if (![value hasPrefix:query]) queryLength = 0;
+			
+			[sourceField setStringValue:@""];
+			[self sourceFieldTextDidChange];
+			[sourceField setStringValue:value];
+			[[sourceField currentEditor] setSelectedRange:NSMakeRange(queryLength, [value length] - queryLength)];	
+			
+			[value release];
+			return YES;
+		}
+	}
+	
+	return [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
 }
 
 /*!

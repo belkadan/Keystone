@@ -99,7 +99,7 @@ typedef struct { void *p; } PtrStructPadding;
 - (void)sourceFieldTextDidEndEditing;
 - (BOOL)handleInsertNewline;
 - (BOOL)sourceFieldIsEmpty;
-- (BOOL)doSourceFieldCommandBySelector:(SEL)fp8;
+- (BOOL)doSourceFieldCommandBySelector:(SEL)command;
 
 - (id)tableView:(CompletionListTableView *)tableView objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex;
 // other usual table view data source/delegate methods omitted
