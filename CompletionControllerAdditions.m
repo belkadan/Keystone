@@ -1,33 +1,36 @@
 #import "CompletionControllerAdditions.h"
+
+#import "CompletionAdapterAdditions.h"
 #import "FakeCompletionItem.h"
 #import "CompletionHandler.h"
+#import "CompletionControllers.h"
+
 #import "SortedArray.h"
-#import "JRSwizzle.h"
-#import <objc/runtime.h>
+
+#import "SwizzleMacros.h"
 
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
 
-
-#define _CONCAT(A, B) A ## B
-
-#define COPY_METHOD(FROM_CLASS, TO_CLASS, SEL) do { \
-    Method _m = class_getInstanceMethod(FROM_CLASS, @selector(SEL)); \
-    class_addMethod(TO_CLASS, @selector(SEL), method_getImplementation(_m), method_getTypeEncoding(_m)); \
-  } while (NO)
-
-#define EXCHANGE(CLASS, PREFIX, SEL) do { \
-    NSError *_err = NULL; \
-    [CLASS jr_swizzleMethod:@selector(SEL) withMethod:@selector(_CONCAT(PREFIX, SEL)) error:&_err]; \
-    if (_err) NSLog(@"Unable to swizzle method %@; this may cause major problems with Safari!", NSStringFromSelector(@selector(SEL))); \
-  } while (NO)
-
-#define COPY_AND_EXCHANGE(FROM_CLASS, TO_CLASS, PREFIX, SEL) do { \
-    COPY_METHOD(FROM_CLASS, TO_CLASS, _CONCAT(PREFIX, SEL)); \
-    EXCHANGE(TO_CLASS, PREFIX, SEL); \
-  } while (NO)
   
 @interface NSObject (ComBelkadanKeystone_StopWarnings)
 - (IBAction)goToToolbarLocation:(NSTextField *)sender;
+@end
+
+@interface ComBelkadanKeystone_URLCompletionController (ComBelkadanKeystone_SafariURLCompletionControllerMethods)
+- (NSString *)queryString;
+
+- (NSString *)sourceFieldString;
+- (void)setSourceFieldString:(NSString *)newString;
+- (void)replaceSourceFieldCharactersInRange:(NSRange)range withString:(NSString *)replacement selectingFromIndex:(NSInteger)fromIndex;
+- (void)performSourceFieldAction;
+- (void)sourceFieldTextDidChange;
+
+- (NSDictionary *)attributesForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row forceDisabledColor:(BOOL)forceDisabled;
+- (NSArray *)currentListItems;
+- (id)selectedListItem;
+
+- (BOOL)startsWithFirstItemSelected;
+- (BOOL)completionListActsLikeMenu;
 @end
 
 
@@ -35,23 +38,33 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 @implementation ComBelkadanKeystone_URLCompletionController
 + (void)initialize {
-  if (![URLCompletionController respondsToSelector:@selector(ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:)]) {
+	// Safari 4.0.3 changes the way things work; we need to mess with this class as well
+	if (NSClassFromString(@"CompletionControllerObjCAdapter")) {
+		(void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class];
+	}
+
+	Class completionControllerClass = NSClassFromString(@"URLCompletionController");
+	if (completionControllerClass == Nil) completionControllerClass = NSClassFromString(@"OldURLCompletionController");
+	
+  if (![completionControllerClass instancesRespondToSelector:@selector(ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:)]) {
     additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
     
-    Class fromClass = [self class];
-    Class toClass = [URLCompletionController class];
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, initWithSourceField:);
+    Class thisClass = [self class];
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, initWithSourceField:);
     
-    COPY_METHOD(fromClass, toClass, ComBelkadanKeystone_goToToolbarLocation:);
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
-    COPY_METHOD(fromClass, toClass, ComBelkadanKeystone_firstItemForQuery:);
+    COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_goToToolbarLocation:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
+    COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_firstItemForQuery:);
     
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, listItemIsSeparator:);
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, listItemIsSelectable:);
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, reflectSelectedListItem);
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, activateSelectedListItem);
-
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, tableView:objectValueForTableColumn:row:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSeparator:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSelectable:);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, reflectSelectedListItem);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, activateSelectedListItem);
+    COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, displayedStringForListItem:column:row:);
+		
+		// will fail if on Safari 4.0.0-2, which already has this method around
+		// our version is a placeholder
+    COPY_METHOD(thisClass, completionControllerClass, completionListActsLikeMenu);
   }
 }
 
@@ -90,6 +103,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
   NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
   
   NSString *query = [self queryString];
+	
   for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
     NSArray *customCompletions = [nextHandler completionsForQueryString:query];
     
@@ -195,18 +209,20 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*!
  * Swizzle-wrapped to handle fake completion items. Returns the selected item's
- * name or preview URL.
+ * name or preview URL, using the default attributes for the string.
  */
-- (id)ComBelkadanKeystone_tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)rowIndex {
-  ComBelkadanKeystone_FakeCompletionItem *item = [[self currentListItems] objectAtIndex:rowIndex];
+- (NSAttributedString *)ComBelkadanKeystone_displayedStringForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row {
   if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
-    if (![self completionListActsLikeMenu] || [@"1" isEqual:[column identifier]]) {
-      return [item previewURLStringForQueryString:[self queryString]] ?: @"";
+		NSString *value;
+    if (col == 1) {
+      value = [item previewURLStringForQueryString:[self queryString]] ?: @"";
     } else {
-      return [item nameForQueryString:[self queryString]];
+      value = [item nameForQueryString:[self queryString]];
     }
+		
+		return [[[NSAttributedString alloc] initWithString:value attributes:[self attributesForListItem:item column:col row:row forceDisabledColor:NO]] autorelease];
   } else {
-    return [self ComBelkadanKeystone_tableView:tableView objectValueForTableColumn:column row:rowIndex];
+    return [self ComBelkadanKeystone_displayedStringForListItem:item column:col row:row];
   }
 }
 
@@ -221,15 +237,28 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
  * is set up to err on the side of caution and not replace the action method at all.
  */
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(NSTextField *)sender {
-  if ([[self sourceFieldString] rangeOfString:@" "].location != NSNotFound) {
-    NSString *query = [sender stringValue];
+	NSString *query = [[sender stringValue] retain];
+	[sender setStringValue:@""];
+	[self sourceFieldTextDidChange];
+
+  if ([query rangeOfString:@" "].location != NSNotFound) {
     ComBelkadanKeystone_FakeCompletionItem *item = [self ComBelkadanKeystone_firstItemForQuery:query];
     if (item) [sender setStringValue:[item urlStringForQueryString:query]];
-  }
+		
+  } else {
+		[sender setStringValue:query];
+	}
+	
+	[query release];
 
   [[sender delegate] goToToolbarLocation:sender];
 }
 
+/*!
+ * In Safari 4.0.3 the completion list always acts like a menu, and this method
+ * has been removed. We insert this method if necessary.
+ */
+- (BOOL)completionListActsLikeMenu { return YES; }
 @end
 
 

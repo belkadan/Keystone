@@ -1,12 +1,15 @@
 #import <Cocoa/Cocoa.h>
 
 /* generated with class-dump */
+/* Safari 4.0 - 4.0.2 */
+/* in 4.0.3 each class has the name "Old" prepended */
 
 @class CompletionWindow, CompletionListTableView, WebDynamicScrollBarsView;
 typedef struct { void *p; } PtrStructPadding;
 
 @interface CompletionController : NSObject /* <NSTableViewDataSource, NSTableViewDelegate> */
 {
+@public
     NSWindow *_sourceWindow;
     CompletionWindow *_completionListWindow;
     CompletionListTableView *_tableView;
@@ -38,7 +41,7 @@ typedef struct { void *p; } PtrStructPadding;
 - (void)abortCompletion;
 
 - (id)selectedListItem;
-- (id)currentListItems;
+- (NSArray *)currentListItems;
 - (void)reflectSelectedListItem;
 - (void)reflectFinalSelectedListItem;
 
@@ -59,14 +62,14 @@ typedef struct { void *p; } PtrStructPadding;
 - (void)replaceSourceFieldCharactersInRange:(NSRange)range withString:(NSString *)replacement selectingFromIndex:(NSInteger)fromIndex;
 
 - (NSArray *)computeListItemsAndInitiallySelectedIndex:(NSUInteger *)initialIndex;
-- (id)queryString;
+- (NSString *)queryString;
 - (id)reflectedStringForHighlightedListItem:(id)item;
 - (id)reflectedStringForActivatedListItem:(id)item;
 - (BOOL)leavingFieldReflectsSelectedListItem;
 - (NSUInteger)numberOfColumnsInCompletionList;
 
-- (id)attributesForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row forceDisabledColor:(BOOL)forceDisabled;
-- (id)displayedStringForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row;
+- (NSDictionary *)attributesForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row forceDisabledColor:(BOOL)forceDisabled;
+- (NSAttributedString *)displayedStringForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row;
 - (BOOL)activateSelectedListItem;
 
 - (void)completionListDidChange:(struct CompletionListGenerator *)generator;

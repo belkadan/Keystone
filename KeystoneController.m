@@ -1,5 +1,6 @@
 #import "KeystoneController.h"
 #import "CompletionControllerAdditions.h"
+#import "CompletionAdapterAdditions.h"
 #import "QueryCompletionItem.h"
 
 #import <WebKit/WebKit.h>
@@ -35,10 +36,16 @@ enum {
 @implementation ComBelkadanKeystone_Controller
 + (void)load
 {
-  [ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
+	[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
 
-  NSImage *prefIcon = [[NSImage alloc] initByReferencingFile:[[NSBundle bundleForClass:[self class]] pathForImageResource:@"Preferences"]];
-  [prefIcon setName:@"ComBelkadanKeystone_Preferences"];
+	static NSImage *prefIcon = nil;
+	if (!prefIcon) {
+		prefIcon = [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
+		if (!prefIcon) {
+			prefIcon = [[NSImage alloc] initByReferencingFile:[[NSBundle bundleForClass:[self class]] pathForImageResource:@"Preferences"]];
+			[prefIcon setName:@"ComBelkadanKeystone_Preferences"];
+		}
+	}
 
   [[NSClassFromString(@"WBPreferences") sharedPreferences] addPreferenceNamed:NSLocalizedStringFromTableInBundle(@"Keystone", @"Localizable", [NSBundle bundleForClass:[self class]], @"The preferences pane title") owner:[self sharedInstance]];
 }
@@ -171,7 +178,7 @@ enum {
           ((DOMHTMLInputElement *)next).checked ||
           [textTypes containsObject:((DOMHTMLInputElement *)next).type]) {
         if (!first) [search appendString:@"&"];
-        [search appendString:[[next name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        [search appendString:[[(DOMHTMLInputElement *)next name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [search appendString:@"="];
         [search appendString:[[next value] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         first = NO;
@@ -268,6 +275,7 @@ enum {
     ComBelkadanKeystone_QueryCompletionItem *item = [[ComBelkadanKeystone_QueryCompletionItem alloc]
       initWithName:@"New Shortcut" keyword:@"(s)" shortcutURL:@""];
     [sortedCompletionPossibilities addObject:item];
+		[item autorelease];
     [completionTable reloadData];
     
     NSInteger index = [sortedCompletionPossibilities indexOfObject:item];

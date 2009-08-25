@@ -23,6 +23,7 @@
 		8C6F068B0F983A7B00216A72 /* NameItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F068A0F983A7B00216A72 /* NameItem.m */; };
 		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
 		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
+		8C87FBDE10427B8E00DB015A /* CompletionAdapterAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */; };
 		8C986F530F80526400383384 /* Preferences.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* Preferences.icns */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
@@ -60,6 +61,11 @@
 		8C6F08150F98559E00216A72 /* FacebookREST.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookREST.m; sourceTree = "<group>"; };
 		8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllerAdditions.h; sourceTree = "<group>"; };
 		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
+		8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.0.3.h; path = ../Disassembly/Safari.4.0.3.h; sourceTree = SOURCE_ROOT; };
+		8C87FBDC10427B8E00DB015A /* CompletionAdapterAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapterAdditions.h; sourceTree = "<group>"; };
+		8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionAdapterAdditions.m; sourceTree = "<group>"; };
+		8C8945C9104352530051A988 /* SwizzleMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzleMacros.h; sourceTree = "<group>"; };
+		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
 		8C986F520F80526400383384 /* Preferences.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Preferences.icns; sourceTree = "<group>"; };
 		8CB6143F0F8046B800A84155 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8CD11C860FBFAA250063607C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
@@ -147,13 +153,17 @@
 			children = (
 				8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */,
 				8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */,
+				8C87FBDC10427B8E00DB015A /* CompletionAdapterAdditions.h */,
+				8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */,
 				8C3A30900F7EA8BB00C37703 /* FakeCompletionItem.h */,
 				8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */,
 				8C3A320B0F7EC33500C37703 /* SortedArray.h */,
 				8C3A320C0F7EC33500C37703 /* SortedArray.m */,
 				8CD29BCE0F7EFCCB00D146C3 /* CompletionHandler.h */,
 				8CDE7C6D0F7E054F004CFE14 /* CompletionControllers.h */,
+				8C894673104358860051A988 /* CompletionAdapter.h */,
 				8CD29C1F0F7EFF8000D146C3 /* NSPreferences.h */,
+				8C8945C9104352530051A988 /* SwizzleMacros.h */,
 			);
 			name = "Keystone Core";
 			sourceTree = "<group>";
@@ -193,6 +203,7 @@
 				8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */,
 				8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */,
 				8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */,
+				8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */,
 				32DBCF630370AF2F00C91783 /* Keystone_Prefix.pch */,
 			);
 			name = "Other Sources";
@@ -277,6 +288,7 @@
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
+				8C89452410434C320051A988 /* Update Symlink */,
 			);
 			buildRules = (
 			);
@@ -351,6 +363,23 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
+		8C89452410434C320051A988 /* Update Symlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(WRAPPER_NAME)",
+			);
+			name = "Update Symlink";
+			outputPaths = (
+				"~/Library/Application Support/SIMBL/Plugins/$(WRAPPER_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "[ -L \"$SCRIPT_OUTPUT_FILE_0\" ] && rm \"$SCRIPT_OUTPUT_FILE_0\"\n\nif [ ! -e \"$SCRIPT_OUTPUT_FILE_0\" ]; then\n\techo ln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\n\tln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\nelse\n\techo warning: \"$SCRIPT_OUTPUT_FILE_0\" \"exists;\" an older version of $PRODUCT_NAME may be in the way\nfi";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -387,6 +416,7 @@
 				8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */,
 				8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */,
 				8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */,
+				8C87FBDE10427B8E00DB015A /* CompletionAdapterAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
