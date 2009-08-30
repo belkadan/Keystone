@@ -24,6 +24,14 @@
 			<key>BundleIdentifier</key>
 			<string>com.apple.Safari</string>
 			<key>MaxBundleVersion</key>
+			<string>6531</string>
+			<key>MinBundleVersion</key>
+			<string>6531</string>
+		</dict>
+		<dict>
+			<key>BundleIdentifier</key>
+			<string>com.apple.Safari</string>
+			<key>MaxBundleVersion</key>
 			<string>5531</string>
 			<key>MinBundleVersion</key>
 			<string>5528</string>
