@@ -25,7 +25,7 @@
 		8C6F068B0F983A7B00216A72 /* NameItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F068A0F983A7B00216A72 /* NameItem.m */; };
 		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
 		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
-		8C87FBDE10427B8E00DB015A /* CompletionAdapterAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */; };
+		8C95966C10C4629400927E7C /* CompletionAdapterAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */; };
 		8C986F530F80526400383384 /* Preferences.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* Preferences.icns */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
@@ -418,7 +418,7 @@
 				8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */,
 				8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */,
 				8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */,
-				8C87FBDE10427B8E00DB015A /* CompletionAdapterAdditions.m in Sources */,
+				8C95966C10C4629400927E7C /* CompletionAdapterAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

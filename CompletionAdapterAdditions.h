@@ -1,3 +1,4 @@
+#if !__LP64__
 #import <Cocoa/Cocoa.h>
 #import "CompletionAdapter.h"
 
@@ -5,3 +6,4 @@
 }
 
 @end
+#endif

@@ -1,3 +1,4 @@
+#if !__LP64__
 #import "CompletionAdapterAdditions.h"
 
 #import "CompletionControllers.h"
@@ -16,9 +17,9 @@
   if (![CompletionControllerObjCAdapter instancesRespondToSelector:@selector(_CONCAT(KEYSTONE_PREFIX, numberOfRowsInTableView:))]) {
     Class fromClass = [self class];
     Class toClass = [CompletionControllerObjCAdapter class];
-		
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, tableView:objectValueForTableColumn:row:);
-	}
+    
+    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, tableView:objectValueForTableColumn:row:);
+  }
 }
 
 #pragma mark -
@@ -32,3 +33,4 @@
   }
 }
 @end
+#endif

@@ -11,6 +11,12 @@
 
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
 
+static BOOL queryWantsCompletion (NSString *query) {
+	// TODO: is there a better heuristic here?
+	return [query rangeOfString:@" "].location != NSNotFound ||
+		[NSURL URLWithString:query] == nil;
+}
+
   
 @interface NSObject (ComBelkadanKeystone_StopWarnings)
 - (IBAction)goToToolbarLocation:(NSTextField *)sender;
@@ -39,14 +45,16 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 @implementation ComBelkadanKeystone_URLCompletionController
 + (void)initialize {
-	// Safari 4.0.3 changes the way things work; we need to mess with this class as well
-	if (NSClassFromString(@"CompletionControllerObjCAdapter")) {
-		(void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class];
-	}
+  // Safari 4.0.3 changes the way things work; we need to mess with this class as well
+#if !__LP64__
+  if (NSClassFromString(@"CompletionControllerObjCAdapter")) {
+    (void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class];
+  }
+#endif
 
-	Class completionControllerClass = NSClassFromString(@"URLCompletionController");
-	if (completionControllerClass == Nil) completionControllerClass = NSClassFromString(@"OldURLCompletionController");
-	
+  Class completionControllerClass = NSClassFromString(@"URLCompletionController");
+  if (completionControllerClass == Nil) completionControllerClass = NSClassFromString(@"OldURLCompletionController");
+  
   if (![completionControllerClass instancesRespondToSelector:@selector(ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:)]) {
     additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
     
@@ -64,9 +72,9 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, activateSelectedListItem);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, displayedStringForListItem:column:row:);
     COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, doSourceFieldCommandBySelector:);
-		
-		// will fail if on Safari 4.0.0-2, which already has these method around
-		// our versions are placeholders that "do the right thing" based on the Safari 4.0.3 context
+    
+    // will fail if on Safari 4.0.0-2, which already has these method around
+    // our versions are placeholders that "do the right thing" based on the Safari 4.0.3 context
     COPY_METHOD(thisClass, completionControllerClass, completionListActsLikeMenu);
     COPY_METHOD(thisClass, completionControllerClass, sourceField);
   }
@@ -105,20 +113,21 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef {
   NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
-  
+  BOOL hasNormalResults = ([results count] > 0);
+
   NSString *query = [self queryString];
-	
+  
   for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
     NSArray *customCompletions = [nextHandler completionsForQueryString:query];
     
     if ([customCompletions count] > 0) {
-      if ([results count] > 0) {
+      if (hasNormalResults) {
         [results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
         
       } else if ([self startsWithFirstItemSelected]) {
         NSUInteger index = [self completionListActsLikeMenu] ? 1 : 0;
         
-        if (indexRef) {
+        if (indexRef && *indexRef == NSNotFound) {
           for (ComBelkadanKeystone_FakeCompletionItem *item in customCompletions) {
             if ([item canBeFirstSelectedForQueryString:query]) {
               *indexRef = index;
@@ -142,7 +151,12 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
     }
   }
 
-  return [results autorelease];
+  if (hasNormalResults || queryWantsCompletion(query)) {
+    return [results autorelease];
+  } else {
+	[results release];
+	return nil;
+  }
 }
 
 /*! Added: returns the first item available for query completion. */
@@ -207,14 +221,13 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*!
  * Swizzle-wrapped to handle fake completion items. Updates the location bar to
- * the final destination, then invokes its action.
+ * the final destination.
  */
 - (BOOL)ComBelkadanKeystone_activateSelectedListItem {
   ComBelkadanKeystone_FakeCompletionItem *item = [self selectedListItem];
   if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
     [self setSourceFieldString:[item urlStringForQueryString:[self queryString]]];
-    [self performSourceFieldAction];
-    return YES;
+    return NO;
  
   } else {
     return [self ComBelkadanKeystone_activateSelectedListItem];
@@ -227,14 +240,14 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
  */
 - (NSAttributedString *)ComBelkadanKeystone_displayedStringForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row {
   if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
-		NSString *value;
+    NSString *value;
     if (col == 1) {
       value = [item previewURLStringForQueryString:[self queryString]] ?: @"";
     } else {
       value = [item nameForQueryString:[self queryString]];
     }
-		
-		return [[[NSAttributedString alloc] initWithString:value attributes:[self attributesForListItem:item column:col row:row forceDisabledColor:NO]] autorelease];
+    
+    return [[[NSAttributedString alloc] initWithString:value attributes:[self attributesForListItem:item column:col row:row forceDisabledColor:NO]] autorelease];
   } else {
     return [self ComBelkadanKeystone_displayedStringForListItem:item column:col row:row];
   }
@@ -251,47 +264,47 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
  * is set up to err on the side of caution and not replace the action method at all.
  */
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(NSTextField *)sender {
-	NSString *query = [[sender stringValue] copy];
-	[sender setStringValue:@""];
-	[self sourceFieldTextDidChange];
+  NSString *query = [[sender stringValue] copy];
+  [sender setStringValue:@""];
+  [self sourceFieldTextDidChange];
 
-  if ([query rangeOfString:@" "].location != NSNotFound) {
+  if (queryWantsCompletion(query)) {
     ComBelkadanKeystone_FakeCompletionItem *item = [self ComBelkadanKeystone_firstItemForQuery:query];
     if (item) [sender setStringValue:[item urlStringForQueryString:query]];
-		
+    
   } else {
-		[sender setStringValue:query];
-	}
-	
-	[query release];
+    [sender setStringValue:query];
+  }
+  
+  [query release];
 
   [[sender delegate] goToToolbarLocation:sender];
 }
 
 - (BOOL)ComBelkadanKeystone_doSourceFieldCommandBySelector:(SEL)command {
-	if (command == @selector(cancelOperation:) && [self respondsToSelector:@selector(_sourceField)]) {
-		// only on Safari 4.0.3 -- earlier versions get this right already and this screws it up
-		// desired cancel behavior: one cancel closes completion window, two resets location bar
-		NSString *query = [self queryString];
-		NSUInteger queryLength = [query length];
-		
-		if (queryLength > 0) {
-			NSTextField *sourceField = [self _sourceField];
-			NSString *value = [[sourceField stringValue] copy];
-			
-			if (![value hasPrefix:query]) queryLength = 0;
-			
-			[sourceField setStringValue:@""];
-			[self sourceFieldTextDidChange];
-			[sourceField setStringValue:value];
-			[[sourceField currentEditor] setSelectedRange:NSMakeRange(queryLength, [value length] - queryLength)];	
-			
-			[value release];
-			return YES;
-		}
-	}
-	
-	return [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
+  if (command == @selector(cancelOperation:) && [self respondsToSelector:@selector(_sourceField)]) {
+    // only on Safari 4.0.3 -- earlier versions get this right already and this screws it up
+    // desired cancel behavior: one cancel closes completion window, two resets location bar
+    NSString *query = [self queryString];
+    NSUInteger queryLength = [query length];
+    
+    if (queryLength > 0) {
+      NSTextField *sourceField = [self _sourceField];
+      NSString *value = [[sourceField stringValue] copy];
+      
+      if (![value hasPrefix:query]) queryLength = 0;
+      
+      [sourceField setStringValue:@""];
+      [self sourceFieldTextDidChange];
+      [sourceField setStringValue:value];
+      [[sourceField currentEditor] setSelectedRange:NSMakeRange(queryLength, [value length] - queryLength)];  
+      
+      [value release];
+      return YES;
+    }
+  }
+  
+  return [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
 }
 
 /*!

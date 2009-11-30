@@ -93,13 +93,6 @@
   [copy release];
 }
 
-- (void)testMutableCopy {
-  id copy = [evens mutableCopy];
-  STAssertTrue([copy isKindOfClass:[ComBelkadanUtils_SortedArray class]], @"wrong class %@", NSStringFromClass([copy class]));
-  STAssertEqualObjects(copy, evens, @"mutable copy");
-  [copy release];
-}
-
 - (void)testAddAnArrayOfObjects {
   NSMutableArray *odds = [[NSMutableArray alloc] init];
   for (int i = 99; i > 0; i -= 2) {
