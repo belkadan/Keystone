@@ -90,8 +90,9 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef {
+	*indexRef = NSNotFound;
+
 	NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
-	BOOL hasNormalResults = ([results count] > 0);
 
 	NSString *query = [self queryString];
 	
@@ -99,7 +100,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		NSArray *customCompletions = [nextHandler completionsForQueryString:query];
 		
 		if ([customCompletions count] > 0) {
-			if (hasNormalResults) {
+			if ([results count] > 0) {
 				[results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
 				
 			} else if ([self startsWithFirstItemSelected]) {
@@ -129,11 +130,11 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	}
 
-	if (hasNormalResults || queryWantsCompletion(query)) {
+	if (*indexRef != NSNotFound || queryWantsCompletion(query)) {
 		return [results autorelease];
 	} else {
-	[results release];
-	return nil;
+		[results release];
+		return nil;
 	}
 }
 
