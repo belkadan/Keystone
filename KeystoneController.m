@@ -23,10 +23,12 @@ enum {
 - (BOOL)loadCompletions;
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
+
+- (void)setUpMenuItems;
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
-@property(readonly) WebFrameView *mainWebFrameView;
+@property(readonly) WebView *currentWebView;
 @end
 
 @interface DOMDocument (ComBelkadanKeystone_IKnowYoureInThere)
@@ -64,14 +66,53 @@ enum {
 		if (![self loadCompletions]) {
 			[self loadSogudiCompletions];
 		}
+
+		[self setUpMenuItems];
 	}
 	
 	return self;
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+
 	[sortedCompletionPossibilities release];
 	[super dealloc];
+}
+
+- (void)setUpMenuItems {
+  NSMenu *mainMenu = [NSApp mainMenu];
+	NSMenu *bookmarksMenu = nil;
+
+	// first try by name
+	NSString *bookmarksMenuName = NSLocalizedStringWithDefaultValue(@"Bookmarks (menu)", @"Localizable", [NSBundle mainBundle], @"Bookmarks", @"Safari Windows name for Bookmarks menu");
+	bookmarksMenu = [[mainMenu itemWithTitle:bookmarksMenuName] submenu];
+	
+	if (!bookmarksMenu) {
+		// search for the menu item with the action addBookmark:
+		for (NSMenuItem *topMenuItem in [mainMenu itemArray]) {
+			NSMenu *nextMenu = [topMenuItem submenu];
+			if ([nextMenu indexOfItemWithTarget:nil andAction:@selector(addBookmark:)] != NSNotFound) {
+				bookmarksMenu = nextMenu;
+				break;
+			}
+		}
+	}
+
+	if (bookmarksMenu) {
+		NSString *autodiscoverTitle = NSLocalizedStringFromTableInBundle(@"Add Keystone Completion for Search...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
+		NSMenuItem *autodiscoverItem = [[NSMenuItem alloc] initWithTitle:autodiscoverTitle action:@selector(attemptAutodiscovery:) keyEquivalent:@""];
+		[autodiscoverItem setTarget:self];
+
+		NSInteger separatorIndex = [bookmarksMenu indexOfItem:[NSMenuItem separatorItem]];
+		if (separatorIndex == -1) {
+			[bookmarksMenu addItem:autodiscoverItem];
+		} else {
+			[bookmarksMenu insertItem:autodiscoverItem atIndex:separatorIndex];
+		}
+
+		[autodiscoverItem release];
+	}
 }
 
 #pragma mark -
@@ -141,8 +182,11 @@ enum {
 
 - (NSString *)attemptAutodiscovery:(id)sender {
 	NSArray *textTypes = [[NSArray alloc] initWithObjects:@"text", @"search", nil];
+
+	NSString *autodiscoveryString = @"---Keystone---"; // TODO: put somewhere else
 	
-	DOMDocument *currentPage = [[[[[NSDocumentController sharedDocumentController] currentDocument] mainWebFrameView] webFrame] DOMDocument];
+	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+	DOMDocument *currentPage = [webView mainFrameDocument];
 	DOMNode *activeNode = currentPage.activeElement;
 	NSString *nodeName = activeNode.localName;
 	
@@ -150,44 +194,36 @@ enum {
 	if ([nodeName isEqual:@"input"]) {
 		NSString *type = ((DOMHTMLInputElement *)activeNode).type;
 		if ([textTypes containsObject:type]) {
-			[activeNode setValue:@"__________"];
+			[activeNode setValue:autodiscoveryString];
 			form = ((DOMHTMLInputElement *)activeNode).form;
 		}
 		
 	} else if ([nodeName isEqual:@"textarea"]) {
-		[activeNode setValue:@"__________"];
+		[activeNode setValue:autodiscoveryString];
 		form = ((DOMHTMLTextAreaElement *)activeNode).form;
 	}
 	
+	NSString *result = nil;
 	if (!form) {
+		// TODO: better error message
 		NSBeep();
-		[textTypes release];
-		return nil;
 		
 	} else {
-		NSMutableString *search = [form.action mutableCopy];
-		[search appendString:@"?"];
-		
-		DOMHTMLCollection *formElements = form.elements;
-		DOMNode *next;
-		BOOL first = YES;
-		for (unsigned i = 1; i < formElements.length; i += 1) {
-			next = [formElements item:i];
-			
-			if (![next isKindOfClass:[DOMHTMLInputElement class]] ||
-					((DOMHTMLInputElement *)next).checked ||
-					[textTypes containsObject:((DOMHTMLInputElement *)next).type]) {
-				if (!first) [search appendString:@"&"];
-				[search appendString:[[(DOMHTMLInputElement *)next name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				[search appendString:@"="];
-				[search appendString:[[next value] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-				first = NO;
-			}
-		}
-		
-		[textTypes release];
-		return [search autorelease];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
+		[form submit]; // TODO: avoid polluting history
 	}
+	
+	[textTypes release];
+	return result;
+}
+
+- (void)autodiscoveryLoadDidFinish:(NSNotification *)note {
+	// TODO: verify that this is the search the user wanted to do
+	WebView *webView = [note object];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
+
+	// TODO: prompt user for correctness
+	NSLog(@"%@", [webView mainFrameURL]);
 }
 
 #pragma mark -
