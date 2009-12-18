@@ -90,6 +90,8 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef {
+	NSUInteger dummyIndex;
+	if (!indexRef) indexRef = &dummyIndex;
 	*indexRef = NSNotFound;
 
 	NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
@@ -130,7 +132,8 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	}
 
-	if (*indexRef != NSNotFound || queryWantsCompletion(query)) {
+	// TODO: prefixes of keys on enter
+	if ((*indexRef != NSNotFound && [query isEqual:[self sourceFieldString]]) || queryWantsCompletion(query)) {
 		return [results autorelease];
 	} else {
 		[results release];
@@ -259,18 +262,21 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	} else if (command == @selector(insertNewline:)) {
 		BOOL result = [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
-		NSString *query = [[self sourceFieldString] copy];
+		NSString *query = [self sourceFieldString];
 		
 		if (queryWantsCompletion(query)) {
+			query = [query copy];
+
 			// this closes the completions pop-up
 			[self setSourceFieldString:@""];
 			[self sourceFieldTextDidChange];
 		
 			ComBelkadanKeystone_FakeCompletionItem *item = [self ComBelkadanKeystone_firstItemForQuery:query];
 			if (item) [self setSourceFieldString:[item urlStringForQueryString:query]];
+			[query release];
 		}
+
 		
-		[query release];
 		return result;
 	}
 	
