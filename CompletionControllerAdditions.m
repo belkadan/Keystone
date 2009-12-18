@@ -59,8 +59,6 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
 		
 		Class thisClass = [self class];
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, initWithSourceField:);
-		
 		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_goToToolbarLocation:);
 		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
 		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_firstItemForQuery:);
@@ -89,26 +87,6 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 }
 
 #pragma mark -
-
-/*!
- * Swizzle-wrapped: if we can safely hijack the location bar's action, do it for
- * better UX. It's only safe, though, if our intermediate action can make a few
- * assumptions.
- *
- * Background: if you enter a query fast enough, the completion system doesn't
- * have time to come up, and you end up with a standard "can't be found" error.
- * This fixes that.
- */
-- (id)ComBelkadanKeystone_initWithSourceField:(NSTextField *)field {
-	self = [self ComBelkadanKeystone_initWithSourceField:field];
-	if (self) {
-		if ([field action] == @selector(goToToolbarLocation:) && [field target] == [field delegate]) {
-			[field setTarget:self];
-			[field setAction:@selector(ComBelkadanKeystone_goToToolbarLocation:)];
-		}
-	}
-	return self;
-}
 
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef {
@@ -254,33 +232,9 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 }
 
 /*!
- * Action method for the location bar. Intercepts the action message and checks
- * to see if the user would have wanted a completion (seeing if the "query"
- * contains a space). If so, updates the location bar before sending the action
- * message to the /real/ target.
- *
- * This method assumes that the real target is the field's delegate, and that the
- * original action message was goToToolbarLocation:. If it's not, the controller
- * is set up to err on the side of caution and not replace the action method at all.
+ * Handles the behavior for canceling completions using Escape, as well as
+ * sending completions where the pop-up wasn't open but the user still wanted one.
  */
-- (IBAction)ComBelkadanKeystone_goToToolbarLocation:(NSTextField *)sender {
-	NSString *query = [[sender stringValue] copy];
-	[sender setStringValue:@""];
-	[self sourceFieldTextDidChange];
-
-	if (queryWantsCompletion(query)) {
-		ComBelkadanKeystone_FakeCompletionItem *item = [self ComBelkadanKeystone_firstItemForQuery:query];
-		if (item) [sender setStringValue:[item urlStringForQueryString:query]];
-		
-	} else {
-		[sender setStringValue:query];
-	}
-	
-	[query release];
-
-	[[sender delegate] goToToolbarLocation:sender];
-}
-
 - (BOOL)ComBelkadanKeystone_doSourceFieldCommandBySelector:(SEL)command {
 	if (command == @selector(cancelOperation:) && [self respondsToSelector:@selector(_sourceField)]) {
 		// only on Safari 4.0.3 -- earlier versions get this right already and this screws it up
@@ -302,6 +256,21 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 			[value release];
 			return YES;
 		}
+	} else if (command == @selector(insertNewline:)) {
+		BOOL result = [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
+		NSString *query = [[self sourceFieldString] copy];
+		
+		if (queryWantsCompletion(query)) {
+			// this closes the completions pop-up
+			[self setSourceFieldString:@""];
+			[self sourceFieldTextDidChange];
+		
+			ComBelkadanKeystone_FakeCompletionItem *item = [self ComBelkadanKeystone_firstItemForQuery:query];
+			if (item) [self setSourceFieldString:[item urlStringForQueryString:query]];
+		}
+		
+		[query release];
+		return result;
 	}
 	
 	return [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
