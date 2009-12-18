@@ -4,10 +4,10 @@
 #import "NSPreferences.h"
 
 @interface ComBelkadanKeystone_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
-  ComBelkadanUtils_SortedArray *sortedCompletionPossibilities;
-  
-  IBOutlet NSTableView *completionTable;
-  IBOutlet NSSegmentedControl *addRemoveControl;
+	ComBelkadanUtils_SortedArray *sortedCompletionPossibilities;
+	
+	IBOutlet NSTableView *completionTable;
+	IBOutlet NSSegmentedControl *addRemoveControl;
 }
 //+ (id)sharedInstance; // inherited from NSPreferencesModule
 - (void)save;

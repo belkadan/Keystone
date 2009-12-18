@@ -5,9 +5,9 @@
 
 
 @interface ComBelkadanKeystoneNames_NameItem : ComBelkadanKeystone_FakeCompletionItem {
-  NSString *key;
-  NSString *name;
-  NSString *userID;
+	NSString *key;
+	NSString *name;
+	NSString *userID;
 }
 
 + (void)addItemsForName:(NSString *)name userID:(NSString *)userID toArray:(NSArray <ComBelkadanUtils_OrderedMutableArray> *)items;

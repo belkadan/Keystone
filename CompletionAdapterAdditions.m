@@ -14,23 +14,23 @@
 
 @implementation ComBelkadanKeystone_CompletionControllerObjCAdapter
 + (void)initialize {
-  if (![CompletionControllerObjCAdapter instancesRespondToSelector:@selector(_CONCAT(KEYSTONE_PREFIX, numberOfRowsInTableView:))]) {
-    Class fromClass = [self class];
-    Class toClass = [CompletionControllerObjCAdapter class];
-    
-    COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, tableView:objectValueForTableColumn:row:);
-  }
+	if (![CompletionControllerObjCAdapter instancesRespondToSelector:@selector(_CONCAT(KEYSTONE_PREFIX, numberOfRowsInTableView:))]) {
+		Class fromClass = [self class];
+		Class toClass = [CompletionControllerObjCAdapter class];
+		
+		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, tableView:objectValueForTableColumn:row:);
+	}
 }
 
 #pragma mark -
 
 - (id)ComBelkadanKeystone_tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex {
-  ComBelkadanKeystone_FakeCompletionItem *item = [[_completionControllerObjC currentListItems] objectAtIndex:rowIndex];
-  if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
-    return [_completionControllerObjC displayedStringForListItem:item column:[[tableView tableColumns] indexOfObject:tableColumn] row:rowIndex];
-  } else {
-    return [self ComBelkadanKeystone_tableView:tableView objectValueForTableColumn:tableColumn row:rowIndex];
-  }
+	ComBelkadanKeystone_FakeCompletionItem *item = [[_completionControllerObjC currentListItems] objectAtIndex:rowIndex];
+	if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
+		return [_completionControllerObjC displayedStringForListItem:item column:[[tableView tableColumns] indexOfObject:tableColumn] row:rowIndex];
+	} else {
+		return [self ComBelkadanKeystone_tableView:tableView objectValueForTableColumn:tableColumn row:rowIndex];
+	}
 }
 @end
 #endif

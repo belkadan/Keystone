@@ -7,8 +7,8 @@ struct CompletionController;
 
 @interface CompletionControllerObjCAdapter : NSObject /* <NSTableViewDataSource, NSTableViewDelegate> */
 {
-    struct CompletionController *_completionController;
-    OldCompletionController *_completionControllerObjC;
+	struct CompletionController *_completionController;
+	OldCompletionController *_completionControllerObjC;
 }
 - (id)initWithCompletionController:(struct CompletionController *)cppCompletionController oldCompletionController:(OldCompletionController *)objcCompletionController;
 - (void)performCompletion;

@@ -8,8 +8,8 @@
  * Also, not KVO-compliant.
  */
 @interface ComBelkadanUtils_SortedArray : NSArray {
-  NSArray *sortDescriptors;
-  NSMutableArray *backing;
+	NSArray *sortDescriptors;
+	NSMutableArray *backing;
 }
 /*! Create a new array with the sort key "self". */
 - (id)init;

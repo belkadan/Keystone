@@ -5,7 +5,7 @@
 @class ComBelkadanUtils_SortedArray;
 
 @interface ComBelkadanKeystoneNames_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
-  ComBelkadanUtils_SortedArray *nameItems;
+	ComBelkadanUtils_SortedArray *nameItems;
 }
 //+ (id)sharedInstance; // inherited from NSPreferencesModule
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne;

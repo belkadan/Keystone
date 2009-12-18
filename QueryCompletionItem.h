@@ -5,9 +5,9 @@ extern NSString * const ComBelkadanKeystone_kDefaultActionKeyword;
 extern NSString * const ComBelkadanKeystone_kSubstitutionMarker;
 
 @interface ComBelkadanKeystone_QueryCompletionItem : ComBelkadanKeystone_FakeCompletionItem {
-  NSString *name;
-  NSString *keyword;
-  NSString *shortcutURL;
+	NSString *name;
+	NSString *keyword;
+	NSString *shortcutURL;
 }
 
 - (id)initWithName:(NSString *)givenName keyword:(NSString *)givenKeyword shortcutURL:(NSString *)URLString;

@@ -2,21 +2,21 @@
 
 @interface NSPreferences : NSObject
 {
-    NSWindow *_preferencesPanel;
-    NSBox *_preferenceBox;
-    NSMatrix *_moduleMatrix;
-    NSButtonCell *_okButton;
-    NSButtonCell *_cancelButton;
-    NSButtonCell *_applyButton;
-    NSMutableArray *_preferenceTitles;
-    NSMutableArray *_preferenceModules;
-    NSMutableDictionary *_masterPreferenceViews;
-    NSMutableDictionary *_currentSessionPreferenceViews;
-    NSBox *_originalContentView;
-    BOOL _isModal;
-    float _constrainedWidth;
-    id _currentModule;
-    void *_reserved;
+	NSWindow *_preferencesPanel;
+	NSBox *_preferenceBox;
+	NSMatrix *_moduleMatrix;
+	NSButtonCell *_okButton;
+	NSButtonCell *_cancelButton;
+	NSButtonCell *_applyButton;
+	NSMutableArray *_preferenceTitles;
+	NSMutableArray *_preferenceModules;
+	NSMutableDictionary *_masterPreferenceViews;
+	NSMutableDictionary *_currentSessionPreferenceViews;
+	NSBox *_originalContentView;
+	BOOL _isModal;
+	float _constrainedWidth;
+	id _currentModule;
+	void *_reserved;
 }
 
 + (id)sharedPreferences;
@@ -74,10 +74,10 @@
 
 @interface NSPreferencesModule : NSObject <NSPreferencesModule>
 {
-    IBOutlet NSBox *preferencesView;
-    NSSize _minSize;
-    BOOL _hasChanges;
-    void *_reserved;
+	IBOutlet NSBox *preferencesView;
+	NSSize _minSize;
+	BOOL _hasChanges;
+	void *_reserved;
 }
 
 + (id)sharedInstance;

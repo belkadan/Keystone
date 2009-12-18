@@ -10,22 +10,22 @@ typedef struct { void *p; } PtrStructPadding;
 @interface CompletionController : NSObject /* <NSTableViewDataSource, NSTableViewDelegate> */
 {
 @public
-    NSWindow *_sourceWindow;
-    CompletionWindow *_completionListWindow;
-    CompletionListTableView *_tableView;
-    WebDynamicScrollBarsView *_scrollView;
-    NSString *_userTypedString;
-    NSArray *_listItems;
-    CGFloat _standardRowHeight;
-    NSInteger _selectedListItemIndex;
-    BOOL _selectionIsStale;
-    BOOL _blockCompletion;
-    BOOL _blockReflectSelection;
-    BOOL _ignoreTextDidChange;
-    BOOL _listIsVisible;
-    BOOL _showListForSingleOverride;
-    BOOL _replaceEntireField;
-    BOOL _inProgrammaticChange;
+	NSWindow *_sourceWindow;
+	CompletionWindow *_completionListWindow;
+	CompletionListTableView *_tableView;
+	WebDynamicScrollBarsView *_scrollView;
+	NSString *_userTypedString;
+	NSArray *_listItems;
+	CGFloat _standardRowHeight;
+	NSInteger _selectedListItemIndex;
+	BOOL _selectionIsStale;
+	BOOL _blockCompletion;
+	BOOL _blockReflectSelection;
+	BOOL _ignoreTextDidChange;
+	BOOL _listIsVisible;
+	BOOL _showListForSingleOverride;
+	BOOL _replaceEntireField;
+	BOOL _inProgrammaticChange;
 }
 
 + (void)setAllCompletionsBlocked:(BOOL)blocked;
@@ -110,9 +110,9 @@ typedef struct { void *p; } PtrStructPadding;
 
 @interface ToolbarCompletionController : CompletionController
 {
-    PtrStructPadding /* struct OwnPtr<Safari::CompletionListGenerator> */ _generator;
-    PtrStructPadding /* struct OwnPtr<Safari::CompletionListGeneratorClientAdapter> */ _generatorClientAdapter;
-    NSTextField *_sourceField;
+	PtrStructPadding /* struct OwnPtr<Safari::CompletionListGenerator> */ _generator;
+	PtrStructPadding /* struct OwnPtr<Safari::CompletionListGeneratorClientAdapter> */ _generatorClientAdapter;
+	NSTextField *_sourceField;
 }
 
 - (id)initWithSourceField:(NSTextField *)sourceField;

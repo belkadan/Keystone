@@ -88,8 +88,8 @@
  * to make a new completion item.
  */
 @interface ComBelkadanKeystone_SimpleCompletionItem : ComBelkadanKeystone_FakeCompletionItem {
-  NSString *name;
-  NSString *URL;
+	NSString *name;
+	NSString *URL;
 }
 
 /*! The designated initializer. Pass nil for the urlString param to create a header item. */
