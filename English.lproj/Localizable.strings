@@ -1,3 +1,6 @@
+/* Autodiscovery menu item title */
+"Add Keystone Completion for Search..." = "Add Keystone Completion for Search…";
+
 /* The header title in the completions list */
 "Keystone Shortcuts" = "Keystone Shortcuts";
 
