@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SortedArray.h"
+#import "QueryCompletionItem.h"
 #import "CompletionHandler.h"
 #import "NSPreferences.h"
 
@@ -8,10 +9,13 @@
 	
 	IBOutlet NSTableView *completionTable;
 	IBOutlet NSSegmentedControl *addRemoveControl;
+
+	NSMutableArray *pendingConfirmations;
 }
 //+ (id)sharedInstance; // inherited from NSPreferencesModule
 - (void)save;
 - (IBAction)addOrRemoveItem:(NSSegmentedControl *)sender;
+- (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item;
 
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne;
 @end

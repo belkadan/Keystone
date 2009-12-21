@@ -31,6 +31,8 @@
 		8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29B470F7EF1C400D146C3 /* defaults.plist */; };
 		8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */; };
 		8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
+		8CF220A810E01338009074CD /* AddCompletion.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CF220A610E01338009074CD /* AddCompletion.xib */; };
+		8CF220C210E02A97009074CD /* AddCompletionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF220C110E02A97009074CD /* AddCompletionController.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +79,9 @@
 		8CDE7C6D0F7E054F004CFE14 /* CompletionControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllers.h; sourceTree = "<group>"; };
 		8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		8CF220A710E01338009074CD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AddCompletion.xib; sourceTree = "<group>"; };
+		8CF220C010E02A97009074CD /* AddCompletionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddCompletionController.h; sourceTree = "<group>"; };
+		8CF220C110E02A97009074CD /* AddCompletionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddCompletionController.m; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Keystone.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Keystone.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -144,6 +149,7 @@
 				8CB614410F8046BC00A84155 /* Localizable.strings */,
 				8CD29B470F7EF1C400D146C3 /* defaults.plist */,
 				8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */,
+				8CF220A610E01338009074CD /* AddCompletion.xib */,
 				8C986F520F80526400383384 /* Preferences.icns */,
 			);
 			name = Resources;
@@ -226,6 +232,8 @@
 				8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */,
 				8C3A313F0F7EB20E00C37703 /* KeystoneController.h */,
 				8C3A31400F7EB20E00C37703 /* KeystoneController.m */,
+				8CF220C010E02A97009074CD /* AddCompletionController.h */,
+				8CF220C110E02A97009074CD /* AddCompletionController.m */,
 			);
 			name = "Keystone Queries";
 			sourceTree = "<group>";
@@ -345,6 +353,7 @@
 				8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */,
 				8CB614420F8046BC00A84155 /* Localizable.strings in Resources */,
 				8C986F530F80526400383384 /* Preferences.icns in Resources */,
+				8CF220A810E01338009074CD /* AddCompletion.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +426,7 @@
 				8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */,
 				8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */,
 				8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */,
+				8CF220C210E02A97009074CD /* AddCompletionController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +463,14 @@
 				8CD29C160F7EFE8F00D146C3 /* English */,
 			);
 			name = KeystonePreferences.xib;
+			sourceTree = "<group>";
+		};
+		8CF220A610E01338009074CD /* AddCompletion.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8CF220A710E01338009074CD /* English */,
+			);
+			name = AddCompletion.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

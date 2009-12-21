@@ -1,7 +1,7 @@
 #import "KeystoneController.h"
 #import "CompletionControllerAdditions.h"
 #import "CompletionAdapterAdditions.h"
-#import "QueryCompletionItem.h"
+#import "AddCompletionController.h"
 
 #import <WebKit/WebKit.h>
 #import <libkern/OSAtomic.h>
@@ -19,7 +19,7 @@ enum {
 	kRemoveButtonPosition
 };
 
-@interface ComBelkadanKeystone_Controller ()
+@interface ComBelkadanKeystone_Controller () <NSUserInterfaceValidations>
 - (BOOL)loadCompletions;
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
@@ -62,6 +62,8 @@ enum {
 		sortedCompletionPossibilities = [[ComBelkadanUtils_SortedArray alloc] initWithSortDescriptors:descriptors];
 		[descriptors makeObjectsPerformSelector:@selector(release)];
 		[descriptors release];
+
+		pendingConfirmations = [[NSMutableArray alloc] init];
 		
 		if (![self loadCompletions]) {
 			[self loadSogudiCompletions];
@@ -77,6 +79,7 @@ enum {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
 	[sortedCompletionPossibilities release];
+	[pendingConfirmations release];
 	[super dealloc];
 }
 
@@ -100,7 +103,7 @@ enum {
 	}
 
 	if (bookmarksMenu) {
-		NSString *autodiscoverTitle = NSLocalizedStringFromTableInBundle(@"Add Keystone Completion for Search...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
+		NSString *autodiscoverTitle = NSLocalizedStringFromTableInBundle(@"Add Keystone Completion...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
 		NSMenuItem *autodiscoverItem = [[NSMenuItem alloc] initWithTitle:autodiscoverTitle action:@selector(attemptAutodiscovery:) keyEquivalent:@""];
 		[autodiscoverItem setTarget:self];
 
@@ -180,9 +183,31 @@ enum {
 
 #pragma mark -
 
-- (NSString *)attemptAutodiscovery:(id)sender {
-	NSArray *textTypes = [[NSArray alloc] initWithObjects:@"text", @"search", nil];
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)item {
+	if ([item action] == @selector(attemptAutodiscovery:)) {
+		WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+		DOMDocument *currentPage = [webView mainFrameDocument];
+		DOMNode *activeNode = currentPage.activeElement;
+		NSString *nodeName = activeNode.localName;
 
+		DOMHTMLFormElement *form = nil;
+		if ([nodeName isEqual:@"input"]) {
+			NSString *type = ((DOMHTMLInputElement *)activeNode).type;
+			if ([[NSArray arrayWithObjects:@"text", @"search", nil] containsObject:type]) {
+				form = ((DOMHTMLInputElement *)activeNode).form;
+			}
+			
+		} else if ([nodeName isEqual:@"textarea"]) {
+			form = ((DOMHTMLTextAreaElement *)activeNode).form;
+		}
+
+		return form != nil;
+	} else {
+		return NO;
+	}
+}
+
+- (void)attemptAutodiscovery:(id)sender {
 	NSString *autodiscoveryString = @"---Keystone---"; // TODO: put somewhere else
 	
 	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
@@ -192,29 +217,17 @@ enum {
 	
 	DOMHTMLFormElement *form = nil;
 	if ([nodeName isEqual:@"input"]) {
-		NSString *type = ((DOMHTMLInputElement *)activeNode).type;
-		if ([textTypes containsObject:type]) {
-			[activeNode setValue:autodiscoveryString];
-			form = ((DOMHTMLInputElement *)activeNode).form;
-		}
+		// text input already validated
+		[activeNode setValue:autodiscoveryString];
+		form = ((DOMHTMLInputElement *)activeNode).form;
 		
 	} else if ([nodeName isEqual:@"textarea"]) {
 		[activeNode setValue:autodiscoveryString];
 		form = ((DOMHTMLTextAreaElement *)activeNode).form;
 	}
 	
-	NSString *result = nil;
-	if (!form) {
-		// TODO: better error message
-		NSBeep();
-		
-	} else {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
-		[form submit]; // TODO: avoid polluting history
-	}
-	
-	[textTypes release];
-	return result;
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
+	[form submit]; // TODO: avoid polluting history
 }
 
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note {
@@ -222,8 +235,34 @@ enum {
 	WebView *webView = [note object];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
 
-	// TODO: prompt user for correctness
-	NSLog(@"%@", [webView mainFrameURL]);
+	NSString *completionURLString = [webView mainFrameURL];
+	completionURLString = [completionURLString stringByReplacingOccurrencesOfString:@"---Keystone---" withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
+
+	// TODO: complain if we couldn't make a search URL
+
+	ComBelkadanKeystone_AddCompletionController *confirmController =
+		[[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
+
+	[pendingConfirmations addObject:confirmController];
+	[confirmController release];
+
+	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
+		[webView setSheetRequest:confirmController];
+	} else {
+		[confirmController displaySheetInWindow:[webView window]];
+	}
+}
+
+- (void)newCompletionSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode controller:(ComBelkadanKeystone_AddCompletionController *)controller {
+	if (returnCode == NSOKButton) {
+		[self addCompletionItem:controller.newCompletion];
+	}
+	[pendingConfirmations removeObject:controller];
+}
+
+- (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item {
+	[sortedCompletionPossibilities addObject:item];
+	[completionTable reloadData];
 }
 
 #pragma mark -
@@ -310,9 +349,8 @@ enum {
 	if ([sender selectedSegment] == kAddButtonPosition) {
 		ComBelkadanKeystone_QueryCompletionItem *item = [[ComBelkadanKeystone_QueryCompletionItem alloc]
 			initWithName:@"New Shortcut" keyword:@"(s)" shortcutURL:@""];
-		[sortedCompletionPossibilities addObject:item];
-		[item autorelease];
-		[completionTable reloadData];
+		[self addCompletionItem:item];
+		[item release];
 		
 		NSInteger index = [sortedCompletionPossibilities indexOfObject:item];
 		[completionTable selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
