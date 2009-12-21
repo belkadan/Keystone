@@ -18,14 +18,11 @@ static BOOL queryWantsCompletion (NSString *query) {
 }
 
 	
-@interface NSObject (ComBelkadanKeystone_StopWarnings)
-- (IBAction)goToToolbarLocation:(NSTextField *)sender;
-@end
-
 @interface ComBelkadanKeystone_URLCompletionController (ComBelkadanKeystone_SafariURLCompletionControllerMethods)
 - (NSString *)queryString;
 
 - (NSTextField *)_sourceField;
+- (NSView *)deepestViewContainingSourceField;
 - (NSString *)sourceFieldString;
 - (void)setSourceFieldString:(NSString *)newString;
 - (void)replaceSourceFieldCharactersInRange:(NSRange)range withString:(NSString *)replacement selectingFromIndex:(NSInteger)fromIndex;
@@ -38,6 +35,8 @@ static BOOL queryWantsCompletion (NSString *query) {
 
 - (BOOL)startsWithFirstItemSelected;
 - (BOOL)completionListActsLikeMenu;
+
+- (BOOL)ComBelkadanKeystone_isEditing;
 @end
 
 
@@ -45,13 +44,6 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 @implementation ComBelkadanKeystone_URLCompletionController
 + (void)initialize {
-	// Safari 4.0.3 changes the way things work; we need to mess with this class as well
-#if !__LP64__
-	if (NSClassFromString(@"CompletionControllerObjCAdapter")) {
-		(void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class];
-	}
-#endif
-
 	Class completionControllerClass = NSClassFromString(@"URLCompletionController");
 	if (completionControllerClass == Nil) completionControllerClass = NSClassFromString(@"OldURLCompletionController");
 	
@@ -59,9 +51,9 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
 		
 		Class thisClass = [self class];
-		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_goToToolbarLocation:);
 		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
 		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_firstItemForQuery:);
+		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_isEditing);
 		
 		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSeparator:);
 		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSelectable:);
@@ -95,6 +87,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 	*indexRef = NSNotFound;
 
 	NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
+	BOOL hasRegularResults = [results count] > 0;
 
 	NSString *query = [self queryString];
 	
@@ -133,7 +126,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 	}
 
 	// TODO: prefixes of keys on enter
-	if ((*indexRef != NSNotFound && [query isEqual:[self sourceFieldString]]) || queryWantsCompletion(query)) {
+	if (hasRegularResults || [self ComBelkadanKeystone_isEditing] || queryWantsCompletion(query)) {
 		return [results autorelease];
 	} else {
 		[results release];
@@ -275,12 +268,27 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 			if (item) [self setSourceFieldString:[item urlStringForQueryString:query]];
 			[query release];
 		}
-
 		
 		return result;
 	}
 	
 	return [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
+}
+
+/*!
+ * Convenience method to tell if the source field is currently being edited.
+ */
+- (BOOL)ComBelkadanKeystone_isEditing {
+	NSTextField *view = (NSTextField *)[self deepestViewContainingSourceField];
+	if (![view respondsToSelector:@selector(currentEditor)]) {
+		if ([self respondsToSelector:@selector(_sourceField)]) {
+			view = [self _sourceField];
+		} else {
+			view = nil;
+		}
+	}
+
+	return [view currentEditor] != nil;
 }
 
 /*!

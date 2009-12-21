@@ -1,4 +1,3 @@
-#if !__LP64__
 #import "CompletionAdapterAdditions.h"
 
 #import "CompletionControllers.h"
@@ -33,4 +32,3 @@
 	}
 }
 @end
-#endif
