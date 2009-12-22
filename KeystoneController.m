@@ -3,6 +3,8 @@
 #import "CompletionAdapterAdditions.h"
 #import "AddCompletionController.h"
 
+#import "BookmarkSources.h"
+
 #import <WebKit/WebKit.h>
 #import <libkern/OSAtomic.h>
 
@@ -247,6 +249,9 @@ enum {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
 
 	NSString *completionURLString = [webView mainFrameURL];
+	WebHistory *history = [[GlobalHistory sharedGlobalHistory] webHistory];
+	[history removeItems:[NSArray arrayWithObject:[history itemForURL:[NSURL URLWithString:completionURLString]]]];
+
 	completionURLString = [completionURLString stringByReplacingOccurrencesOfString:@"---Keystone---" withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
 
 	// TODO: complain if we couldn't make a search URL

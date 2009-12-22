@@ -54,6 +54,7 @@
 		8C3A33AA0F7EE21900C37703 /* KeystoneTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeystoneTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C3A33AB0F7EE21900C37703 /* KeystoneTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KeystoneTests-Info.plist"; sourceTree = "<group>"; };
 		8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortedArrayTests.m; sourceTree = "<group>"; };
+		8C6C8B4310E0B82E0058B36E /* BookmarkSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkSources.h; sourceTree = "<group>"; };
 		8C6F066F0F981C1900216A72 /* Keystone Names.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keystone Names.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C6F06700F981C1900216A72 /* Info-Names.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Names.plist"; sourceTree = "<group>"; };
 		8C6F06860F981D1D00216A72 /* KeystoneNamesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeystoneNamesController.m; sourceTree = "<group>"; };
@@ -236,6 +237,7 @@
 				8CF220C010E02A97009074CD /* AddCompletionController.h */,
 				8CF220C110E02A97009074CD /* AddCompletionController.m */,
 				8C32884010E0930300C2D25C /* SheetRequest.h */,
+				8C6C8B4310E0B82E0058B36E /* BookmarkSources.h */,
 			);
 			name = "Keystone Queries";
 			sourceTree = "<group>";
