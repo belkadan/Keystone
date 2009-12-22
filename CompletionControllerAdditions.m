@@ -36,7 +36,19 @@ static BOOL queryWantsCompletion (NSString *query) {
 - (BOOL)startsWithFirstItemSelected;
 - (BOOL)completionListActsLikeMenu;
 
+- (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef;
+- (ComBelkadanKeystone_FakeCompletionItem *)ComBelkadanKeystone_firstItemForQuery:(NSString *)query;
+
+- (BOOL)ComBelkadanKeystone_doSourceFieldCommandBySelector:(SEL)command;
 - (BOOL)ComBelkadanKeystone_isEditing;
+
+- (void)ComBelkadanKeystone_reflectSelectedListItem;
+- (BOOL)ComBelkadanKeystone_activateSelectedListItem;
+
+- (BOOL)ComBelkadanKeystone_listItemIsChecked:(ComBelkadanKeystone_FakeCompletionItem *)item;
+- (BOOL)ComBelkadanKeystone_listItemIsSeparator:(ComBelkadanKeystone_FakeCompletionItem *)item;
+- (BOOL)ComBelkadanKeystone_listItemIsSelectable:(ComBelkadanKeystone_FakeCompletionItem *)item;
+- (NSAttributedString *)ComBelkadanKeystone_displayedStringForListItem:(id)item column:(NSUInteger)col row:(NSUInteger)row;
 @end
 
 

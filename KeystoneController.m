@@ -25,6 +25,13 @@ enum {
 - (void)loadDefaultCompletions;
 
 - (void)setUpMenuItems;
+
+- (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
+- (IBAction)attemptAutodiscovery:(id)sender;
+@end
+
+@interface NSObject (ComBelkadanKeystone_StopWarnings)
+- (void)addBookmark:(id)bookmark;
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
@@ -33,6 +40,10 @@ enum {
 
 @interface DOMDocument (ComBelkadanKeystone_IKnowYoureInThere)
 @property(readonly) DOMNode *activeElement;
+@end
+
+@interface WebView (ComBelkadanKeystone_ActuallyInSafariSubclass)
+- (void)setSheetRequest:(id)sheetRequest;
 @end
 
 @implementation ComBelkadanKeystone_Controller
@@ -207,7 +218,7 @@ enum {
 	}
 }
 
-- (void)attemptAutodiscovery:(id)sender {
+- (IBAction)attemptAutodiscovery:(id)sender {
 	NSString *autodiscoveryString = @"---Keystone---"; // TODO: put somewhere else
 	
 	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
@@ -383,7 +394,7 @@ enum {
 		[item setValue:object forKey:columnID];
 		NSUInteger newIndex = [sortedCompletionPossibilities objectDidChangeAtIndex:row];
 		
-		if (newIndex != row) {
+		if (row != (NSInteger)newIndex) {
 			NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:newIndex];
 			[tableView selectRowIndexes:indexSet byExtendingSelection:NO];
 			[indexSet release];

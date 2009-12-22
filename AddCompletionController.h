@@ -1,7 +1,8 @@
 #import <Cocoa/Cocoa.h>
 #import "QueryCompletionItem.h"
+#import "SheetRequest.h"
 
-@interface ComBelkadanKeystone_AddCompletionController : NSWindowController {
+@interface ComBelkadanKeystone_AddCompletionController : NSWindowController <ComBelkadanKeystone_SheetRequest> {
 	ComBelkadanKeystone_QueryCompletionItem *newCompletion;
 }
 - (id)initWithName:(NSString *)name URL:(NSString *)completionURL;

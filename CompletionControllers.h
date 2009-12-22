@@ -75,6 +75,7 @@ typedef struct { void *p; } PtrStructPadding;
 - (void)completionListDidChange:(struct CompletionListGenerator *)generator;
 - (float)completionListInsetFromSourceField;
 
+- (BOOL)listItemIsChecked:(id)item;
 - (BOOL)listItemIsSelectable:(id)item;
 - (BOOL)listItemIsSeparator:(id)item;
 

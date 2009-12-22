@@ -18,4 +18,6 @@
 - (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item;
 
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne;
+
+- (void)newCompletionSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode controller:(id)controller;
 @end
