@@ -1,6 +1,10 @@
 /* Autodiscovery menu item title */
 "Add Keystone Completion..." = "Add Keystone Search Completion…";
 
+/* Error message for completion autodiscovery failures */
+"Could not create a completion for this search." = "Could not create a completion for this search.";
+"Keystone could not figure out what part of the URL represents the query." = "Keystone could not figure out what part of the URL represents the query. This website may not support URL-based searches.";
+
 /* The header title in the completions list */
 "Keystone Shortcuts" = "Keystone Shortcuts";
 

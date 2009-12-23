@@ -31,7 +31,9 @@
 #pragma mark -
 
 - (id)icon {
-	return [NSImage imageNamed:NSImageNameMobileMe]; // FIXME: Keystone icon?
+	NSImage *icon = [[NSImage imageNamed:@"NSApplicationIcon"] copy]; // FIXME: why doesn't Safari like my icon?
+	[icon setSize:NSMakeSize(16, 16)];
+	return [icon autorelease];
 }
 
 - (id)label {

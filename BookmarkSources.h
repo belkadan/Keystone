@@ -37,7 +37,11 @@ typedef struct { void *p; } PtrStructPadding;
 - (id)bookmarkSourceMenuTitle;
 @end
 
+#ifdef MAC_OS_X_VERSION_10_6
 @interface BookmarkSource : NSObject <BookmarkSource, NSMenuDelegate>
+#else
+@interface BookmarkSource : NSObject <BookmarkSource>
+#endif
 {
 	NSMutableSet *_updatedBookmarkSourceMenus;
 	NSMutableDictionary *_tabLocationsForBookmarkSourceMenus;

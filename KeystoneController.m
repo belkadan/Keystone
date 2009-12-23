@@ -12,6 +12,8 @@ static NSString * const kKeystonePreferencesDomain = @"com.belkadan.Keystone";
 static NSString * const kPreferencesCompletionKey = @"SortedCompletions";
 static NSString * const kDefaultPreferencesFile = @"defaults"; // extension must be .plist
 
+static NSString * const kAutodiscoverySearch = @"---Keystone---";
+
 static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
@@ -30,6 +32,7 @@ enum {
 
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
 - (IBAction)attemptAutodiscovery:(id)sender;
+- (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
 
 @interface NSObject (ComBelkadanKeystone_StopWarnings)
@@ -216,31 +219,28 @@ enum {
 
 		return form != nil;
 	} else {
-		return NO;
+		return YES;
 	}
 }
 
 - (IBAction)attemptAutodiscovery:(id)sender {
-	NSString *autodiscoveryString = @"---Keystone---"; // TODO: put somewhere else
-	
 	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
 	DOMDocument *currentPage = [webView mainFrameDocument];
 	DOMNode *activeNode = currentPage.activeElement;
 	NSString *nodeName = activeNode.localName;
 	
 	DOMHTMLFormElement *form = nil;
-	if ([nodeName isEqual:@"input"]) {
-		// text input already validated
-		[activeNode setValue:autodiscoveryString];
-		form = ((DOMHTMLInputElement *)activeNode).form;
-		
-	} else if ([nodeName isEqual:@"textarea"]) {
-		[activeNode setValue:autodiscoveryString];
+	if ([nodeName isEqual:@"input"] || [nodeName isEqual:@"textarea"]) {
+		[activeNode setValue:kAutodiscoverySearch];
 		form = ((DOMHTMLTextAreaElement *)activeNode).form;
 	}
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
-	[form submit]; // TODO: avoid polluting history
+	if (form) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
+		[form submit];
+	} else {
+		NSBeep(); // should not happen (menu item should be disabled)
+	}
 }
 
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note {
@@ -248,25 +248,43 @@ enum {
 	WebView *webView = [note object];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
 
+	id <ComBelkadanKeystone_SheetRequest> sheetRequest;
 	NSString *completionURLString = [webView mainFrameURL];
-	WebHistory *history = [[GlobalHistory sharedGlobalHistory] webHistory];
-	[history removeItems:[NSArray arrayWithObject:[history itemForURL:[NSURL URLWithString:completionURLString]]]];
+	NSRange queryRange = [completionURLString rangeOfString:@"---Keystone---" options:NSCaseInsensitiveSearch];
+	if (queryRange.location == NSNotFound) {
+		ComBelkadanKeystone_AlertSheetRequest *request = [[ComBelkadanKeystone_AlertSheetRequest alloc] initWithModalDelegate:self didCloseSelector:@selector(alertSheetRequestDidEnd:returnCode:unused:) contextInfo:NULL];
+		
+		NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
+		
+		[request.alert setMessageText:NSLocalizedStringFromTableInBundle(@"Could not create a completion for this search.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
+		[request.alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Keystone could not figure out what part of the URL represents the query.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
 
-	completionURLString = [completionURLString stringByReplacingOccurrencesOfString:@"---Keystone---" withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
+		sheetRequest = request;
 
-	// TODO: complain if we couldn't make a search URL
-
-	ComBelkadanKeystone_AddCompletionController *confirmController =
-		[[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
-
-	[pendingConfirmations addObject:confirmController];
-	[confirmController release];
-
-	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
-		[webView setSheetRequest:confirmController];
 	} else {
-		[confirmController displaySheetInWindow:[webView window]];
+		WebHistory *history = [[NSClassFromString(@"GlobalHistory") sharedGlobalHistory] webHistory];
+		WebHistoryItem *historyItem = [history itemForURL:[NSURL URLWithString:completionURLString]];
+		if (historyItem) {
+			[history removeItems:[NSArray arrayWithObject:historyItem]];
+		}
+
+		completionURLString = [completionURLString stringByReplacingOccurrencesOfString:@"---Keystone---" withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
+
+		sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
 	}
+			
+	[pendingConfirmations addObject:sheetRequest];
+	[sheetRequest release];
+	
+	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
+		[webView setSheetRequest:sheetRequest];
+	} else {
+		[sheetRequest displaySheetInWindow:[webView window]];
+	}
+}
+
+- (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused {
+	[pendingConfirmations removeObject:sheetRequest];
 }
 
 - (void)newCompletionSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode controller:(ComBelkadanKeystone_AddCompletionController *)controller {
