@@ -300,7 +300,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	}
 
-	return [view currentEditor] != nil;
+	return [view currentEditor] != nil && [[self sourceFieldString] isEqual:[self queryString]];
 }
 
 /*!
