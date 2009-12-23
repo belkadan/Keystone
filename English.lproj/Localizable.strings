@@ -1,5 +1,6 @@
 /* Autodiscovery menu item title */
 "Add Keystone Completion..." = "Add Keystone Search Completion…";
+"Add Manual Keystone Shortcut..." = "Add Manual Keystone Shortcut…";
 
 /* Error message for completion autodiscovery failures */
 "Could not create a completion for this search." = "Could not create a completion for this search.";

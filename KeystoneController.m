@@ -32,6 +32,7 @@ enum {
 
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
 - (IBAction)attemptAutodiscovery:(id)sender;
+- (IBAction)newCompletionForCurrentPage:(id)sender;
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
 
@@ -122,15 +123,24 @@ enum {
 		NSString *autodiscoverTitle = NSLocalizedStringFromTableInBundle(@"Add Keystone Completion...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
 		NSMenuItem *autodiscoverItem = [[NSMenuItem alloc] initWithTitle:autodiscoverTitle action:@selector(attemptAutodiscovery:) keyEquivalent:@""];
 		[autodiscoverItem setTarget:self];
+		
+		NSString *manualAddTitle = NSLocalizedStringFromTableInBundle(@"Add Manual Keystone Shortcut...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
+		NSMenuItem *manualAddItem = [[NSMenuItem alloc] initWithTitle:manualAddTitle action:@selector(newCompletionForCurrentPage:) keyEquivalent:@""];
+		[manualAddItem setTarget:self];
+		[manualAddItem setKeyEquivalentModifierMask:NSAlternateKeyMask];
+		[manualAddItem setAlternate:YES];
 
 		NSInteger separatorIndex = [bookmarksMenu indexOfItem:[NSMenuItem separatorItem]];
 		if (separatorIndex == -1) {
 			[bookmarksMenu addItem:autodiscoverItem];
+			[bookmarksMenu addItem:manualAddItem];
 		} else {
 			[bookmarksMenu insertItem:autodiscoverItem atIndex:separatorIndex];
+			[bookmarksMenu insertItem:manualAddItem atIndex:separatorIndex+1];
 		}
 
 		[autodiscoverItem release];
+		[manualAddItem release];
 	}
 }
 
@@ -218,6 +228,9 @@ enum {
 		}
 
 		return form != nil;
+	} else if ([item action] == @selector(newCompletionForCurrentPage:)) {
+		WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+		return ![[webView mainFrameURL] isEqual:@""];
 	} else {
 		return YES;
 	}
@@ -292,6 +305,21 @@ enum {
 		[self addCompletionItem:controller.newCompletion];
 	}
 	[pendingConfirmations removeObject:controller];
+}
+
+- (IBAction)newCompletionForCurrentPage:(id)sender {
+	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+	NSString *completionURLString = [webView mainFrameURL];
+
+	id <ComBelkadanKeystone_SheetRequest> sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
+	[pendingConfirmations addObject:sheetRequest];
+	[sheetRequest release];
+	
+	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
+		[webView setSheetRequest:sheetRequest];
+	} else {
+		[sheetRequest displaySheetInWindow:[webView window]];
+	}
 }
 
 - (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item {
