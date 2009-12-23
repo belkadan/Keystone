@@ -81,8 +81,9 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 		[params deleteCharactersInRange:NSMakeRange(whitespaceSplit, [params length] - whitespaceSplit)];
 	}
 	
-	// percent-escape percents and spaces
+	// percent-escape percents and other special characters
 	[params replaceOccurrencesOfString:@"%" withString:@"%25" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
+	[params replaceOccurrencesOfString:@"\"" withString:@"%22" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
 	[params replaceOccurrencesOfString:@"+" withString:@"%2B" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
 	[params replaceOccurrencesOfString:@" " withString:@"%20" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
 
