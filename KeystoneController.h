@@ -4,6 +4,10 @@
 #import "CompletionHandler.h"
 #import "NSPreferences.h"
 
+/*!
+ * The main controller for Keystone query completions. In addition to being a
+ * completion handler, also manages the menu items and preference panes.
+ */
 @interface ComBelkadanKeystone_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
 	ComBelkadanUtils_SortedArray *sortedCompletionPossibilities;
 	
