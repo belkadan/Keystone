@@ -35,7 +35,9 @@ static BOOL queryWantsCompletion (NSString *query) {
 
 - (BOOL)startsWithFirstItemSelected;
 - (BOOL)completionListActsLikeMenu;
+@end
 
+@interface ComBelkadanKeystone_URLCompletionController ()
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef;
 - (ComBelkadanKeystone_FakeCompletionItem *)ComBelkadanKeystone_firstItemForQuery:(NSString *)query;
 
@@ -137,7 +139,6 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	}
 
-	// TODO: prefixes of keys on enter
 	if (hasRegularResults || [self ComBelkadanKeystone_isEditing] || queryWantsCompletion(query)) {
 		return [results autorelease];
 	} else {
