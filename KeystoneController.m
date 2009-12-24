@@ -195,7 +195,7 @@ enum {
 
 - (void)save {
 	if ([completionTable editedRow] != -1) {
-		[self performSelector:@selector(save) withObject:nil afterDelay:200];
+		[self performSelector:@selector(save) withObject:nil afterDelay:5];
 	} else {
 		NSArray *completionsInPlistForm = [sortedCompletionPossibilities valueForKey:@"dictionaryRepresentation"];
 		CFPreferencesSetAppValue((CFStringRef) kPreferencesCompletionKey, (CFArrayRef)completionsInPlistForm, (CFStringRef) kKeystonePreferencesDomain);
@@ -259,7 +259,7 @@ enum {
 
 	id <ComBelkadanKeystone_SheetRequest> sheetRequest;
 	NSString *completionURLString = [webView mainFrameURL];
-	NSRange queryRange = [completionURLString rangeOfString:@"---Keystone---" options:NSCaseInsensitiveSearch];
+	NSRange queryRange = [completionURLString rangeOfString:kAutodiscoverySearch options:NSCaseInsensitiveSearch];
 	if (queryRange.location == NSNotFound) {
 		ComBelkadanKeystone_AlertSheetRequest *request = [[ComBelkadanKeystone_AlertSheetRequest alloc] initWithModalDelegate:self didCloseSelector:@selector(alertSheetRequestDidEnd:returnCode:unused:) contextInfo:NULL];
 		
@@ -278,7 +278,7 @@ enum {
 			[history removeItems:[NSArray arrayWithObject:historyItem]];
 		}
 
-		completionURLString = [completionURLString stringByReplacingOccurrencesOfString:@"---Keystone---" withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
+		completionURLString = [completionURLString stringByReplacingOccurrencesOfString:kAutodiscoverySearch withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
 
 		sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
 	}
