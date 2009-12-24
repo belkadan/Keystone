@@ -16,7 +16,10 @@
  */
 - (id)initWithName:(NSString *)name URL:(NSString *)completionURL;
 
-/*! Creates a new controller for the given site name, suggested keyword, and URL. */
+/*!
+ * Creates a new controller for the given site name, suggested keyword, and URL.
+ * This is the designated initializer.
+ */
 - (id)initWithName:(NSString *)name keyword:(NSString *)keyword URL:(NSString *)completionURL;
 
 /*! The completion being edited. */
