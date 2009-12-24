@@ -12,5 +12,8 @@
 /* The preferences pane title */
 "Keystone" = "Keystone";
 
+/* Title for completion autodiscovery failures */
+"Failed to create Keystone completion." = "Failed to create Keystone completion.";
+
 /* A default action's name */
 "(Default)" = "(Default)";

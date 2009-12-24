@@ -269,6 +269,7 @@ enum {
 		
 		NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
 		
+		request.label = NSLocalizedStringFromTableInBundle(@"Failed to create Keystone completion.", @"Localizable", keystoneBundle, @"Title for completion autodiscovery failures")
 		[request.alert setMessageText:NSLocalizedStringFromTableInBundle(@"Could not create a completion for this search.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
 		[request.alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Keystone could not figure out what part of the URL represents the query.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
 
