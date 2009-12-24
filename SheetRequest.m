@@ -45,7 +45,9 @@ typedef void (*DidCloseIMP)(id, SEL, ComBelkadanKeystone_AlertSheetRequest *, NS
 
 - (void)alertDidEnd:(NSAlert *)givenAlert returnCode:(NSInteger)returnCode unused:(void *)unused {
 	DidCloseIMP didCloseMethod = (DidCloseIMP)[delegate methodForSelector:didCloseSelector];
-	didCloseMethod(delegate, didCloseSelector, self, returnCode, contextInfo);
+	if (didCloseMethod) {
+		didCloseMethod(delegate, didCloseSelector, self, returnCode, contextInfo);
+	}
 }
 
 - (NSWindow *)window {
