@@ -1,26 +1,5 @@
 #import <Cocoa/Cocoa.h>
-
-/*!
- * "Sheet requests" are how Safari handles sheets attached to tabs, rather than
- * windows. These method is actually implemented in BrowserWebView, a Safari-specific
- * subclass of WebView.
- */
-
-@interface WebView (ComBelkadanKeystone_ActuallyInSafariSubclass)
-/*!
- * Returns the current sheet request. Native Safari sheet requests are subclasses
- * of a SheetRequest /class/, which basically matches the protocol.
- */
-- (id <ComBelkadanKeystone_SheetRequest>)sheetRequest;
-
-/*!
- * Sets the current sheet request. If the web view's tab is active, the sheet
- * will be immediately displayed. Otherwise, the tab will request the user's
- * attention and display the sheet when it becomes active.
- */
-- (void)setSheetRequest:(id <ComBelkadanKeystone_SheetRequest>)sheetRequest;
-@end
-
+#import <WebKit/WebKit.h>
 
 /*!
  * Manages a sheet attached to a WebView, rather than a window. Safari handles
@@ -48,6 +27,28 @@
  * display the sheet as a modal alert is unknown.
  */
 - (void)displaySheet;
+@end
+
+
+/*!
+ * "Sheet requests" are how Safari handles sheets attached to tabs, rather than
+ * windows. These method is actually implemented in BrowserWebView, a Safari-specific
+ * subclass of WebView.
+ */
+
+@interface WebView (ComBelkadanKeystone_ActuallyInSafariSubclass)
+/*!
+ * Returns the current sheet request. Native Safari sheet requests are subclasses
+ * of a SheetRequest /class/, which basically matches the protocol.
+ */
+- (id <ComBelkadanKeystone_SheetRequest>)sheetRequest;
+
+/*!
+ * Sets the current sheet request. If the web view's tab is active, the sheet
+ * will be immediately displayed. Otherwise, the tab will request the user's
+ * attention and display the sheet when it becomes active.
+ */
+- (void)setSheetRequest:(id <ComBelkadanKeystone_SheetRequest>)sheetRequest;
 @end
 
 
