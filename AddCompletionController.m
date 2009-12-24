@@ -4,12 +4,35 @@
 @implementation ComBelkadanKeystone_AddCompletionController
 
 - (id)initWithName:(NSString *)name URL:(NSString *)completionURL {
-	NSRange spaceRange = [name rangeOfString:@" "];
 	NSString *keyword;
-	if (spaceRange.location != NSNotFound) {
-		keyword = [name substringToIndex:spaceRange.location];
+
+	NSString *host = [[NSURL URLWithString:[completionURL stringByReplacingOccurrencesOfString:ComBelkadanKeystone_kSubstitutionMarker withString:@""]] host];
+	if (host) {
+		// use domain name
+		NSRange searchRange = NSMakeRange(0, [host length]-1); // omit trailing . for absolute addresses
+		NSRange finalDotRange = [host rangeOfString:@"." options:NSBackwardsSearch|NSLiteralSearch range:searchRange];
+		if (finalDotRange.location != NSNotFound) {
+			searchRange.length = finalDotRange.location;
+			NSRange penultimateDotRange = [host rangeOfString:@"." options:NSBackwardsSearch|NSLiteralSearch range:searchRange];
+			if (penultimateDotRange.location != NSNotFound) {
+				keyword = [host substringWithRange:NSMakeRange(penultimateDotRange.location+1, finalDotRange.location-penultimateDotRange.location-1)];
+			} else {
+				keyword = [host substringToIndex:finalDotRange.location];
+			}
+		} else if ([host characterAtIndex:searchRange.length] == '.') {
+			keyword = [host substringToIndex:searchRange.length];
+		} else {
+			keyword = host;
+		}
+
 	} else {
-		keyword = name;
+		// use page title
+		NSRange spaceRange = [name rangeOfString:@" "];
+		if (spaceRange.location != NSNotFound) {
+			keyword = [name substringToIndex:spaceRange.location];
+		} else {
+			keyword = name;
+		}
 	}
 	
 	return [self initWithName:name keyword:[keyword lowercaseString] URL:completionURL];

@@ -10,9 +10,8 @@
 	ComBelkadanKeystone_QueryCompletionItem *newCompletion;
 }
 /*! 
- * Creates a new controller for the given site name and URL, using the first word
- * of the site name as the keyword. (The actual part of the name used to generate
- * the keyword may change.)
+ * Creates a new controller for the given site name and URL, using a reasonable
+ * keyword extrapolated from the given arguments.
  */
 - (id)initWithName:(NSString *)name URL:(NSString *)completionURL;
 
