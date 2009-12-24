@@ -48,10 +48,6 @@ enum {
 @property(readonly) DOMNode *activeElement;
 @end
 
-@interface WebView (ComBelkadanKeystone_ActuallyInSafariSubclass)
-- (void)setSheetRequest:(id)sheetRequest;
-@end
-
 @implementation ComBelkadanKeystone_Controller
 + (void)load
 {
@@ -101,7 +97,7 @@ enum {
 }
 
 - (void)setUpMenuItems {
-  NSMenu *mainMenu = [NSApp mainMenu];
+	NSMenu *mainMenu = [NSApp mainMenu];
 	NSMenu *bookmarksMenu = nil;
 
 	// first try by name
