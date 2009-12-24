@@ -13,7 +13,7 @@
 @property(readonly) NSImage *icon;
 
 /*! The label to be shown on a tab while this request is pending. */
-@property(readonly) NSString *label;
+@property(readonly,copy) NSString *label;
 
 /*! The sheet to be displayed. */
 @property(readonly) NSWindow *window;

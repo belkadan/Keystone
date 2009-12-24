@@ -60,5 +60,6 @@
 }
 
 @synthesize newCompletion;
+@dynamic window; // just to stop warnings! we have one inherited from NSWindowController
 
 @end
