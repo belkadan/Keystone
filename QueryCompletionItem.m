@@ -3,6 +3,20 @@
 NSString * const ComBelkadanKeystone_kDefaultActionKeyword = @"<default>";
 NSString * const ComBelkadanKeystone_kSubstitutionMarker = @"%%";
 
+struct QueryReplacement {
+	NSString *original;
+	NSString *replacement;
+};
+// special characters which need to be replaced in URLs
+struct QueryReplacement replacements[] = {
+	{ @"%", @"%25" },
+	{ @"+", @"%2B" },
+	{ @"&", @"%26" },
+	{ @" ", @"%20" },
+	{ @"\"", @"%22" },
+	{ nil, nil }
+};
+
 // The "everything-but-whitespace" set
 static NSCharacterSet *nonWhitespaceSet = nil;
 
@@ -76,16 +90,17 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 
 	// trim whitespace from the right
 	NSRange lastCharRange = [params rangeOfCharacterFromSet:nonWhitespaceSet options:NSBackwardsSearch];
-	if (lastCharRange.location != NSNotFound && NSMaxRange(lastCharRange) < [params length] - 1) {
-		whitespaceSplit = NSMaxRange(lastCharRange) + 1;
+	if (lastCharRange.location != NSNotFound && NSMaxRange(lastCharRange) < [params length]) {
+		whitespaceSplit = NSMaxRange(lastCharRange);
 		[params deleteCharactersInRange:NSMakeRange(whitespaceSplit, [params length] - whitespaceSplit)];
 	}
 	
 	// percent-escape percents and other special characters
-	[params replaceOccurrencesOfString:@"%" withString:@"%25" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
-	[params replaceOccurrencesOfString:@"\"" withString:@"%22" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
-	[params replaceOccurrencesOfString:@"+" withString:@"%2B" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
-	[params replaceOccurrencesOfString:@" " withString:@"%20" options:NSLiteralSearch range:NSMakeRange(0, [params length])];
+	struct QueryReplacement *nextReplacement = &replacements[0];
+	while (nextReplacement->original != nil) {
+		[params replaceOccurrencesOfString:nextReplacement->original withString:nextReplacement->replacement options:NSLiteralSearch range:NSMakeRange(0, [params length])];
+		++nextReplacement;
+	}
 
 	// Substitute into the shortcut URL
 	NSString *result = [shortcutURL stringByReplacingOccurrencesOfString:ComBelkadanKeystone_kSubstitutionMarker withString:params];
