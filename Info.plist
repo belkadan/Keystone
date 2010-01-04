@@ -6,18 +6,22 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>keystone</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.belkadan.${PRODUCT_NAME:identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>NSPrincipalClass</key>
+	<string>ComBelkadanKeystone_Controller</string>
 	<key>SIMBLTargetApplications</key>
 	<array>
 		<dict>
@@ -37,9 +41,5 @@
 			<string>5528</string>
 		</dict>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>NSPrincipalClass</key>
-	<string>ComBelkadanKeystone_Controller</string>
 </dict>
 </plist>

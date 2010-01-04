@@ -57,7 +57,7 @@ enum {
 	if (!prefIcon) {
 		prefIcon = [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
 		if (!prefIcon) {
-			prefIcon = [[NSImage alloc] initByReferencingFile:[[NSBundle bundleForClass:[self class]] pathForImageResource:@"Preferences"]];
+			prefIcon = [[NSImage alloc] initByReferencingFile:[[NSBundle bundleForClass:[self class]] pathForImageResource:@"keystone"]];
 			[prefIcon setName:@"ComBelkadanKeystone_Preferences"];
 		}
 	}
