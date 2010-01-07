@@ -101,50 +101,47 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 	*indexRef = NSNotFound;
 
 	NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
-	BOOL hasRegularResults = [results count] > 0;
-
-	NSString *query = [self queryString];
 	
-	for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
-		NSArray *customCompletions = [nextHandler completionsForQueryString:query];
+	// only complete if (a) Apple thinks we should, or (b) there's an edit going on
+	if ([results count] > 0 || [self ComBelkadanKeystone_isEditing]) {
+		NSString *query = [self queryString];
 		
-		if ([customCompletions count] > 0) {
-			if ([results count] > 0) {
-				[results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
-				
-			} else if ([self startsWithFirstItemSelected]) {
-				NSUInteger index = [self completionListActsLikeMenu] ? 1 : 0;
-				
-				if (indexRef && *indexRef == NSNotFound) {
-					for (ComBelkadanKeystone_FakeCompletionItem *item in customCompletions) {
-						if ([item canBeFirstSelectedForQueryString:query]) {
-							*indexRef = index;
-							break;
+		for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
+			NSArray *customCompletions = [nextHandler completionsForQueryString:query];
+			
+			if ([customCompletions count] > 0) {
+				if ([results count] > 0) {
+					[results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
+					
+				} else if ([self startsWithFirstItemSelected]) {
+					NSUInteger index = [self completionListActsLikeMenu] ? 1 : 0;
+					
+					if (indexRef && *indexRef == NSNotFound) {
+						for (ComBelkadanKeystone_FakeCompletionItem *item in customCompletions) {
+							if ([item canBeFirstSelectedForQueryString:query]) {
+								*indexRef = index;
+								break;
+							}
+							index += 1;
 						}
-						index += 1;
 					}
 				}
-			}
 
-			if ([self completionListActsLikeMenu]) {
-				NSString *title = [nextHandler headerTitle];
-				if (title) {
-					ComBelkadanKeystone_FakeCompletionItem *headerItem = [[ComBelkadanKeystone_SimpleCompletionItem alloc] initWithName:title URLString:nil];
-					[results addObject:headerItem];
-					[headerItem release];
+				if ([self completionListActsLikeMenu]) {
+					NSString *title = [nextHandler headerTitle];
+					if (title) {
+						ComBelkadanKeystone_FakeCompletionItem *headerItem = [[ComBelkadanKeystone_SimpleCompletionItem alloc] initWithName:title URLString:nil];
+						[results addObject:headerItem];
+						[headerItem release];
+					}
 				}
-			}
 
-			[results addObjectsFromArray:customCompletions];
+				[results addObjectsFromArray:customCompletions];
+			}
 		}
 	}
-
-	if (hasRegularResults || [self ComBelkadanKeystone_isEditing] || queryWantsCompletion(query)) {
-		return [results autorelease];
-	} else {
-		[results release];
-		return nil;
-	}
+	
+	return [results autorelease];
 }
 
 /*! Added: returns the first item available for query completion. */
