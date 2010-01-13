@@ -2,6 +2,7 @@
 #import "CompletionControllerAdditions.h"
 #import "CompletionAdapterAdditions.h"
 #import "AddCompletionController.h"
+#import "BookmarksControllerAdditions.h"
 
 #import "BookmarkSources.h"
 
@@ -28,11 +29,7 @@ enum {
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
 
-- (void)setUpMenuItems;
-
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
-- (IBAction)attemptAutodiscovery:(id)sender;
-- (IBAction)newCompletionForCurrentPage:(id)sender;
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
 
@@ -63,6 +60,8 @@ enum {
 	}
 
 	[[NSClassFromString(@"WBPreferences") sharedPreferences] addPreferenceNamed:NSLocalizedStringFromTableInBundle(@"Keystone", @"Localizable", [NSBundle bundleForClass:[self class]], @"The preferences pane title") owner:[self sharedInstance]];
+
+	(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
 }
 
 - (id)init {
@@ -81,8 +80,6 @@ enum {
 		if (![self loadCompletions]) {
 			[self loadSogudiCompletions];
 		}
-
-		[self setUpMenuItems];
 	}
 	
 	return self;
@@ -94,50 +91,6 @@ enum {
 	[sortedCompletionPossibilities release];
 	[pendingConfirmations release];
 	[super dealloc];
-}
-
-- (void)setUpMenuItems {
-	NSMenu *mainMenu = [NSApp mainMenu];
-	NSMenu *bookmarksMenu = nil;
-
-	// first try by name
-	NSString *bookmarksMenuName = NSLocalizedStringWithDefaultValue(@"Bookmarks (menu)", @"Localizable", [NSBundle mainBundle], @"Bookmarks", @"Safari Windows name for Bookmarks menu");
-	bookmarksMenu = [[mainMenu itemWithTitle:bookmarksMenuName] submenu];
-	
-	if (!bookmarksMenu) {
-		// search for the menu item with the action addBookmark:
-		for (NSMenuItem *topMenuItem in [mainMenu itemArray]) {
-			NSMenu *nextMenu = [topMenuItem submenu];
-			if ([nextMenu indexOfItemWithTarget:nil andAction:@selector(addBookmark:)] != NSNotFound) {
-				bookmarksMenu = nextMenu;
-				break;
-			}
-		}
-	}
-
-	if (bookmarksMenu) {
-		NSString *autodiscoverTitle = NSLocalizedStringFromTableInBundle(@"Add Keystone Completion...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
-		NSMenuItem *autodiscoverItem = [[NSMenuItem alloc] initWithTitle:autodiscoverTitle action:@selector(attemptAutodiscovery:) keyEquivalent:@""];
-		[autodiscoverItem setTarget:self];
-		
-		NSString *manualAddTitle = NSLocalizedStringFromTableInBundle(@"Add Manual Keystone Shortcut...", @"Localizable", [NSBundle bundleForClass:[self class]], @"Autodiscovery menu item title");
-		NSMenuItem *manualAddItem = [[NSMenuItem alloc] initWithTitle:manualAddTitle action:@selector(newCompletionForCurrentPage:) keyEquivalent:@""];
-		[manualAddItem setTarget:self];
-		[manualAddItem setKeyEquivalentModifierMask:NSAlternateKeyMask];
-		[manualAddItem setAlternate:YES];
-
-		NSInteger separatorIndex = [bookmarksMenu indexOfItem:[NSMenuItem separatorItem]];
-		if (separatorIndex == -1) {
-			[bookmarksMenu addItem:autodiscoverItem];
-			[bookmarksMenu addItem:manualAddItem];
-		} else {
-			[bookmarksMenu insertItem:autodiscoverItem atIndex:separatorIndex];
-			[bookmarksMenu insertItem:manualAddItem atIndex:separatorIndex+1];
-		}
-
-		[autodiscoverItem release];
-		[manualAddItem release];
-	}
 }
 
 #pragma mark -

@@ -23,5 +23,7 @@
 
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne;
 
+- (IBAction)attemptAutodiscovery:(id)sender;
+- (IBAction)newCompletionForCurrentPage:(id)sender;
 - (void)newCompletionSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode controller:(id)controller;
 @end

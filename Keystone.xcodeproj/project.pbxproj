@@ -26,6 +26,7 @@
 		8C6F068B0F983A7B00216A72 /* NameItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F068A0F983A7B00216A72 /* NameItem.m */; };
 		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
 		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
+		8C8A922410FE7FFA00DC0D4C /* BookmarksControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */; };
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
@@ -72,6 +73,9 @@
 		8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionAdapterAdditions.m; sourceTree = "<group>"; };
 		8C8945C9104352530051A988 /* SwizzleMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzleMacros.h; sourceTree = "<group>"; };
 		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
+		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
+		8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarksControllerAdditions.m; sourceTree = "<group>"; };
+		8C8A922610FE801900DC0D4C /* BookmarksControllerObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerObjC.h; sourceTree = "<group>"; };
 		8C986F520F80526400383384 /* keystone.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = keystone.icns; sourceTree = "<group>"; };
 		8CB6143F0F8046B800A84155 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8CD11C860FBFAA250063607C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -241,6 +245,9 @@
 				8C32884010E0930300C2D25C /* SheetRequest.h */,
 				8C6C8BBA10E0C8260058B36E /* SheetRequest.m */,
 				8C6C8B4310E0B82E0058B36E /* BookmarkSources.h */,
+				8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */,
+				8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */,
+				8C8A922610FE801900DC0D4C /* BookmarksControllerObjC.h */,
 			);
 			name = "Keystone Queries";
 			sourceTree = "<group>";
@@ -435,6 +442,7 @@
 				8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */,
 				8CF220C210E02A97009074CD /* AddCompletionController.m in Sources */,
 				8C6C8BBB10E0C8260058B36E /* SheetRequest.m in Sources */,
+				8C8A922410FE7FFA00DC0D4C /* BookmarksControllerAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,8 +4,12 @@
 /* Safari 4.0 - 4.0.2 */
 /* in 4.0.3 each class has the name "Old" prepended */
 
-@class CompletionWindow, CompletionListTableView, WebDynamicScrollBarsView;
+#ifndef COM_BELKADAN_KEYSTONE__PTR_STRUCT_PADDING
+#define COM_BELKADAN_KEYSTONE__PTR_STRUCT_PADDING
 typedef struct { void *p; } PtrStructPadding;
+#endif
+
+@class CompletionWindow, CompletionListTableView, WebDynamicScrollBarsView;
 
 @interface CompletionController : NSObject /* <NSTableViewDataSource, NSTableViewDelegate> */
 {

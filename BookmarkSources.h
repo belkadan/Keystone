@@ -1,8 +1,12 @@
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
 
-@class HistoryTextCache;
+#ifndef COM_BELKADAN_KEYSTONE__PTR_STRUCT_PADDING
+#define COM_BELKADAN_KEYSTONE__PTR_STRUCT_PADDING
 typedef struct { void *p; } PtrStructPadding;
+#endif
+
+@class HistoryTextCache;
 
 @protocol BookmarkSource
 - (void)refreshContents;
