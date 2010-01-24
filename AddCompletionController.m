@@ -1,5 +1,6 @@
 #import "AddCompletionController.h"
 #import "KeystoneController.h"
+#import "NSWindow+EndEditingGracefully.h"
 
 @implementation ComBelkadanKeystone_AddCompletionController
 
@@ -76,6 +77,7 @@
 
 - (IBAction)close:(id)sender {
 	NSWindow *window = [self window];
+	[window endEditingGracefully];
 	if ([window isSheet]) {
 		[NSApp endSheet:window returnCode:[sender tag]];
 	}
