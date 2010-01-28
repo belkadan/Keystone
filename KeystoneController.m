@@ -33,10 +33,6 @@ enum {
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
 
-@interface NSObject (ComBelkadanKeystone_StopWarnings)
-- (void)addBookmark:(id)bookmark;
-@end
-
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
 @property(readonly) WebView *currentWebView;
 @end
