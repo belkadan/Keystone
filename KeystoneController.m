@@ -11,6 +11,7 @@
 
 static NSString * const kKeystonePreferencesDomain = @"com.belkadan.Keystone";
 static NSString * const kPreferencesCompletionKey = @"SortedCompletions";
+static NSString * const kPreferencesUntestedAlertSuppressionKey = @"SuppressUntestedAlert";
 static NSString * const kDefaultPreferencesFile = @"defaults"; // extension must be .plist
 
 static NSString * const kAutodiscoverySearch = @"---Keystone---";
@@ -19,12 +20,16 @@ static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
 
+static const int kLatestTestedVersionOfSafari = 6531;
+
 enum {
 	kAddButtonPosition = 0,
 	kRemoveButtonPosition
 };
 
 @interface ComBelkadanKeystone_Controller () <NSUserInterfaceValidations>
++ (void)alertUntested;
+
 - (BOOL)loadCompletions;
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
@@ -44,8 +49,6 @@ enum {
 @implementation ComBelkadanKeystone_Controller
 + (void)load
 {
-	[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
-
 	static NSImage *prefIcon = nil;
 	if (!prefIcon) {
 		prefIcon = [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
@@ -57,7 +60,13 @@ enum {
 
 	[[NSClassFromString(@"WBPreferences") sharedPreferences] addPreferenceNamed:NSLocalizedStringFromTableInBundle(@"Keystone", @"Localizable", [NSBundle bundleForClass:[self class]], @"The preferences pane title") owner:[self sharedInstance]];
 
-	(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
+	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
+	if (safariMajorVersion <= kLatestTestedVersionOfSafari) {
+		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
+		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
+	} else {
+		[self alertUntested];
+	}
 }
 
 - (id)init {
@@ -87,6 +96,38 @@ enum {
 	[sortedCompletionPossibilities release];
 	[pendingConfirmations release];
 	[super dealloc];
+}
+
++ (void)alertUntested {
+	NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
+	BOOL isSuppressed = NO;
+
+	NSString *currentVersion = [keystoneBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+	NSString *suppressedVersion = (NSString *)CFPreferencesCopyAppValue((CFStringRef) kPreferencesUntestedAlertSuppressionKey, (CFStringRef) kKeystonePreferencesDomain);
+	if (suppressedVersion) {
+		isSuppressed = [suppressedVersion isEqual:currentVersion];
+		CFRelease(suppressedVersion);
+	}
+
+	if (!isSuppressed) {
+		NSAlert *alert = [[NSAlert alloc] init];
+		
+		[alert setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[alert setMessageText:NSLocalizedStringFromTableInBundle(@"Keystone is not yet supported in this version of Safari.", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		[alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Check the Keystone preference pane for updates.", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		
+		if ([alert respondsToSelector:@selector(setShowsSuppressionButton:)]) {
+			[alert setShowsSuppressionButton:YES];
+			[[alert suppressionButton] setTitle:NSLocalizedStringFromTableInBundle(@"Do not show this message again for this version", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		}
+		
+		[alert runModal];
+		if ([[alert suppressionButton] state] == NSOnState) {
+			CFPreferencesSetAppValue((CFStringRef) kPreferencesUntestedAlertSuppressionKey, currentVersion, (CFStringRef) kKeystonePreferencesDomain);
+			CFPreferencesAppSynchronize((CFStringRef) kKeystonePreferencesDomain);
+		}
+		[alert release];
+	}
 }
 
 #pragma mark -

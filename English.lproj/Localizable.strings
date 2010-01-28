@@ -6,6 +6,11 @@
 "Could not create a completion for this search." = "Could not create a completion for this search.";
 "Keystone could not figure out what part of the URL represents the query." = "Keystone could not figure out what part of the URL represents the query. This website may not support URL-based searches.";
 
+/* Unsupported alert */
+"Keystone is not yet supported in this version of Safari." = "Keystone is not yet supported in this version of Safari.";
+"Check the Keystone preference pane for updates." = "As a precaution, Keystone has been disabled. Check the Keystone preference pane for updates, or contact Belkadan Software at keystone@belkadan.com for more information.";
+"Do not show this message again for this version" = "Do not show this message again for this version";
+
 /* The header title in the completions list */
 "Keystone Shortcuts" = "Keystone Shortcuts";
 
