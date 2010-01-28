@@ -13,8 +13,7 @@
 
 static BOOL queryWantsCompletion (NSString *query) {
 	// TODO: is there a better heuristic here?
-	return [query rangeOfString:@" "].location != NSNotFound ||
-		[NSURL URLWithString:query] == nil;
+	return [query rangeOfString:@" "].location != NSNotFound;
 }
 
 	
