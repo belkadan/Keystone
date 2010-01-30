@@ -10,6 +10,7 @@
 		8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE7104A14D200A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE8104A14D600A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
+		8C2ABEB71112CCEF00EF077B /* Sparkle.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 8C2ABE321112BF6300EF077B /* Sparkle.framework */; };
 		8C3A30920F7EA8BB00C37703 /* FakeCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */; };
 		8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */; };
 		8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A31400F7EB20E00C37703 /* KeystoneController.m */; };
@@ -27,6 +28,7 @@
 		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
 		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
 		8C8A922410FE7FFA00DC0D4C /* BookmarksControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */; };
+		8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 8C9239F81113AD17001A38BE /* dsa_pub.pem */; };
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
 		8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
@@ -36,8 +38,23 @@
 		8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
 		8CF220A810E01338009074CD /* AddCompletion.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CF220A610E01338009074CD /* AddCompletion.xib */; };
 		8CF220C210E02A97009074CD /* AddCompletionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF220C110E02A97009074CD /* AddCompletionController.m */; };
+		8CFF7FB311140B0F003B5DB5 /* UpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFF7F9D111407B1003B5DB5 /* UpdateController.m */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8C2ABE8D1112BFAF00EF077B /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8C2ABEB71112CCEF00EF077B /* Sparkle.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -45,6 +62,7 @@
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* Keystone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keystone_Prefix.pch; sourceTree = "<group>"; };
 		8C27FDE1104A14BF00A96844 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		8C2ABE321112BF6300EF077B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = "../Sparkle 1/With Garbage Collection/Sparkle.framework"; sourceTree = SOURCE_ROOT; };
 		8C32884010E0930300C2D25C /* SheetRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SheetRequest.h; sourceTree = "<group>"; };
 		8C3A30900F7EA8BB00C37703 /* FakeCompletionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FakeCompletionItem.h; sourceTree = "<group>"; };
 		8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FakeCompletionItem.m; sourceTree = "<group>"; };
@@ -77,6 +95,7 @@
 		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
 		8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarksControllerAdditions.m; sourceTree = "<group>"; };
 		8C8A922610FE801900DC0D4C /* BookmarksControllerObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerObjC.h; sourceTree = "<group>"; };
+		8C9239F81113AD17001A38BE /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = "../Sparkle 1/dsa_pub.pem"; sourceTree = SOURCE_ROOT; };
 		8C986F520F80526400383384 /* keystone.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = keystone.icns; sourceTree = "<group>"; };
 		8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+EndEditingGracefully.h"; sourceTree = "<group>"; };
 		8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+EndEditingGracefully.m"; sourceTree = "<group>"; };
@@ -93,6 +112,8 @@
 		8CF220A710E01338009074CD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AddCompletion.xib; sourceTree = "<group>"; };
 		8CF220C010E02A97009074CD /* AddCompletionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddCompletionController.h; sourceTree = "<group>"; };
 		8CF220C110E02A97009074CD /* AddCompletionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddCompletionController.m; sourceTree = "<group>"; };
+		8CFF7F9C111407B1003B5DB5 /* UpdateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateController.h; sourceTree = "<group>"; };
+		8CFF7F9D111407B1003B5DB5 /* UpdateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateController.m; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Keystone.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Keystone.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2F7E65807B2D6F200F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -145,6 +166,7 @@
 		089C1671FE841209C02AAC07 /* Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				8C2ABE8C1112BFAE00EF077B /* Embedded Frameworks */,
 				1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */,
 				1058C7AEFEA557BF11CA2CBB /* Other Frameworks */,
 			);
@@ -161,6 +183,7 @@
 				8CD29B470F7EF1C400D146C3 /* defaults.plist */,
 				8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */,
 				8CF220A610E01338009074CD /* AddCompletion.xib */,
+				8C9239F81113AD17001A38BE /* dsa_pub.pem */,
 				8C986F520F80526400383384 /* keystone.icns */,
 			);
 			name = Resources;
@@ -227,6 +250,14 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		8C2ABE8C1112BFAE00EF077B /* Embedded Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8C2ABE321112BF6300EF077B /* Sparkle.framework */,
+			);
+			name = "Embedded Frameworks";
+			sourceTree = "<group>";
+		};
 		8C3A33BB0F7EE25200C37703 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,6 +274,8 @@
 				8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */,
 				8C3A313F0F7EB20E00C37703 /* KeystoneController.h */,
 				8C3A31400F7EB20E00C37703 /* KeystoneController.m */,
+				8CFF7F9C111407B1003B5DB5 /* UpdateController.h */,
+				8CFF7F9D111407B1003B5DB5 /* UpdateController.m */,
 				8CF220C010E02A97009074CD /* AddCompletionController.h */,
 				8CF220C110E02A97009074CD /* AddCompletionController.m */,
 				8C32884010E0930300C2D25C /* SheetRequest.h */,
@@ -316,6 +349,7 @@
 				8D5B49AF048680CD000E48DA /* Resources */,
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
+				8C2ABE8D1112BFAF00EF077B /* Copy Frameworks */,
 				8C89452410434C320051A988 /* Update Symlink */,
 			);
 			buildRules = (
@@ -373,6 +407,7 @@
 				8CB614420F8046BC00A84155 /* Localizable.strings in Resources */,
 				8C986F530F80526400383384 /* keystone.icns in Resources */,
 				8CF220A810E01338009074CD /* AddCompletion.xib in Resources */,
+				8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +484,7 @@
 				8C6C8BBB10E0C8260058B36E /* SheetRequest.m in Sources */,
 				8C8A922410FE7FFA00DC0D4C /* BookmarksControllerAdditions.m in Sources */,
 				8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */,
+				8CFF7FB311140B0F003B5DB5 /* UpdateController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,6 +540,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Sparkle 1/With Garbage Collection\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = supported;
@@ -528,6 +568,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Sparkle 1/With Garbage Collection\"",
+				);
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

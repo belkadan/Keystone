@@ -11,6 +11,9 @@
 "Check the Keystone preference pane for updates." = "As a precaution, Keystone has been disabled. Check the Keystone preference pane for updates, or contact Belkadan Software at keystone@belkadan.com for more information.";
 "Do not show this message again for this version" = "Do not show this message again for this version";
 
+/* Updater messages */
+"Should Keystone automatically check for updates?" = "Should Keystone automatically check for updates? You can always check for updates manually through the Keystone preference pane.";
+
 /* The header title in the completions list */
 "Keystone Shortcuts" = "Keystone Shortcuts";
 

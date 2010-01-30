@@ -3,11 +3,13 @@
 #import "CompletionAdapterAdditions.h"
 #import "AddCompletionController.h"
 #import "BookmarksControllerAdditions.h"
+#import "UpdateController.h"
 
 #import "BookmarkSources.h"
 
 #import <WebKit/WebKit.h>
 #import <libkern/OSAtomic.h>
+#import <Sparkle/SUUpdater.h>
 
 static NSString * const kKeystonePreferencesDomain = @"com.belkadan.Keystone";
 static NSString * const kPreferencesCompletionKey = @"SortedCompletions";
@@ -46,7 +48,14 @@ enum {
 @property(readonly) DOMNode *activeElement;
 @end
 
+@interface SUUpdater (ComBelkadanKeystone_IKnowYoureInThere)
+- (void)applicationDidFinishLaunching:(NSNotification *)note; // only in older Sparkles
+@end
+
+
 @implementation ComBelkadanKeystone_Controller
+@synthesize updater;
+
 + (void)load
 {
 	static NSImage *prefIcon = nil;
@@ -85,6 +94,15 @@ enum {
 		if (![self loadCompletions]) {
 			[self loadSogudiCompletions];
 		}
+		
+		updater = [[ComBelkadanKeystone_SparkleCompatibilityController updaterForBundle:[NSBundle bundleForClass:[self class]]] retain];
+		if (updater) {
+			[updater setDelegate:self];
+			if ([updater respondsToSelector:@selector(applicationDidFinishLaunching:)]) {
+				// For older versions of Sparkle (through 1.5b6
+				[updater applicationDidFinishLaunching:nil];
+			}
+		}
 	}
 	
 	return self;
@@ -95,6 +113,7 @@ enum {
 
 	[sortedCompletionPossibilities release];
 	[pendingConfirmations release];
+	[updater release];
 	[super dealloc];
 }
 
@@ -378,6 +397,20 @@ enum {
 	} else {
 		return (onlyOne ? nil : [NSArray array]);
 	}
+}
+
+#pragma mark -
+
+- (NSString *)pathToRelaunchForUpdater:(SUUpdater *)updater {
+	// Special case for WebKit, but we want to relaunch Safari anyway
+	NSBundle *appBundle = [NSBundle bundleWithIdentifier:@"org.webkit.nightly.WebKit"];
+	if (!appBundle) appBundle = [NSBundle mainBundle];
+	return [appBundle bundlePath];
+}
+
+- (NSString *)permissionPromptDescriptionTextForUpdater:(SUUpdater *)updater {
+	// A WebKit Sparkle branch extension
+	return NSLocalizedStringFromTableInBundle(@"Should Keystone automatically check for updates?", @"Localizable", [NSBundle bundleForClass:[self class]], @"Updater messages");
 }
 
 #pragma mark -
