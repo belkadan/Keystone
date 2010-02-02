@@ -331,6 +331,7 @@ enum {
 - (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item {
 	[sortedCompletionPossibilities addObject:item];
 	[completionTable reloadData];
+	[self save];
 }
 
 #pragma mark -
