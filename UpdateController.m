@@ -20,12 +20,12 @@ static NSString *WebKit_SUUpdatePermissionPrompt_promptDescription (id self, SEL
 	object_getInstanceVariable(self, "delegate", (void**)&delegate);
 
 	// Based on the WebKit branch of Sparkle
-	NSString *text;
+	NSString *text = nil;
 	if ([delegate respondsToSelector:@selector(descriptionTextForUpdatePermissionPrompt:)]) {
 		text = [delegate descriptionTextForUpdatePermissionPrompt:self];
 	}
 	
-	return (text ? text : UpdatePermissionPrompt_promptDescription(self, _cmd));
+	return (text ?: UpdatePermissionPrompt_promptDescription(self, _cmd));
 }
 
 static NSString *WebKit_SUUpdater_descriptionTextForUpdatePermissionPrompt_ (id self, SEL _cmd, id prompt) {
