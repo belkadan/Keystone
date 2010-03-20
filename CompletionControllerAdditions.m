@@ -297,7 +297,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 		}
 	}
 
-	return [view currentEditor] != nil && [[self sourceFieldString] isEqual:[self queryString]];
+	return [NSApp keyWindow] == [view window] && [view currentEditor] != nil && [[self sourceFieldString] isEqual:[self queryString]];
 }
 
 /*!
