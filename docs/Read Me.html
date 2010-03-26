@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>Welcome to Keystone</title>
+	<style type="text/css">
+		body { font-family: "Lucida Grande", Helvetica, sans-serif; font-size:10pt; text-align:justify;}
+		body > div { width:700px; margin:1.5em auto;}
+		h1 { font-size:1.5em;}
+		h2 { font-size:1.2em;}
+		.faq dt { font-style:italic; }
+		.faq dd { text-indent:-1.5em;}
+		img { border:1px solid #ccc; margin:0.5em 1em; }
+		p:after { clear:both; content:""; display:block;}
+	</style>
+</head>
+<body>
+<div>
+	<h1>Welcome to Keystone</h1>
+	<p>Safari users: ever wanted to quickly search Wikipedia, or use a search engine besides Google? Then Keystone is what you've been looking for!</p>
+	<p>Keystone adds custom keyword searches to Safari. Type simple queries such as <i>"wiki Mac OS X"</i> directly into the address bar, and Keystone will translate them into searches&#x2014;in this case, opening the Mac OS X page on Wikipedia.</p>
+
+	<h2>Installation</h2>
+	<ol>
+		<li>First, make sure you are using Safari 4 on Mac OS X v10.5 or later.</li>
+		<li>Make sure you have a recent version of <a href="http://www.culater.net/software/SIMBL/SIMBL.php">SIMBL</a> installed. If you recently upgraded to Snow Leopard, you probably want to get the latest version.</li>
+		<li>Install Keystone.bundle, either by running the "Install Keystone for Me" script, or by copying it yourself to ~/Library/Application Support/SIMBL/Plugins (creating that folder if necessary).</li>
+		<li>Relaunch Safari.</li>
+	</ol>
+
+	<h2>Usage</h2>
+	<p>Keystone comes with a couple of default shortcuts, including "wiki" for Wikipedia, "define" to search Dictionary.com, and a default (catch-all) shortcut to search using Google on unknown queries. But adding your own completion shortcuts is easy.</p>
+	<p>
+		First, navigate to a page with a search box, and click inside it, as if you were going to search for something.<br/>
+		<img src="Screenshots%20for%20Read%20Me/1-search-box.png" alt="" />
+	</p>
+	<p>
+		Next, choose "Add Keystone Search Completion&#x2026;" from the Bookmarks menu. Keystone will perform a search, then inspect the URL to figure out how to generalize it to a shortcut.<br/>
+		<img src="Screenshots%20for%20Read%20Me/2-add-search-completion.png" alt="" />
+	</p>
+	<p>
+		Fill in the required information for the new shortcut. The most important one is the "keyword" field, which specifies what sort of query will use this shortcut. (Note that you can have more than one completion for the same keyword. In this case, the one with the title that is alphabetically first will appear first in the list of possible completions.)<br/>
+		<img src="Screenshots%20for%20Read%20Me/3-fill-out-fields.png" alt="" />
+	</p>
+	<p>
+		That's it! You can now use your new shortcut in searches. Just type your queries into the location bar, using the keyword you specified.<br/>
+		<img src="Screenshots%20for%20Read%20Me/4-use-in-search.png" alt="" />
+	</p>
+	<p>
+		If you ever want to edit or delete a shortcut, you can do so from Keystone's preference pane, found in the standard Safari preferences window.<br/>
+		<img src="Screenshots%20for%20Read%20Me/5-preferences.png" alt="" />
+	</p>		
+	<p>
+		Finally, if you ever want to add a shortcut that isn't based on a search, you can hold the Option key and select "Add Manual Keystone Shortcut&#x2026;" from the Bookmarks menu.<br/>
+		<img src="Screenshots%20for%20Read%20Me/6-add-manual.png" alt="" />
+	</p>		
+			
+	<h2>Notes</h2>
+	<dl class="faq">
+		<dt>It says Keystone isn't compatible with my version of Safari.</dt>
+			<dd>If you're using an up-to-date version of Safari, it's likely Keystone hasn't been tested on this version. Check for an update in the Keystone preference pane or e-mail the address below.</dd>
+			<dd>If you're using Safari 3, upgrade to Safari 4.</dd>
+		<dt>Does Keystone work with WebKit nightlies?</dt>
+			<dd>Yes.</dd>
+	</dl>
+	
+	<h2>Uninstall</h2>
+	<p>If you want to uninstall Keystone (for whatever reason), just delete the Keystone.bundle file from ~/Library/Application Support/SIMBL/Plugins. (That's the "Plugins" folder, in the "SIMBL" folder, in the "Application Support" folder, in the "Library" folder, in your home folder.) Then quit and reopen Safari.</p>
+	
+	<h2>Contact</h2>
+	<p>
+		<a href="mailto:&#x6B;&#x65;&#x79;&#x73;&#x74;&#x6F;&#x6E;&#x65;&#x40;&#x62;&#x65;&#x6C;&#x6B;&#x61;&#x64;&#x61;&#x6E;&#x2E;&#x63;&#x6F;&#x6D;">&#x6B;&#x65;&#x79;&#x73;&#x74;&#x6F;&#x6E;&#x65;&#x40;&#x62;&#x65;&#x6C;&#x6B;&#x61;&#x64;&#x61;&#x6E;&#x2E;&#x63;&#x6F;&#x6D;</a>: Bugs, requests, questions? E-mail me!<br/>
+		<a href="http://belkadan.com">belkadan.com</a>: Get more great programs from Belkadan Software!
+	</p>
+</div>
+</body>
+</html>
