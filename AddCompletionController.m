@@ -76,6 +76,9 @@
 #pragma mark -
 
 - (IBAction)close:(id)sender {
+	if (!newCompletion.keyword) newCompletion.keyword = @"";
+	if (!newCompletion.name) newCompletion.name = @"";
+	
 	NSWindow *window = [self window];
 	[window endEditingGracefully];
 	if ([window isSheet]) {
