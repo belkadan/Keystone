@@ -92,7 +92,9 @@ enum {
 		pendingConfirmations = [[NSMutableArray alloc] init];
 		
 		if (![self loadCompletions]) {
-			[self loadSogudiCompletions];
+			if (![self loadSogudiCompletions]) {
+				[self loadDefaultCompletions];
+			}
 		}
 		
 		updater = [[ComBelkadanKeystone_SparkleCompatibilityController updaterForBundle:[NSBundle bundleForClass:[self class]]] retain];
