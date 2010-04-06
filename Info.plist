@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.1</string>
+	<string>1.0.2</string>
 	<key>NSPrincipalClass</key>
 	<string>ComBelkadanKeystone_Controller</string>
 	<key>SIMBLTargetApplications</key>
@@ -29,14 +29,6 @@
 			<string>com.apple.Safari</string>
 			<key>MaxBundleVersion</key>
 			<string>6599</string>
-			<key>MinBundleVersion</key>
-			<string>6531</string>
-		</dict>
-		<dict>
-			<key>BundleIdentifier</key>
-			<string>com.apple.Safari</string>
-			<key>MaxBundleVersion</key>
-			<string>5599</string>
 			<key>MinBundleVersion</key>
 			<string>5528</string>
 		</dict>

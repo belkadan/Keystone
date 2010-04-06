@@ -22,7 +22,8 @@ static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
 
-static const int kLatestTestedVersionOfSafari = 6531;
+static const int kLatestSafariSystem = 6000;
+static const int kLatestTestedVersionOfSafari = 531;
 
 enum {
 	kAddButtonPosition = 0,
@@ -70,7 +71,7 @@ enum {
 	[[NSClassFromString(@"WBPreferences") sharedPreferences] addPreferenceNamed:NSLocalizedStringFromTableInBundle(@"Keystone", @"Localizable", [NSBundle bundleForClass:[self class]], @"The preferences pane title") owner:[self sharedInstance]];
 
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
-	if (safariMajorVersion <= kLatestTestedVersionOfSafari) {
+	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
 		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
 	} else {
