@@ -4,6 +4,7 @@
 #import "AddCompletionController.h"
 #import "BookmarksControllerAdditions.h"
 #import "UpdateController.h"
+#import "DefaultsDomain.h"
 
 #import "BookmarkSources.h"
 
@@ -125,10 +126,9 @@ enum {
 	BOOL isSuppressed = NO;
 
 	NSString *currentVersion = [keystoneBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-	NSString *suppressedVersion = (NSString *)CFPreferencesCopyAppValue((CFStringRef) kPreferencesUntestedAlertSuppressionKey, (CFStringRef) kKeystonePreferencesDomain);
+	NSString *suppressedVersion = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesCompletionKey];
 	if (suppressedVersion) {
 		isSuppressed = [suppressedVersion isEqual:currentVersion];
-		CFRelease(suppressedVersion);
 	}
 
 	if (!isSuppressed) {
@@ -145,8 +145,7 @@ enum {
 		
 		[alert runModal];
 		if ([[alert suppressionButton] state] == NSOnState) {
-			CFPreferencesSetAppValue((CFStringRef) kPreferencesUntestedAlertSuppressionKey, currentVersion, (CFStringRef) kKeystonePreferencesDomain);
-			CFPreferencesAppSynchronize((CFStringRef) kKeystonePreferencesDomain);
+			[[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] setObject:currentVersion forKey:kPreferencesUntestedAlertSuppressionKey];
 		}
 		[alert release];
 	}
@@ -155,7 +154,7 @@ enum {
 #pragma mark -
 
 - (BOOL)loadCompletions {
-	NSArray *completionsInPlistForm = (NSArray *)CFPreferencesCopyAppValue((CFStringRef) kPreferencesCompletionKey, (CFStringRef) kKeystonePreferencesDomain);
+	NSArray *completionsInPlistForm = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesCompletionKey];
 	if (!completionsInPlistForm) return NO;
 	
 	for (NSDictionary *completionDict in completionsInPlistForm) {
@@ -166,7 +165,6 @@ enum {
 		}
 	}
 	
-	CFRelease(completionsInPlistForm);
 	return YES;
 }
 
@@ -199,20 +197,15 @@ enum {
 
 - (void)loadDefaultCompletions {
 	NSDictionary *defaults = [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:kDefaultPreferencesFile ofType:@"plist"]];
-	CFPreferencesSetMultiple((CFDictionaryRef)defaults, NULL, (CFStringRef)kKeystonePreferencesDomain, kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+	[[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] setDictionary:defaults];
 	[defaults release];
 	
 	[self loadCompletions];
 }
 
 - (void)save {
-	if ([completionTable editedRow] != -1) {
-		[self performSelector:@selector(save) withObject:nil afterDelay:5];
-	} else {
-		NSArray *completionsInPlistForm = [sortedCompletionPossibilities valueForKey:@"dictionaryRepresentation"];
-		CFPreferencesSetAppValue((CFStringRef) kPreferencesCompletionKey, (CFArrayRef)completionsInPlistForm, (CFStringRef) kKeystonePreferencesDomain);
-		CFPreferencesAppSynchronize((CFStringRef) kKeystonePreferencesDomain);
-	}
+	NSArray *completionsInPlistForm = [sortedCompletionPossibilities valueForKey:@"dictionaryRepresentation"];
+	[[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] setObject:completionsInPlistForm forKey:kPreferencesCompletionKey];
 }
 
 #pragma mark -
