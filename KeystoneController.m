@@ -24,7 +24,10 @@ static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
 
 static const int kLatestSafariSystem = 6000;
-static const int kLatestTestedVersionOfSafari = 531;
+static const int kLatestTestedVersionOfSafari = 533;
+
+#define kSafariVersionNumber5 533
+static BOOL isSafari5 = NO;
 
 enum {
 	kAddButtonPosition = 0,
@@ -43,7 +46,9 @@ enum {
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
+@property(readonly) NSString *URLString;
 @property(readonly) WebView *currentWebView;
+@property(readonly) WebView *currentBrowserWebView;
 @end
 
 @interface DOMDocument (ComBelkadanKeystone_IKnowYoureInThere)
@@ -73,6 +78,7 @@ enum {
 
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
 	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
+		isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
 		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
 	} else {
@@ -103,7 +109,7 @@ enum {
 		if (updater) {
 			[updater setDelegate:self];
 			if ([updater respondsToSelector:@selector(applicationDidFinishLaunching:)]) {
-				// For older versions of Sparkle (through 1.5b6
+				// For older versions of Sparkle (through 1.5b6)
 				[updater applicationDidFinishLaunching:nil];
 			}
 		}
@@ -212,7 +218,14 @@ enum {
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)item {
 	if ([item action] == @selector(attemptAutodiscovery:)) {
-		WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+		NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+		WebView *webView = nil;
+		if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
+			webView = [doc currentBrowserWebView];
+		} else {
+			webView = [doc currentWebView];
+		}
+
 		DOMDocument *currentPage = [webView mainFrameDocument];
 		DOMNode *activeNode = currentPage.activeElement;
 		NSString *nodeName = activeNode.localName;
@@ -230,15 +243,22 @@ enum {
 
 		return form != nil;
 	} else if ([item action] == @selector(newCompletionForCurrentPage:)) {
-		WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
-		return ![[webView mainFrameURL] isEqual:@""];
+		NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+		return ![[doc URLString] isEqual:@""];
 	} else {
 		return YES;
 	}
 }
 
 - (IBAction)attemptAutodiscovery:(id)sender {
-	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+	NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+	WebView *webView = nil;
+	if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
+		webView = [doc currentBrowserWebView];
+	} else {
+		webView = [doc currentWebView];
+	}
+
 	DOMDocument *currentPage = [webView mainFrameDocument];
 	DOMNode *activeNode = currentPage.activeElement;
 	NSString *nodeName = activeNode.localName;
@@ -310,7 +330,13 @@ enum {
 }
 
 - (IBAction)newCompletionForCurrentPage:(id)sender {
-	WebView *webView = [[[NSDocumentController sharedDocumentController] currentDocument] currentWebView];
+	NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
+	WebView *webView = nil;
+	if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
+		webView = [doc currentBrowserWebView];
+	} else {
+		webView = [doc currentWebView];
+	}
 	NSString *completionURLString = [webView mainFrameURL];
 
 	id <ComBelkadanKeystone_SheetRequest> sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
@@ -418,6 +444,17 @@ enum {
 
 - (NSImage *)imageForPreferenceNamed:(NSString *)name {
 	return [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
+}
+
+- (void)setPreferencesView:(NSView *)view {
+	if (isSafari5) {
+		// Resize the preference pane to fit the new aspect ratio
+		NSRect frame = [view frame];
+		frame.size.width = 668;
+		[view setFrame:frame];
+	}
+
+	[super setPreferencesView:view];
 }
 
 - (BOOL)isResizable {
