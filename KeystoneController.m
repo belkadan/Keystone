@@ -1,6 +1,9 @@
 #import "KeystoneController.h"
+
 #import "CompletionControllerAdditions.h"
 #import "CompletionAdapterAdditions.h"
+#import "BrowserWindowControllerAdditions.h"
+
 #import "AddCompletionController.h"
 #import "BookmarksControllerAdditions.h"
 #import "UpdateController.h"
@@ -79,8 +82,14 @@ enum {
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
 	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
 		isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
+
 		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
+
+		if (isSafari5) {
+			//(void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class]; // force +initialize
+			(void)[ComBelkadanKeystone_BrowserWindowController class]; // force +initialize
+		}
 	} else {
 		[self alertUntested];
 	}

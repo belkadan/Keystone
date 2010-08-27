@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
-#import "CompletionAdapter.h"
 
-@interface ComBelkadanKeystone_CompletionControllerObjCAdapter : CompletionControllerObjCAdapter {
+@interface ComBelkadanKeystone_CompletionControllerObjCAdapter : NSObject {
+	struct CompletionController *_completionController;
 }
 
 @end
