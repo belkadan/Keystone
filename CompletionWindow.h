@@ -5,7 +5,7 @@
 }
 
 - (BOOL)wantsScrollWheelEvent:(NSEvent *)scrollEvent;
-- (double)cornerRadius;
+- (CGFloat)cornerRadius;
 - (BOOL)cornersAreRounded;
 - (void)setCornersAreRounded:(BOOL)roundTheCorners;
 
