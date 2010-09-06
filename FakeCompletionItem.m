@@ -9,9 +9,8 @@
 		ComBelkadanKeystone_FakeCompletionItem *newSeparator = [[ComBelkadanKeystone_FakeCompletionItem alloc] init];
 		if (OSAtomicCompareAndSwapPtrBarrier(nil, newSeparator, (void **)&separator)) {
 			CFRetain(newSeparator); // make un-collectable
-		} else {
-			[newSeparator release];
 		}
+		[newSeparator release];
 	}
 	
 	return separator;
