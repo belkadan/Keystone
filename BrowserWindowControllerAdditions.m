@@ -15,15 +15,17 @@ struct SNotification {
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
 #define CharFromBool(B) ((B) ? 'Y' : 'N')
 
-static NSMapTable *additionalResultsTable = nil;
 static NSImage *smallKeystoneIcon = nil;
+
+static BOOL completionIsVisible (struct CompletionController *completionController) {
+	return [completionController->_window isVisible];
+}
 
 static BOOL completionIsActive (struct CompletionController *completionController) {
 	return [completionController->_window isVisible] && ([completionController->_table selectedRow] != -1);
 }
 
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
-- (void)ComBelkadanKeystone_updateLocationField;
 @end
 
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
@@ -33,20 +35,18 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 @implementation ComBelkadanKeystone_BrowserWindowController
 + (void)initialize {
-	Class fromClass = [self class];
-	if (fromClass == [ComBelkadanKeystone_BrowserWindowController class]) {
+	if (self == [ComBelkadanKeystone_BrowserWindowController class]) {
 		Class toClass = NSClassFromString(@"BrowserWindowController");
 
-		COPY_METHOD(fromClass, toClass, ComBelkadanKeystone_updateLocationField);
-		COPY_METHOD(fromClass, toClass, ComBelkadanKeystone_completionItemSelected:);
-		COPY_METHOD(fromClass, toClass, ComBelkadanKeystone_completionItemChosen:);
+		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemSelected:forQuery:);
+		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemChosen:forQuery:);
 		
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, goToToolbarLocation:);
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, controlTextDidChange:);
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, control:textView:doCommandBySelector:);
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
-		COPY_AND_EXCHANGE(fromClass, toClass, KEYSTONE_PREFIX, _updateLocationFieldIconNow);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, goToToolbarLocation:);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidChange:);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, control:textView:doCommandBySelector:);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
+		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, _updateLocationFieldIconNow);
 
 		smallKeystoneIcon = [[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"] copy];
 		[smallKeystoneIcon setSize:NSMakeSize(16, 16)];
@@ -54,11 +54,31 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 }
 
 - (void)ComBelkadanKeystone_controlTextDidChange:(NSNotification *)note {
-	[self ComBelkadanKeystone_controlTextDidChange:note];
-
 	LocationTextField *locationField = [note object];
-	if (locationField == [self locationField]) {
-		[self ComBelkadanKeystone_updateLocationField];
+	if (locationField != [self locationField]) {
+		[self ComBelkadanKeystone_controlTextDidChange:note];
+	} else {
+		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
+
+		NSText *editor = [locationField currentEditor];
+		NSString *completionString = [editor string];
+		
+		NSRange selection = [editor selectedRange];
+		if (selection.length > 0)
+			completionString = [completionString substringToIndex:selection.location];
+
+		if ([additionalDataSource isVisible]) {
+			[additionalDataSource updateQuery:completionString];
+		} else if ([completionString ComBelkadanKeystone_queryWantsCompletion] && ![additionalDataSource wasCanceled]) {
+			[additionalDataSource updateQuery:completionString];
+			[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];
+			[additionalDataSource setDelegate:self];
+			
+			[additionalDataSource showWindowForField:locationField];
+		} else {
+			[additionalDataSource clearCanceled];
+			[self ComBelkadanKeystone_controlTextDidChange:note];
+		}
 	}
 }
 
@@ -78,38 +98,52 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command {
 	if (control == [self locationField]) {
+		// FIXME: This method is atrocious.
 		if (completionIsActive([self _URLCompletionController]))
 			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
 
+		// Special case for cancelOperation: -- clear the location field detail string.
+		if (command == @selector(cancelOperation:))
+			[control setDetailString:@""];
+
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
-		// Special case for moveUp: -- this is how we toggle from one set of shortcuts to the other.
-		if (command == @selector(moveUp:)) {
-			if ([additionalDataSource isActive]) {
-				BOOL response = [additionalDataSource tryToPerform:command with:nil];
-				if (response) return YES;
+		BOOL response = [additionalDataSource tryToPerform:command with:nil];
+		if (response) return YES;
 
-			} else if ([additionalDataSource isVisible]) {
-				[self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
+		// Special case for deletion, which hides the completions but also needs to delete.
+		if (command == @selector(deleteBackward:) || command == @selector(deleteForward:)) {
+			[additionalDataSource cancelOperation:nil];
+			
+		} else if (command == @selector(moveUp:)) {
+			// Special case for moveUp: -- this is how we toggle from one set of shortcuts to the other.
+			if ([additionalDataSource isVisible]) {
 				[additionalDataSource cancelOperation:nil];
+
+				// Bring back the regular set by deleting the selection.
+				if ([fieldEditor selectedRange].length > 0)
+					[fieldEditor deleteBackward:nil];
+				// If there's no selection, just send a notification ourself.
+				[self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
 				return YES;
 
 			} else {
 				[self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:@selector(cancelOperation:)];
 				[additionalDataSource setDelegate:self];
-				[additionalDataSource updateQuery:[fieldEditor string]];
+
+				NSString *completionString = [fieldEditor string];
+				NSRange selection = [fieldEditor selectedRange];
+				if (selection.length > 0)
+					completionString = [completionString substringToIndex:selection.location];
+				[additionalDataSource updateQuery:completionString];
+			
 				[additionalDataSource showWindowForField:control];
 				return YES;
 			}
-		}
 
-		if ([additionalDataSource isVisible]) {
-			BOOL response = [additionalDataSource tryToPerform:command with:nil];
-			if (response) return YES;
-		}
-
-		if (command == @selector(moveDown:)) {
-			// If neither completions are visible, moveDown: brings back the default ones by deleting the selection.
+		} else if (command == @selector(moveDown:) && !completionIsVisible([self _URLCompletionController])) {
+			// If neither completion set is visible, moveDown: brings back the default ones...
+			// ...by deleting the selection.
 			if ([fieldEditor selectedRange].length > 0)
 				[fieldEditor deleteBackward:nil];
 			// If there's no selection, just send a notification ourself.
@@ -122,7 +156,12 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender {
 	LocationTextField *locationField = [self locationField];
-	NSString *completionString = [locationField untruncatedStringValue];
+	NSText *editor = [locationField currentEditor];
+	NSString *completionString = [editor string];
+
+	NSRange selection = [editor selectedRange];
+	if (selection.length > 0)
+		completionString = [completionString substringToIndex:selection.location];
 	
 	if ([completionString ComBelkadanKeystone_queryWantsCompletion]) {
 		ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_URLCompletionController firstItemForQueryString:completionString];
@@ -135,45 +174,38 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 }
 
 - (void)ComBelkadanKeystone__updateLocationFieldIconNow {
-	[self ComBelkadanKeystone__updateLocationFieldIconNow];
-	[self ComBelkadanKeystone_updateLocationField];
-}
-
-- (void)ComBelkadanKeystone_updateLocationField {
 	LocationTextField *locationField = [self locationField];
-	NSString *completionString = [locationField untruncatedStringValue];
-	struct CompletionController *completionController = [self _URLCompletionController];
-	if (completionIsActive(completionController) && [completionString ComBelkadanKeystone_queryWantsCompletion]) {
-		ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_URLCompletionController firstItemForQueryString:completionString];
-		if (completion) {
-			[locationField setDetailString:[completion urlStringForQueryString:completionString]];
-			[locationField setIcon:smallKeystoneIcon];
-		} else {
-			[locationField setDetailString:@""];
-		}
-	} else {
-		[locationField setDetailString:@""];
-	}
+	[locationField setDetailString:@""];
+	[self ComBelkadanKeystone__updateLocationFieldIconNow];
 }
 
 #pragma mark -
 
-- (void)ComBelkadanKeystone_completionItemSelected:(ComBelkadanKeystone_FakeCompletionItem *)completion {
+- (void)ComBelkadanKeystone_completionItemSelected:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
 	LocationTextField *locationField = [self locationField];
 	if (completion) {
-		NSString *completionString = [locationField untruncatedStringValue];
-		[locationField setDetailString:[completion urlStringForQueryString:completionString]];
+		NSTextView *editor = (NSTextView *)[locationField currentEditor];
+		NSRange selection = NSMakeRange(0, 0);
+
+		// FIXME: This cast sucks, but really it's being used as an unsigned integer.
+		// So...need to fix -reflectedStringForQueryString:withSelectionFrom:
+		NSString *replacement = [completion reflectedStringForQueryString:query withSelectionFrom:(NSInteger *)&selection.location];
+		[editor setString:replacement];
+
+		selection.length = [replacement length] - selection.location;
+		[editor setSelectedRange:selection];
+		
+		[locationField setDetailString:[completion urlStringForQueryString:query]];
 		[locationField setIcon:smallKeystoneIcon];
 	} else {
 		[locationField setDetailString:@""];
 	}
 }
 
-- (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion {
+- (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
 	NSAssert(completion != nil, @"Nil completion item chosen");
 	LocationTextField *locationField = [self locationField];
-	NSString *completionString = [locationField untruncatedStringValue];
-	[locationField setStringValue:[completion urlStringForQueryString:completionString]];
+	[locationField setStringValue:[completion urlStringForQueryString:query]];
 	[locationField performClick:nil];
 }
 

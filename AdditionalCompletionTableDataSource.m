@@ -1,25 +1,38 @@
 #import "AdditionalCompletionTableDataSource.h"
+#import "CompletionControllerAdditions.h"
+#import "FakeCompletionItem.h"
 #import "CompletionWindow.h"
 #import "CompletionListTableView.h"
 #import "TextCell.h"
 
+static NSString * const kTitleColumnID = @"title";
+static CGFloat const kTitleFontSize = 12.0; // pt
+static CGFloat const kURLFontSize = 11.0; // pt
+
 @implementation ComBelkadanKeystone_AdditionalCompletionTableDataSource
-@synthesize delegate;
+@synthesize delegate, query, currentCompletions;
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	return 6;
+	return [currentCompletions count];
 }
 
-- (id) tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-	return @"Hello!";
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
+	if ([kTitleColumnID isEqual:[tableColumn identifier]]) {
+		return [item nameForQueryString:self.query];
+	} else {
+		return [item urlStringForQueryString:self.query];
+	}
 }
 
-- (BOOL) tableView:(NSTableView *)tableView isHeaderRow:(NSInteger)row {
-	return row%4 == 0;
+- (BOOL)tableView:(NSTableView *)tableView isHeaderRow:(NSInteger)row {
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
+	return item.isHeader;
 }
 
 - (BOOL)completionListTableView:(CompletionListTableView *)tableView rowIsSeparator:(NSInteger)row {
-	return (row)%3 == 0;
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
+	return item.isSeparator;
 }
 
 - (BOOL)completionListTableView:(CompletionListTableView *)tableView rowIsChecked:(NSInteger)row {
@@ -31,28 +44,37 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
-	return ![self completionListTableView:(CompletionListTableView*)tableView rowIsSeparator:row] &&
-	       ![self tableView:tableView isHeaderRow:row];
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
+	return !item.isSeparator && !item.isHeader;
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-	[self.delegate ComBelkadanKeystone_completionItemSelected:nil];
+	// WARNING: This is called manually with a nil notification.
+	NSInteger row = [table selectedRow];
+
+	ComBelkadanKeystone_FakeCompletionItem *item = nil;
+	if (row != -1)
+		item = [currentCompletions objectAtIndex:row];
+
+	if ([self isVisible])
+		[self.delegate ComBelkadanKeystone_completionItemSelected:item forQuery:self.query];
 }
 
 - (void)completionListTableView:(CompletionListTableView *)tableView mouseUpInRow:(NSInteger)row {
-	[self.delegate ComBelkadanKeystone_completionItemChosen:nil];
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
+	[self.delegate ComBelkadanKeystone_completionItemChosen:item forQuery:self.query];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(TextCell *)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-	if ([@"title" isEqual:[tableColumn identifier]]) {
+	if ([kTitleColumnID isEqual:[tableColumn identifier]]) {
 		if ([self tableView:tableView isHeaderRow:row]) {
 			[cell setLeftMargin:4];
 			[cell setEnabled:NO];
-			[cell setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
+			[cell setFont:[NSFont systemFontOfSize:kURLFontSize]];
 		} else {
 			[cell setLeftMargin:14];
 			[cell setEnabled:YES];
-			[cell setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSRegularControlSize]]];
+			[cell setFont:[NSFont systemFontOfSize:kTitleFontSize]];
 		}
 	}
 }
@@ -92,6 +114,28 @@
 - (IBAction)cancelOperation:(id)sender {
 	// This is deliberately /not/ using self.window; if the window is nil, it's not active.
 	[window orderOut:sender];
+	wasCanceled = YES;
+}
+
+- (IBAction)insertNewline:(id)sender {
+	NSInteger selection = [table selectedRow];
+	NSAssert(selection != -1, @"No item selected");
+	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:selection];
+	[self.delegate ComBelkadanKeystone_completionItemChosen:item forQuery:self.query];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+	if (aSelector == @selector(insertNewline:) ||
+		aSelector == @selector(moveUp:)) {
+		return [self isActive];
+		
+	} else if (aSelector == @selector(moveDown:) ||
+			   aSelector == @selector(cancelOperation:)) {
+		return [self isVisible];
+
+	} else {
+		return [super respondsToSelector:aSelector];
+	}
 }
 
 #pragma mark -
@@ -110,6 +154,8 @@
 
 - (void)dealloc {
 	[window release];
+	[currentCompletions release];
+	[query release];
 	[super dealloc];
 }
 
@@ -134,13 +180,16 @@
 
 		TextCell *urlCell = [[table tableColumnWithIdentifier:@"url"] dataCell];
 		[urlCell suppressDefaultSelectionHighlight:YES];
-		[urlCell setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
-		[urlCell setBaselineFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSRegularControlSize]]];
+		[urlCell setFont:[NSFont systemFontOfSize:kURLFontSize]];
+		[urlCell setBaselineFont:[NSFont systemFontOfSize:kTitleFontSize]];
 	}
 	return window;
 }
 
 - (void)showWindowForField:(NSView *)field {
+	if ([self.currentCompletions count] == 0)
+		return;
+
 	static const CGFloat kSpaceBetweenFieldAndCompletions = 2; // px
 
 	NSRect fieldRect = [field convertRectToBase:[field bounds]];
@@ -154,23 +203,40 @@
 	[window setFrame:frame display:YES];
 	
 	[window orderFront:nil];
+	// Select the first row.
+	[table deselectAll:nil];
+	[self moveDown:nil];
 }
 
-- (void)updateQuery:(NSString *)query {
+- (void)updateQuery:(NSString *)newQuery {
+	if ([self.query isEqual:newQuery])
+		return;
+	
+	self.query = newQuery;
+	self.currentCompletions = [ComBelkadanKeystone_URLCompletionController completionsForQueryString:newQuery headers:YES];
+	wasCanceled = NO;
+	
 	(void)[self window]; // force load
+	[table deselectAll:nil];
 	[table reloadData];
 
-	NSInteger rowCount = [table numberOfRows];
-	if (rowCount != 0) {
+	NSInteger rowCount = [self.currentCompletions count];
+	if (rowCount == 0) {
+		[self cancelOperation:nil];
+	} else {
 		// Select the first row.
-		[table deselectAll:nil];
 		[self moveDown:nil];
-	}
 
-	NSSize tableSize = [table convertSizeToBase:[table bounds].size];
-	NSRect frame = [window frame];
-	frame.size.height = tableSize.height + 2 * [window cornerRadius];
-	[window setFrame:frame display:YES];
+		NSRect firstRowRect = [table rectOfRow:0];
+		NSRect lastRowRect = [table rectOfRow:rowCount-1];
+		CGFloat newHeight = (NSMaxY(lastRowRect) - NSMinY(firstRowRect));
+		newHeight += 2 * [window cornerRadius];
+
+		NSRect frame = [window frame];
+		frame.origin.y -= (newHeight - frame.size.height);
+		frame.size.height = newHeight;
+		[window setFrame:frame display:YES];
+	}
 }
 
 - (BOOL)isActive {
@@ -180,6 +246,14 @@
 - (BOOL)isVisible {
 	// This is deliberately /not/ using self.window; if the window is nil, it's not active.
 	return [window isVisible];
+}
+
+- (BOOL)wasCanceled {
+	return wasCanceled;
+}
+
+- (void)clearCanceled {
+	wasCanceled = NO;
 }
 
 @end
