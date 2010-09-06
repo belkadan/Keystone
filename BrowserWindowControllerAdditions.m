@@ -65,7 +65,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString];
-		} else if ([completionString ComBelkadanKeystone_queryWantsCompletion] && ![additionalDataSource wasCanceled]) {
+		} else if ([completionString ComBelkadanKeystone_queryWantsCompletion] && ![additionalDataSource wasCancelled]) {
 			if (completionIsVisible([self _URLCompletionController])) {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
 			}
@@ -74,7 +74,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 			[additionalDataSource showWindowForField:locationField];
 		} else {
 			// Don't do all the work of updating the query if we're not gonna show the window.
-			[additionalDataSource clearCanceled];
+			[additionalDataSource clearCancelled];
 			[self ComBelkadanKeystone_controlTextDidChange:note];
 		}
 	}

@@ -18,7 +18,7 @@
 
 	NSArray *currentCompletions;
 	NSString *query;
-	BOOL wasCanceled;
+	BOOL wasCancelled;
 }
 
 + (ComBelkadanKeystone_AdditionalCompletionTableDataSource *)sharedInstance;
@@ -31,8 +31,8 @@
 
 - (BOOL)isActive;
 - (BOOL)isVisible;
-- (BOOL)wasCanceled;
-- (void)clearCanceled;
+- (BOOL)wasCancelled;
+- (void)clearCancelled;
 
 - (void)showWindowForField:(NSView *)field;
 - (void)updateQuery:(NSString *)query;

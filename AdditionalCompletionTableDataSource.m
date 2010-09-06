@@ -114,7 +114,7 @@ static CGFloat const kURLFontSize = 11.0; // pt
 - (IBAction)cancelOperation:(id)sender {
 	// This is deliberately /not/ using self.window; if the window is nil, it's not active.
 	[window orderOut:sender];
-	wasCanceled = YES;
+	wasCancelled = YES;
 }
 
 - (IBAction)insertNewline:(id)sender {
@@ -214,7 +214,7 @@ static CGFloat const kURLFontSize = 11.0; // pt
 	
 	self.query = newQuery;
 	self.currentCompletions = [ComBelkadanKeystone_URLCompletionController completionsForQueryString:newQuery headers:YES];
-	wasCanceled = NO;
+	wasCancelled = NO;
 	
 	(void)[self window]; // force load
 	[table deselectAll:nil];
@@ -248,12 +248,12 @@ static CGFloat const kURLFontSize = 11.0; // pt
 	return [window isVisible];
 }
 
-- (BOOL)wasCanceled {
-	return wasCanceled;
+- (BOOL)wasCancelled {
+	return wasCancelled;
 }
 
-- (void)clearCanceled {
-	wasCanceled = NO;
+- (void)clearCancelled {
+	wasCancelled = NO;
 }
 
 @end
