@@ -6,14 +6,7 @@
 #import "CompletionAdapter.h"
 #import "SwizzleMacros.h"
 
-struct SNotification {
-    NSString *name;
-    void *object;
-    struct HashMap *userInfo;
-};
-
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
-#define CharFromBool(B) ((B) ? 'Y' : 'N')
 
 static NSImage *smallKeystoneIcon = nil;
 
@@ -26,6 +19,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 }
 
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
+- (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command;
 @end
 
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
@@ -56,11 +50,13 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 - (void)ComBelkadanKeystone_controlTextDidChange:(NSNotification *)note {
 	LocationTextField *locationField = [note object];
 	if (locationField != [self locationField]) {
+		// Don't catch other fields' warnings.
 		[self ComBelkadanKeystone_controlTextDidChange:note];
+		
 	} else {
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
-		NSText *editor = [locationField currentEditor];
+		NSTextView *editor = (NSTextView *)[locationField currentEditor];
 		NSString *completionString = [editor string];
 		
 		NSRange selection = [editor selectedRange];
@@ -70,12 +66,14 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString];
 		} else if ([completionString ComBelkadanKeystone_queryWantsCompletion] && ![additionalDataSource wasCanceled]) {
-			[additionalDataSource updateQuery:completionString];
-			[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];
+			if (completionIsVisible([self _URLCompletionController])) {
+				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
+			}
 			[additionalDataSource setDelegate:self];
-			
+			[additionalDataSource updateQuery:completionString];
 			[additionalDataSource showWindowForField:locationField];
 		} else {
+			// Don't do all the work of updating the query if we're not gonna show the window.
 			[additionalDataSource clearCanceled];
 			[self ComBelkadanKeystone_controlTextDidChange:note];
 		}
@@ -87,12 +85,14 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 	LocationTextField *locationField = [note object];
 	if (locationField == [self locationField]) {
+		[locationField setDetailString:@""];
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 	}	
 }
 
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window {
 	[self ComBelkadanKeystone_windowDidResignKey:window];
+	[[self locationField] setDetailString:@""];
 	[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 }
 
