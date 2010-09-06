@@ -41,6 +41,8 @@
 @end
 
 @interface ComBelkadanKeystone_URLCompletionController ()
++ (void)appendCompletionsForQueryString:(NSString *)query toArray:(NSMutableArray *)results headers:(BOOL)shouldInsertHeaders;
+
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef;
 - (ComBelkadanKeystone_FakeCompletionItem *)ComBelkadanKeystone_firstItemForQuery:(NSString *)query;
 
@@ -61,6 +63,9 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 @implementation ComBelkadanKeystone_URLCompletionController
 + (void)initialize {
+	if (self != [ComBelkadanKeystone_URLCompletionController class])
+		return;
+
 	additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
 
 	Class completionControllerClass = NSClassFromString(@"URLCompletionController");
@@ -71,23 +76,22 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 	}
 
 	if (![completionControllerClass instancesRespondToSelector:@selector(ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:)]) {
-		Class thisClass = [self class];
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
-		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_firstItemForQuery:);
-		COPY_METHOD(thisClass, completionControllerClass, ComBelkadanKeystone_isEditing);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, computeListItemsAndInitiallySelectedIndex:);
+		COPY_METHOD(self, completionControllerClass, ComBelkadanKeystone_firstItemForQuery:);
+		COPY_METHOD(self, completionControllerClass, ComBelkadanKeystone_isEditing);
 		
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSeparator:);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsSelectable:);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, listItemIsChecked:);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, reflectSelectedListItem);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, activateSelectedListItem);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, displayedStringForListItem:column:row:);
-		COPY_AND_EXCHANGE(thisClass, completionControllerClass, KEYSTONE_PREFIX, doSourceFieldCommandBySelector:);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, listItemIsSeparator:);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, listItemIsSelectable:);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, listItemIsChecked:);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, reflectSelectedListItem);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, activateSelectedListItem);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, displayedStringForListItem:column:row:);
+		COPY_AND_EXCHANGE(self, completionControllerClass, KEYSTONE_PREFIX, doSourceFieldCommandBySelector:);
 		
 		// will fail if on Safari 4.0.0-2, which already has these method around
 		// our versions are placeholders that "do the right thing" based on the Safari 4.0.3 context
-		COPY_METHOD(thisClass, completionControllerClass, completionListActsLikeMenu);
-		COPY_METHOD(thisClass, completionControllerClass, sourceField);
+		COPY_METHOD(self, completionControllerClass, completionListActsLikeMenu);
+		COPY_METHOD(self, completionControllerClass, sourceField);
 	}
 }
 
@@ -104,9 +108,12 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 }
 
 + (NSArray *)completionsForQueryString:(NSString *)query headers:(BOOL)shouldInsertHeaders {
-	// FIXME: most of this is copied from ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:
 	NSMutableArray *results = [NSMutableArray array];
+	[self appendCompletionsForQueryString:query toArray:results headers:shouldInsertHeaders];
+	return results;
+}
 
++ (void)appendCompletionsForQueryString:(NSString *)query toArray:(NSMutableArray *)results headers:(BOOL)shouldInsertHeaders {
 	for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
 		NSArray *customCompletions = [nextHandler completionsForQueryString:query];
 		
@@ -127,8 +134,6 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 			[results addObjectsFromArray:customCompletions];
 		}
 	}
-
-	return results;
 }
 
 + (ComBelkadanKeystone_FakeCompletionItem *)firstItemForQueryString:(NSString *)queryString {
@@ -145,47 +150,24 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef {
-	NSUInteger dummyIndex;
-	if (!indexRef) indexRef = &dummyIndex;
-	*indexRef = NSNotFound;
+	if (indexRef) *indexRef = NSNotFound;
 
 	NSMutableArray *results = [[self ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:indexRef] mutableCopy];
 	
 	// only complete if (a) Apple thinks we should, or (b) there's an edit going on
-	if ([results count] > 0 || [self ComBelkadanKeystone_isEditing]) {
+	NSUInteger normalCount = [results count];
+	if (normalCount > 0 || [self ComBelkadanKeystone_isEditing]) {
 		NSString *query = [self queryString];
+		BOOL useHeaders = [self completionListActsLikeMenu];
+		[ComBelkadanKeystone_URLCompletionController appendCompletionsForQueryString:query toArray:results headers:useHeaders];
 		
-		for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
-			NSArray *customCompletions = [nextHandler completionsForQueryString:query];
-			
-			if ([customCompletions count] > 0) {
-				if ([results count] > 0) {
-					[results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
-					
-				} else if ([self startsWithFirstItemSelected]) {
-					NSUInteger index = [self completionListActsLikeMenu] ? 1 : 0;
-					
-					if (indexRef && *indexRef == NSNotFound) {
-						for (ComBelkadanKeystone_FakeCompletionItem *item in customCompletions) {
-							if ([item canBeFirstSelectedForQueryString:query]) {
-								*indexRef = index;
-								break;
-							}
-							index += 1;
-						}
-					}
+		if (indexRef && *indexRef == NSNotFound && [self startsWithFirstItemSelected]) {
+			NSUInteger totalCount = [results count];
+			for (NSUInteger index = normalCount; index < totalCount; ++index) {
+				if ([[results objectAtIndex:index] canBeFirstSelectedForQueryString:query]) {
+					*indexRef = index;
+					break;
 				}
-
-				if ([self completionListActsLikeMenu]) {
-					NSString *title = [nextHandler headerTitle];
-					if (title) {
-						ComBelkadanKeystone_FakeCompletionItem *headerItem = [[ComBelkadanKeystone_SimpleCompletionItem alloc] initWithName:title URLString:nil];
-						[results addObject:headerItem];
-						[headerItem release];
-					}
-				}
-
-				[results addObjectsFromArray:customCompletions];
 			}
 		}
 	}
@@ -195,13 +177,7 @@ static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = n
 
 /*! Added: returns the first item available for query completion. */
 - (ComBelkadanKeystone_FakeCompletionItem *)ComBelkadanKeystone_firstItemForQuery:(NSString *)queryString {
-	ComBelkadanKeystone_FakeCompletionItem *supplied;
-	for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
-		supplied = [nextHandler firstCompletionForQueryString:queryString];
-		if (supplied) return supplied;
-	}
-	
-	return nil;
+	return [ComBelkadanKeystone_URLCompletionController firstItemForQueryString:queryString];
 }
 
 /*! Swizzle-wrapped to handle fake completion items (item.isSeparator) */

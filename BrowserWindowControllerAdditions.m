@@ -195,7 +195,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		selection.length = [replacement length] - selection.location;
 		[editor setSelectedRange:selection];
 		
-		[locationField setDetailString:[completion urlStringForQueryString:query]];
+		[locationField setDetailString:[completion previewURLStringForQueryString:query]];
 		[locationField setIcon:smallKeystoneIcon];
 	} else {
 		[locationField setDetailString:@""];

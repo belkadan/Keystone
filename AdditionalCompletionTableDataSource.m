@@ -21,7 +21,7 @@ static CGFloat const kURLFontSize = 11.0; // pt
 	if ([kTitleColumnID isEqual:[tableColumn identifier]]) {
 		return [item nameForQueryString:self.query];
 	} else {
-		return [item urlStringForQueryString:self.query];
+		return [item previewURLStringForQueryString:self.query];
 	}
 }
 
