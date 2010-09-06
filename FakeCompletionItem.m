@@ -36,8 +36,8 @@
 - (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {
 	NSString *name = self.name;
 	
+	*selectionStart = [query length];
 	if (name && [name rangeOfString:query options:(self.caseInsensitive ? NSCaseInsensitiveSearch : 0)].location == 0) {
-		*selectionStart = [query length];
 		return name;
 	} else {
 		return query;
