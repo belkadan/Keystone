@@ -111,8 +111,8 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 - (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {
 	NSUInteger queryLength = [query length];
 
+	*selectionStart = queryLength;
 	if (queryLength < [keyword length] && [keyword hasPrefix:query]) {
-		*selectionStart = queryLength;
 		return keyword;
 	} else {
 		return query;
