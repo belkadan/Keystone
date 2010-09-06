@@ -68,11 +68,11 @@ static CGFloat const kURLFontSize = 11.0; // pt
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(TextCell *)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
 	if ([kTitleColumnID isEqual:[tableColumn identifier]]) {
 		if ([self tableView:tableView isHeaderRow:row]) {
-			[cell setLeftMargin:4];
+			[cell setLeftMargin:6];
 			[cell setEnabled:NO];
 			[cell setFont:[NSFont systemFontOfSize:kURLFontSize]];
 		} else {
-			[cell setLeftMargin:14];
+			[cell setLeftMargin:18];
 			[cell setEnabled:YES];
 			[cell setFont:[NSFont systemFontOfSize:kTitleFontSize]];
 		}
