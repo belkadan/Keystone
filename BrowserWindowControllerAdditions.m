@@ -67,6 +67,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
 		NSTextView *editor = (NSTextView *)[locationField currentEditor];
+		NSAssert(editor, @"Location field changed but it's not being edited.");
 		NSString *completionString = [editor string];
 		
 		NSRange selection = [editor selectedRange];
@@ -170,15 +171,17 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender {
 	LocationTextField *locationField = [self locationField];
 	NSText *editor = [locationField currentEditor];
-	NSString *completionString = [editor string];
-
-	NSRange selection = [editor selectedRange];
-	if (selection.length > 0)
-		completionString = [completionString substringToIndex:selection.location];
-	
-	ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString];
-	if (completion) {
-		[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
+	if (editor) {
+		NSString *completionString = [editor string];
+		
+		NSRange selection = [editor selectedRange];
+		if (selection.length > 0)
+			completionString = [completionString substringToIndex:selection.location];
+		
+		ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString];
+		if (completion) {
+			[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
+		}
 	}
 
 	[self ComBelkadanKeystone_goToToolbarLocation:sender];
@@ -196,6 +199,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	LocationTextField *locationField = [self locationField];
 	if (completion) {
 		NSTextView *editor = (NSTextView *)[locationField currentEditor];
+		NSAssert(editor, @"Completion item selected but location field is not being edited.");
 		NSRange selection = NSMakeRange(0, 0);
 
 		// FIXME: This cast sucks, but really it's being used as an unsigned integer.
