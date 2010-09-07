@@ -18,6 +18,7 @@
 static NSString * const kKeystonePreferencesDomain = @"com.belkadan.Keystone";
 static NSString * const kPreferencesCompletionKey = @"SortedCompletions";
 static NSString * const kPreferencesUntestedAlertSuppressionKey = @"SuppressUntestedAlert";
+static NSString * const kPreferencesAutocompletionModeKey = @"AutocompleteMode";
 static NSString * const kDefaultPreferencesFile = @"defaults"; // extension must be .plist
 
 static NSString * const kAutodiscoverySearch = @"---Keystone---";
@@ -82,6 +83,11 @@ enum {
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
 	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
 		isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
+		
+		NSNumber *autocompleteMode = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesAutocompletionModeKey];
+		if (autocompleteMode) {
+			[ComBelkadanKeystone_URLCompletionController setAutocompletionMode:[autocompleteMode unsignedIntegerValue]];
+		}
 
 		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
@@ -381,7 +387,7 @@ enum {
 
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne {
 	if ([query rangeOfCharacterFromSet:[[NSCharacterSet whitespaceCharacterSet] invertedSet]].location != NSNotFound) {
-		NSUInteger splitLoc = [query rangeOfString:@" "].location;
+		NSUInteger splitLoc = [query rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location;
 		NSString *keyword;
 		
 		if (splitLoc == NSNotFound) keyword = query;

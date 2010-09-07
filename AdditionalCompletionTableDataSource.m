@@ -6,8 +6,8 @@
 #import "TextCell.h"
 
 static NSString * const kTitleColumnID = @"title";
-static CGFloat const kTitleFontSize = 12.0; // pt
-static CGFloat const kURLFontSize = 11.0; // pt
+static CGFloat const kTitleFontSize = 12.0f; // pt
+static CGFloat const kURLFontSize = 11.0f; // pt
 
 @implementation ComBelkadanKeystone_AdditionalCompletionTableDataSource
 @synthesize delegate, query, currentCompletions;
@@ -161,7 +161,7 @@ static CGFloat const kURLFontSize = 11.0; // pt
 
 - (NSWindow *)window {
 	if (!window) {
-		window = [[CompletionWindow alloc] initWithContentRect:NSMakeRect(300, 700, 800, 100) styleMask:0 backing:NSBackingStoreBuffered defer:NO];
+		window = [[NSClassFromString(@"CompletionWindow") alloc] initWithContentRect:NSMakeRect(300, 700, 800, 100) styleMask:0 backing:NSBackingStoreBuffered defer:NO];
 		[window setDelegate:self];
 
 		[window setCornersAreRounded:YES];
@@ -170,7 +170,7 @@ static CGFloat const kURLFontSize = 11.0; // pt
 
 		NSView *contentView = [window contentView];
 		NSScrollView *scrollView = (NSScrollView *)[self view];
-		[scrollView setFrame:NSInsetRect([contentView bounds], 0, [window cornerRadius])];
+		[scrollView setFrame:NSInsetRect([contentView bounds], 0.0f, [window cornerRadius])];
 		[contentView addSubview:scrollView];
 		
 		[table setActsLikeMenu:YES];

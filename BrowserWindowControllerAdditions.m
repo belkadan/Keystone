@@ -19,12 +19,20 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 }
 
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
+- (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender;
+- (void)ComBelkadanKeystone_controlTextDidChange:(NSNotification *)note;
+- (void)ComBelkadanKeystone_controlTextDidEndEditing:(NSNotification *)note;
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command;
+- (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window;
+- (void)ComBelkadanKeystone__updateLocationFieldIconNow;
 @end
 
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
 - (LocationTextField *)locationField;
 - (struct CompletionController *)_URLCompletionController;
+
+- (IBAction)goToToolbarLocation:(id)sender;
+- (void)_updateLocationFieldIconNow;
 @end
 
 @implementation ComBelkadanKeystone_BrowserWindowController
@@ -54,6 +62,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		[self ComBelkadanKeystone_controlTextDidChange:note];
 		
 	} else {
+		// FIXME: This method is nearing atrocious (but isn't there yet).
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
 		NSTextView *editor = (NSTextView *)[locationField currentEditor];
@@ -65,13 +74,16 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString];
-		} else if ([completionString ComBelkadanKeystone_queryWantsCompletion] && ![additionalDataSource wasCancelled]) {
+			
+		} else if ([ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:completionString] &&
+				   ![additionalDataSource wasCancelled]) {
 			if (completionIsVisible([self _URLCompletionController])) {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
 			}
 			[additionalDataSource setDelegate:self];
 			[additionalDataSource updateQuery:completionString];
 			[additionalDataSource showWindowForField:locationField];
+			
 		} else {
 			// Don't do all the work of updating the query if we're not gonna show the window.
 			[additionalDataSource clearCancelled];
@@ -163,11 +175,9 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	if (selection.length > 0)
 		completionString = [completionString substringToIndex:selection.location];
 	
-	if ([completionString ComBelkadanKeystone_queryWantsCompletion]) {
-		ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_URLCompletionController firstItemForQueryString:completionString];
-		if (completion) {
-			[locationField setStringValue:[completion urlStringForQueryString:completionString]];
-		}
+	ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:completionString];
+	if (completion) {
+		[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
 	}
 
 	[self ComBelkadanKeystone_goToToolbarLocation:sender];
