@@ -93,8 +93,9 @@ enum {
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
 
 		if (isSafari5) {
-			//(void)[ComBelkadanKeystone_CompletionControllerObjCAdapter class]; // force +initialize
 			(void)[ComBelkadanKeystone_BrowserWindowController class]; // force +initialize
+		} else {
+			(void)[ComBelkadanKeystone_URLCompletionController class]; // force +initialize
 		}
 	} else {
 		[self alertUntested];
