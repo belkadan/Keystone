@@ -35,8 +35,8 @@
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
 		8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
-		8CBEF08511C4664F00F666D3 /* CompletionAdapterAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */; };
 		8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */; };
+		8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC3380D1235C0480053E52F /* CompletionServer.m */; };
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
 		8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29B470F7EF1C400D146C3 /* defaults.plist */; };
 		8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */; };
@@ -116,6 +116,8 @@
 		8CC1FE37120493260022CA05 /* BrowserWindowControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserWindowControllerAdditions.h; sourceTree = "<group>"; };
 		8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserWindowControllerAdditions.m; sourceTree = "<group>"; };
 		8CC1FEB0120498B00022CA05 /* LocationTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTextField.h; sourceTree = "<group>"; };
+		8CC3380C1235C0480053E52F /* CompletionServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionServer.h; sourceTree = "<group>"; };
+		8CC3380D1235C0480053E52F /* CompletionServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionServer.m; sourceTree = "<group>"; };
 		8CD0A6A511C447B90053FB8C /* Safari.5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.5.h; path = ../Disassembly/Safari.5.h; sourceTree = SOURCE_ROOT; };
 		8CD11C860FBFAA250063607C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		8CD29B430F7EF0AB00D146C3 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/defaults.plist; sourceTree = "<group>"; };
@@ -210,6 +212,8 @@
 		08FB77AFFE84173DC02AAC07 /* Keystone Core */ = {
 			isa = PBXGroup;
 			children = (
+				8CC3380C1235C0480053E52F /* CompletionServer.h */,
+				8CC3380D1235C0480053E52F /* CompletionServer.m */,
 				8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */,
 				8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */,
 				8C87FBDC10427B8E00DB015A /* CompletionAdapterAdditions.h */,
@@ -516,9 +520,9 @@
 				8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */,
 				8CFF7FB311140B0F003B5DB5 /* UpdateController.m in Sources */,
 				8C74C92611A20CA70062AD6E /* DefaultsDomain.m in Sources */,
-				8CBEF08511C4664F00F666D3 /* CompletionAdapterAdditions.m in Sources */,
 				8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */,
 				8C8DB28C1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.m in Sources */,
+				8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

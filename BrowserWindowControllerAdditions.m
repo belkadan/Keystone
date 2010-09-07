@@ -1,8 +1,9 @@
 #import "BrowserWindowControllerAdditions.h"
-#import "CompletionControllerAdditions.h"
+#import "CompletionServer.h"
 #import "AdditionalCompletionTableDataSource.h"
-#import "LocationTextField.h"
 #import "FakeCompletionItem.h"
+
+#import "LocationTextField.h"
 #import "CompletionAdapter.h"
 #import "SwizzleMacros.h"
 
@@ -75,7 +76,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString];
 			
-		} else if ([ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:completionString] &&
+		} else if ([ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString] &&
 				   ![additionalDataSource wasCancelled]) {
 			if (completionIsVisible([self _URLCompletionController])) {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
@@ -175,7 +176,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	if (selection.length > 0)
 		completionString = [completionString substringToIndex:selection.location];
 	
-	ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:completionString];
+	ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString];
 	if (completion) {
 		[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
 	}

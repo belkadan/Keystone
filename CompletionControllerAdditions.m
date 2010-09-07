@@ -1,17 +1,15 @@
 #import "CompletionControllerAdditions.h"
 
-#import "CompletionAdapterAdditions.h"
+#import "CompletionServer.h"
 #import "FakeCompletionItem.h"
 #import "CompletionHandler.h"
 #import "CompletionControllers.h"
-
-#import "SortedArray.h"
 
 #import "SwizzleMacros.h"
 
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
 	
-@interface ComBelkadanKeystone_URLCompletionController (ComBelkadanKeystone_SafariURLCompletionControllerMethods)
+@interface ComBelkadanKeystone_URLCompletionController (ActuallyInURLCompletionController)
 - (NSString *)queryString;
 
 - (NSTextField *)_sourceField;
@@ -31,8 +29,6 @@
 @end
 
 @interface ComBelkadanKeystone_URLCompletionController ()
-+ (void)appendCompletionsForQueryString:(NSString *)query toArray:(NSMutableArray *)results headers:(BOOL)shouldInsertHeaders;
-
 - (NSArray *)ComBelkadanKeystone_computeListItemsAndInitiallySelectedIndex:(NSUInteger *)indexRef;
 
 - (BOOL)ComBelkadanKeystone_doSourceFieldCommandBySelector:(SEL)command;
@@ -48,15 +44,10 @@
 @end
 
 
-static NSArray <ComBelkadanUtils_OrderedMutableArray> *additionalCompletions = nil;
-static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKeystone_AutocompletionDefault;
-
 @implementation ComBelkadanKeystone_URLCompletionController
 + (void)initialize {
 	if (self != [ComBelkadanKeystone_URLCompletionController class])
 		return;
-
-	additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
 
 	Class completionControllerClass = NSClassFromString(@"URLCompletionController");
 	if (completionControllerClass == Nil) completionControllerClass = NSClassFromString(@"OldURLCompletionController");
@@ -84,73 +75,6 @@ static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKe
 	}
 }
 
-+ (void)addCompletionHandler:(id <ComBelkadanKeystone_CompletionHandler>)handler {
-	[additionalCompletions addObject:handler];
-}
-
-+ (void)removeCompletionHandler:(id <ComBelkadanKeystone_CompletionHandler>)handler {
-	[additionalCompletions removeObject:handler];
-}
-
-+ (NSArray *)completionHandlers {
-	return additionalCompletions;
-}
-
-+ (NSArray *)completionsForQueryString:(NSString *)query headers:(BOOL)shouldInsertHeaders {
-	NSMutableArray *results = [NSMutableArray array];
-	[self appendCompletionsForQueryString:query toArray:results headers:shouldInsertHeaders];
-	return results;
-}
-
-+ (void)appendCompletionsForQueryString:(NSString *)query toArray:(NSMutableArray *)results headers:(BOOL)shouldInsertHeaders {
-	for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
-		NSArray *customCompletions = [nextHandler completionsForQueryString:query];
-		
-		if ([customCompletions count] > 0) {
-			if ([results count] > 0) {
-				[results addObject:[ComBelkadanKeystone_FakeCompletionItem separatorItem]];
-			}
-			
-			if (shouldInsertHeaders) {
-				NSString *title = [nextHandler headerTitle];
-				if (title) {
-					ComBelkadanKeystone_FakeCompletionItem *headerItem = [[ComBelkadanKeystone_SimpleCompletionItem alloc] initWithName:title URLString:nil];
-					[results addObject:headerItem];
-					[headerItem release];
-				}
-			}
-			
-			[results addObjectsFromArray:customCompletions];
-		}
-	}
-}
-
-+ (ComBelkadanKeystone_FakeCompletionItem *)autocompleteForQueryString:(NSString *)query {
-	BOOL needsExactMatch = YES;
-	if (autocompletionMode & ComBelkadanKeystone_AutocompletionSpaces) {
-		if ([query rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound) {
-			needsExactMatch = NO;
-		}
-	}
-
-	if (autocompletionMode & ComBelkadanKeystone_AutocompletionKeywords) {
-		for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
-			ComBelkadanKeystone_FakeCompletionItem *supplied = [nextHandler firstCompletionForQueryString:query];
-			if (supplied) {
-				if (!needsExactMatch || [supplied isExactMatchForQueryString:query]) {
-					return supplied;
-				}
-			}
-		}
-	}
-
-	return nil;	
-}
-
-+ (void)setAutocompletionMode:(ComBelkadanKeystone_AutocompletionMode)newMode {
-	autocompletionMode = newMode;
-}
-
 #pragma mark -
 
 /*! Swizzle-wrapped: add fake completion items from all sources following existing completions */
@@ -164,10 +88,10 @@ static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKe
 	if (normalCount > 0 || [self ComBelkadanKeystone_isEditing]) {
 		NSString *query = [self queryString];
 		BOOL useHeaders = [self completionListActsLikeMenu];
-		[ComBelkadanKeystone_URLCompletionController appendCompletionsForQueryString:query toArray:results headers:useHeaders];
+		[ComBelkadanKeystone_CompletionServer appendCompletionsForQueryString:query toArray:results headers:useHeaders];
 		
 		if (indexRef && *indexRef == NSNotFound && [self startsWithFirstItemSelected]) {
-			ComBelkadanKeystone_FakeCompletionItem *item = [ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:query];
+			ComBelkadanKeystone_FakeCompletionItem *item = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:query];
 			if (item) *indexRef = [results indexOfObject:item];
 		}
 	}
@@ -287,7 +211,7 @@ static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKe
 		BOOL result = [self ComBelkadanKeystone_doSourceFieldCommandBySelector:command];
 		NSString *query = [self sourceFieldString];
 		
-		ComBelkadanKeystone_FakeCompletionItem *item = [ComBelkadanKeystone_URLCompletionController autocompleteForQueryString:query];
+		ComBelkadanKeystone_FakeCompletionItem *item = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:query];
 		if (item) {
 			query = [query copy];
 

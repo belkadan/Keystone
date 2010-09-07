@@ -1,6 +1,7 @@
 #import "AdditionalCompletionTableDataSource.h"
-#import "CompletionControllerAdditions.h"
+#import "CompletionServer.h"
 #import "FakeCompletionItem.h"
+
 #import "CompletionWindow.h"
 #import "CompletionListTableView.h"
 #import "TextCell.h"
@@ -213,7 +214,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 		return;
 	
 	self.query = newQuery;
-	self.currentCompletions = [ComBelkadanKeystone_URLCompletionController completionsForQueryString:newQuery headers:YES];
+	self.currentCompletions = [ComBelkadanKeystone_CompletionServer completionsForQueryString:newQuery headers:YES];
 	wasCancelled = NO;
 	
 	(void)[self window]; // force load

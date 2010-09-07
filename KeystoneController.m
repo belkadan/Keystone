@@ -1,5 +1,6 @@
 #import "KeystoneController.h"
 
+#import "CompletionServer.h"
 #import "CompletionControllerAdditions.h"
 #import "CompletionAdapterAdditions.h"
 #import "BrowserWindowControllerAdditions.h"
@@ -86,10 +87,10 @@ enum {
 		
 		NSNumber *autocompleteMode = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesAutocompletionModeKey];
 		if (autocompleteMode) {
-			[ComBelkadanKeystone_URLCompletionController setAutocompletionMode:[autocompleteMode unsignedIntegerValue]];
+			[ComBelkadanKeystone_CompletionServer setAutocompletionMode:[autocompleteMode unsignedIntegerValue]];
 		}
 
-		[ComBelkadanKeystone_URLCompletionController addCompletionHandler:[self sharedInstance]];
+		[ComBelkadanKeystone_CompletionServer addCompletionHandler:[self sharedInstance]];
 		(void)[ComBelkadanKeystone_BookmarksControllerObjC class]; // force +initialize
 
 		if (isSafari5) {
