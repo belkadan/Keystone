@@ -25,17 +25,22 @@
 }
 
 - (BOOL)canBeFirstSelectedForQueryString:(NSString *)query {
-	return [query rangeOfString:@" "].location != NSNotFound;
+	return !self.isHeader && !self.isSeparator && [query rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound;
+}
+
+- (BOOL)isExactMatchForQueryString:(NSString *)query {
+	NSString *name = self.name;
+	return name && [name compare:query options:(self.caseInsensitive ? NSCaseInsensitiveSearch : 0)] == NSOrderedSame;
 }
 
 - (BOOL)caseInsensitive {
 	return YES;
 }
 
-- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {
-	NSString *name = self.name;
-	
+- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {	
 	*selectionStart = [query length];
+
+	NSString *name = self.name;
 	if (name && [name rangeOfString:query options:(self.caseInsensitive ? NSCaseInsensitiveSearch : 0)].location == 0) {
 		return name;
 	} else {

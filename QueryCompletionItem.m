@@ -57,7 +57,21 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 #pragma mark -
 
 - (BOOL)canBeFirstSelectedForQueryString:(NSString *)query {
-	return [keyword length] > 0 || [query rangeOfString:@" "].location != NSNotFound;
+	return [keyword length] > 0 || [query rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]].location != NSNotFound;
+}
+
+- (BOOL)isExactMatchForQueryString:(NSString *)query {
+	if (![query hasPrefix:keyword])
+		return NO;
+
+	NSUInteger keywordLength = [keyword length];
+	if ([query length] == keywordLength)
+		return YES;
+
+	if ([[NSCharacterSet whitespaceCharacterSet] characterIsMember:[query characterAtIndex:keywordLength]])
+		return YES;
+
+	return NO;
 }
 
 - (NSString *)nameForQueryString:(NSString *)query {

@@ -49,6 +49,19 @@
  * URL or URL fragment (such as "belkadan.com"). Don't frustrate the user.
  */
 - (BOOL)canBeFirstSelectedForQueryString:(NSString *)query;
+
+/*!
+ * Returns YES if the query isn't just a prefix of the completion, but an actual
+ * full match. For keyword search, for example, the entire keyword should match.
+ * This is used to determine "steal" behavior -- whether or not a given query
+ * should show Keystone completions over Safari's default completions and so on.
+ *
+ * Subclasses should be careful not to return YES if the query could be a usual
+ * URL (such as "belkadan.com"). However, unlike -canBeFirstSelectedForQueryString:,
+ * it is all right to steal URL fragments ("belkadan"), since they may be user-
+ * defined shortcuts.
+ */
+- (BOOL)isExactMatchForQueryString:(NSString *)query;
  
 /*!
  * Returns a version of the name suitable for display in the completions menu
