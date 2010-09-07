@@ -95,8 +95,6 @@
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
 		8C74C92511A20CA70062AD6E /* DefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsDomain.m; sourceTree = "<group>"; };
 		8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.0.3.h; path = ../Disassembly/Safari.4.0.3.h; sourceTree = SOURCE_ROOT; };
-		8C87FBDC10427B8E00DB015A /* CompletionAdapterAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapterAdditions.h; sourceTree = "<group>"; };
-		8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionAdapterAdditions.m; sourceTree = "<group>"; };
 		8C8945C9104352530051A988 /* SwizzleMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzleMacros.h; sourceTree = "<group>"; };
 		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
 		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
@@ -216,8 +214,6 @@
 				8CC3380D1235C0480053E52F /* CompletionServer.m */,
 				8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */,
 				8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */,
-				8C87FBDC10427B8E00DB015A /* CompletionAdapterAdditions.h */,
-				8C87FBDD10427B8E00DB015A /* CompletionAdapterAdditions.m */,
 				8CC1FE37120493260022CA05 /* BrowserWindowControllerAdditions.h */,
 				8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */,
 				8C8DB28A1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.h */,

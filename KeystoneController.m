@@ -2,7 +2,6 @@
 
 #import "CompletionServer.h"
 #import "CompletionControllerAdditions.h"
-#import "CompletionAdapterAdditions.h"
 #import "BrowserWindowControllerAdditions.h"
 
 #import "AddCompletionController.h"
