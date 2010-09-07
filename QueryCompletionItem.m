@@ -61,12 +61,16 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 }
 
 - (BOOL)isExactMatchForQueryString:(NSString *)query {
+	NSUInteger keywordLength = [keyword length];
+	if (keywordLength == 0)
+		return NO;
+	
 	if (![query hasPrefix:keyword])
 		return NO;
 
-	NSUInteger keywordLength = [keyword length];
+	// FIXME: cache this?
 	if ([query length] == keywordLength)
-		return YES;
+		return [shortcutURL rangeOfString:ComBelkadanKeystone_kSubstitutionMarker].location == NSNotFound;
 
 	if ([[NSCharacterSet whitespaceCharacterSet] characterIsMember:[query characterAtIndex:keywordLength]])
 		return YES;
