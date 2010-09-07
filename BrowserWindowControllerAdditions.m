@@ -117,7 +117,7 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 
 		// Special case for cancelOperation: -- clear the location field detail string.
 		if (command == @selector(cancelOperation:))
-			[control setDetailString:@""];
+			[self _updateLocationFieldIconNow];
 
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
