@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3</string>
+	<string>1.0.90</string>
 	<key>NSPrincipalClass</key>
 	<string>ComBelkadanKeystone_Controller</string>
 	<key>SIMBLTargetApplications</key>
