@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C0D06921235FB0B001BB0E7 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8C0D06911235FB0B001BB0E7 /* TODO.txt */; };
 		8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE7104A14D200A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE8104A14D600A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
@@ -66,6 +67,7 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		32DBCF630370AF2F00C91783 /* Keystone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keystone_Prefix.pch; sourceTree = "<group>"; };
+		8C0D06911235FB0B001BB0E7 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
 		8C27FDE1104A14BF00A96844 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		8C2ABE321112BF6300EF077B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = "../Sparkle 1/With Garbage Collection/Sparkle.framework"; sourceTree = SOURCE_ROOT; };
 		8C32884010E0930300C2D25C /* SheetRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SheetRequest.h; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		089C166AFE841209C02AAC07 /* Keystone */ = {
 			isa = PBXGroup;
 			children = (
+				8C0D06911235FB0B001BB0E7 /* TODO.txt */,
 				08FB77AFFE84173DC02AAC07 /* Keystone Core */,
 				8C6F06370F981B6000216A72 /* Keystone Queries */,
 				8C6F06590F981C0000216A72 /* Keystone Names */,
@@ -438,6 +441,7 @@
 				8CF220A810E01338009074CD /* AddCompletion.xib in Resources */,
 				8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */,
 				8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */,
+				8C0D06921235FB0B001BB0E7 /* TODO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

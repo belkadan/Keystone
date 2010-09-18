@@ -74,12 +74,19 @@ static BOOL shouldShowFavicon () {
 		NSAssert(editor, @"Location field changed but it's not being edited.");
 		NSString *completionString = [editor string];
 		
+		BOOL shouldAutocomplete;
+
 		NSRange selection = [editor selectedRange];
-		if (selection.length > 0)
+		if (selection.length > 0) {
 			completionString = [completionString substringToIndex:selection.location];
+			shouldAutocomplete = YES;
+		} else {
+			shouldAutocomplete = (selection.location == [completionString length]);
+		}
+		
 
 		if ([additionalDataSource isVisible]) {
-			[additionalDataSource updateQuery:completionString];
+			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
 			
 		} else if ([ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString] &&
 				   ![additionalDataSource wasCancelled]) {
@@ -87,7 +94,7 @@ static BOOL shouldShowFavicon () {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
 			}
 			[additionalDataSource setDelegate:self];
-			[additionalDataSource updateQuery:completionString];
+			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
 			[additionalDataSource showWindowForField:locationField];
 			
 		} else {
@@ -153,7 +160,7 @@ static BOOL shouldShowFavicon () {
 				NSRange selection = [fieldEditor selectedRange];
 				if (selection.length > 0)
 					completionString = [completionString substringToIndex:selection.location];
-				[additionalDataSource updateQuery:completionString];
+				[additionalDataSource updateQuery:completionString autocomplete:YES];
 			
 				[additionalDataSource showWindowForField:control];
 				return YES;
@@ -174,18 +181,11 @@ static BOOL shouldShowFavicon () {
 
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender {
 	LocationTextField *locationField = [self locationField];
-	NSText *editor = [locationField currentEditor];
-	if (editor) {
-		NSString *completionString = [editor string];
-		
-		NSRange selection = [editor selectedRange];
-		if (selection.length > 0)
-			completionString = [completionString substringToIndex:selection.location];
-		
-		ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString];
-		if (completion) {
-			[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
-		}
+	NSString *completionString = [locationField stringValue];
+	
+	ComBelkadanKeystone_FakeCompletionItem *completion = [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString];
+	if (completion) {
+		[locationField setStringValue:[completion urlStringForQueryString:completionString]];		
 	}
 
 	[self ComBelkadanKeystone_goToToolbarLocation:sender];

@@ -209,7 +209,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	[self moveDown:nil];
 }
 
-- (void)updateQuery:(NSString *)newQuery {
+- (void)updateQuery:(NSString *)newQuery autocomplete:(BOOL)shouldAutocomplete {
 	if ([self.query isEqual:newQuery])
 		return;
 	
@@ -224,7 +224,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	NSInteger rowCount = [self.currentCompletions count];
 	if (rowCount == 0) {
 		[self cancelOperation:nil];
-	} else {
+	} else if (shouldAutocomplete) {
 		// Select the first row.
 		[self moveDown:nil];
 
