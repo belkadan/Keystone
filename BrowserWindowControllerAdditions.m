@@ -19,6 +19,10 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	return [completionController->_window isVisible] && ([completionController->_table selectedRow] != -1);
 }
 
+static BOOL shouldShowFavicon () {
+	return [[NSUserDefaults standardUserDefaults] boolForKey:@"WebIconDatabaseEnabled"];
+}
+
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender;
 - (void)ComBelkadanKeystone_controlTextDidChange:(NSNotification *)note;
@@ -210,8 +214,9 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 		selection.length = [replacement length] - selection.location;
 		[editor setSelectedRange:selection];
 		
-		[locationField setDetailString:[completion previewURLStringForQueryString:query]];
-		[locationField setIcon:smallKeystoneIcon];
+		//[locationField setDetailString:[completion previewURLStringForQueryString:query]];
+		if (shouldShowFavicon())
+			[locationField setIcon:smallKeystoneIcon];
 	} else {
 		[locationField setDetailString:@""];
 	}
