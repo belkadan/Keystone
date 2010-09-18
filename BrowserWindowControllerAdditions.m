@@ -209,6 +209,7 @@ static BOOL shouldShowFavicon () {
 		// FIXME: This cast sucks, but really it's being used as an unsigned integer.
 		// So...need to fix -reflectedStringForQueryString:withSelectionFrom:
 		NSString *replacement = [completion reflectedStringForQueryString:query withSelectionFrom:(NSInteger *)&selection.location];
+		[editor shouldChangeTextInRange:NSMakeRange(0, [[editor string] length]) replacementString:replacement];
 		[editor setString:replacement];
 
 		selection.length = [replacement length] - selection.location;
