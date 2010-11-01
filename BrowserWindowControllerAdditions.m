@@ -213,10 +213,11 @@ static BOOL shouldShowFavicon () {
 		[editor shouldChangeTextInRange:NSMakeRange(0, [[editor string] length]) replacementString:replacement];
 		[editor setString:replacement];
 
-		if (selection.length == 0 && oldSelection.location < [replacement length]) {
+		NSUInteger replacementLength = [replacement length];
+		if (selection.location == replacementLength && oldSelection.location < [replacement length]) {
 			[editor setSelectedRange:oldSelection];
 		} else {
-			selection.length = [replacement length] - selection.location;
+			selection.length = replacementLength - selection.location;
 			[editor setSelectedRange:selection];
 		}
 		
