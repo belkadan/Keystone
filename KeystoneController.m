@@ -287,15 +287,27 @@ enum {
 	
 	if (form) {
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidStart:) name:WebViewProgressStartedNotification object:webView];
 		[form submit];
 	} else {
 		NSBeep(); // should not happen (menu item should be disabled)
 	}
 }
 
+- (void)autodiscoveryLoadDidStart:(NSNotification *)note {
+	// TODO: verify that this is the search the user wanted to do
+	WebView *webView = [note object];
+	NSString *completionURLString = [webView mainFrameURL];
+	NSRange queryRange = [completionURLString rangeOfString:kAutodiscoverySearch options:NSCaseInsensitiveSearch];
+	if (queryRange.location != NSNotFound) {
+		[self autodiscoveryLoadDidFinish:note];
+	}
+}	
+
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note {
 	// TODO: verify that this is the search the user wanted to do
 	WebView *webView = [note object];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressStartedNotification object:webView];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
 
 	id <ComBelkadanKeystone_SheetRequest> sheetRequest;
