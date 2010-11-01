@@ -36,4 +36,5 @@
 
 - (void)showWindowForField:(NSView *)field;
 - (void)updateQuery:(NSString *)query autocomplete:(BOOL)shouldAutocomplete;
+- (void)clearCancelledIfChanged:(NSString *)query;
 @end

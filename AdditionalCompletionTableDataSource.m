@@ -215,7 +215,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	
 	self.query = newQuery;
 	self.currentCompletions = [ComBelkadanKeystone_CompletionServer completionsForQueryString:newQuery headers:YES];
-	wasCancelled = NO;
+	[self clearCancelled];
 	
 	(void)[self window]; // force load
 	[table deselectAll:nil];
@@ -238,6 +238,12 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 		frame.size.height = newHeight;
 		[window setFrame:frame display:YES];
 	}
+}
+
+- (void)clearCancelledIfChanged:(NSString *)newQuery {
+	if ([self.query isEqual:newQuery])
+		return;
+	[self clearCancelled];
 }
 
 - (BOOL)isActive {

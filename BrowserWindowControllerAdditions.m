@@ -99,7 +99,7 @@ static BOOL shouldShowFavicon () {
 			
 		} else {
 			// Don't do all the work of updating the query if we're not gonna show the window.
-			[additionalDataSource clearCancelled];
+			[additionalDataSource clearCancelledIfChanged:completionString];
 			[self ComBelkadanKeystone_controlTextDidChange:note];
 		}
 	}
@@ -148,8 +148,10 @@ static BOOL shouldShowFavicon () {
 				// Bring back the regular set by deleting the selection.
 				if ([fieldEditor selectedRange].length > 0)
 					[fieldEditor deleteBackward:nil];
-				// If there's no selection, just send a notification ourself.
-				[self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
+				else
+					// If there's no selection, just send a notification ourself.
+					// We use the original version so as not to clear the cancel flag.
+					[self ComBelkadanKeystone_controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
 				return YES;
 
 			} else {
@@ -171,8 +173,9 @@ static BOOL shouldShowFavicon () {
 			// ...by deleting the selection.
 			if ([fieldEditor selectedRange].length > 0)
 				[fieldEditor deleteBackward:nil];
-			// If there's no selection, just send a notification ourself.
-			[self controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
+			else
+				// If there's no selection, just send a notification ourself.
+				[self ComBelkadanKeystone_controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
 			return YES;
 		}
 	}
