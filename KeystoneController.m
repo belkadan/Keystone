@@ -45,6 +45,7 @@ enum {
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
 
+- (void)autodiscoveryLoadDidStart:(NSNotification *)note;
 - (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
