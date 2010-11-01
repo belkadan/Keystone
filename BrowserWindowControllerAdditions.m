@@ -83,12 +83,12 @@ static BOOL shouldShowFavicon () {
 		} else {
 			shouldAutocomplete = (selection.location == [completionString length]);
 		}
-		
 
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
 			
-		} else if ([ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString] &&
+		} else if (shouldAutocomplete &&
+				   [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString] &&
 				   ![additionalDataSource wasCancelled]) {
 			if (completionIsVisible([self _URLCompletionController])) {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
@@ -204,6 +204,7 @@ static BOOL shouldShowFavicon () {
 	if (completion) {
 		NSTextView *editor = (NSTextView *)[locationField currentEditor];
 		NSAssert(editor, @"Completion item selected but location field is not being edited.");
+		NSRange oldSelection = [editor selectedRange];
 		NSRange selection = NSMakeRange(0, 0);
 
 		// FIXME: This cast sucks, but really it's being used as an unsigned integer.
@@ -212,8 +213,12 @@ static BOOL shouldShowFavicon () {
 		[editor shouldChangeTextInRange:NSMakeRange(0, [[editor string] length]) replacementString:replacement];
 		[editor setString:replacement];
 
-		selection.length = [replacement length] - selection.location;
-		[editor setSelectedRange:selection];
+		if (selection.length == 0 && oldSelection.location < [replacement length]) {
+			[editor setSelectedRange:oldSelection];
+		} else {
+			selection.length = [replacement length] - selection.location;
+			[editor setSelectedRange:selection];
+		}
 		
 		//[locationField setDetailString:[completion previewURLStringForQueryString:query]];
 		if (shouldShowFavicon())
