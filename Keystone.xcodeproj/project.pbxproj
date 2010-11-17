@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8C0D06921235FB0B001BB0E7 /* TODO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8C0D06911235FB0B001BB0E7 /* TODO.txt */; };
 		8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE7104A14D200A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
 		8C27FDE8104A14D600A96844 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C27FDE1104A14BF00A96844 /* Cocoa.framework */; };
@@ -441,7 +440,6 @@
 				8CF220A810E01338009074CD /* AddCompletion.xib in Resources */,
 				8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */,
 				8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */,
-				8C0D06921235FB0B001BB0E7 /* TODO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
