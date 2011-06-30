@@ -5,10 +5,14 @@
 
 #import "DefaultsDomain.h"
 
+#ifndef __has_feature
+#define __has_feature(x) 0
+#endif
+
 static NSMutableDictionary *domains = nil;
 
 @interface ComBelkadanUtils_DefaultsDomain ()
-- (id) initWithDomainName:(NSString *)domainName;
+- (id)initWithDomainName:(NSString *)domainName;
 @end
 
 @implementation ComBelkadanUtils_DefaultsDomain
@@ -25,7 +29,9 @@ static NSMutableDictionary *domains = nil;
 	if (!domain) {
 		domain = [[self alloc] initWithDomainName:domainName];
 		[domains setObject:domain forKey:domainName];
+#if !__has_feature(objc_arc)
 		[domain release];
+#endif
 	}
 	return domain;
 }
@@ -41,11 +47,13 @@ static NSMutableDictionary *domains = nil;
 	return self;
 }
 
+#if !__has_feature(objc_arc)
 - (void)dealloc {
 	[domain release];
 	[values release];
 	[super dealloc];
 }
+#endif
 
 - (void)refresh {
 	[values setDictionary:[[NSUserDefaults standardUserDefaults] persistentDomainForName:self.domain]];
@@ -79,15 +87,21 @@ static NSMutableDictionary *domains = nil;
 	return [values keyEnumerator];
 }
 
+// TODO: setValue:forKeyPath:
+
 #pragma mark -
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
-	if ([[NSDictionary class] instancesRespondToSelector:[invocation selector]]) {
+	SEL cmd = [invocation selector];
+	if ([[NSDictionary class] instancesRespondToSelector:cmd]) {
 		[invocation invokeWithTarget:values];
 
-	} else if ([[NSMutableDictionary class] instancesRespondToSelector:[invocation selector]]) {
+	} else if ([[NSMutableDictionary class] instancesRespondToSelector:cmd]) {
 		[invocation invokeWithTarget:values];
 		[self save];
+		
+	} else {
+		[self doesNotRecognizeSelector:cmd];
 	}
 }
 @end

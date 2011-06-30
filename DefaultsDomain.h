@@ -5,7 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface ComBelkadanUtils_DefaultsDomain : NSMutableDictionary {
 	NSString *domain;
 	NSMutableDictionary *values;
@@ -17,3 +16,5 @@
 
 @property (readonly,nonatomic) NSString *domain;
 @end
+
+@compatibility_alias DefaultsDomain ComBelkadanUtils_DefaultsDomain;
