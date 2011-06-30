@@ -34,13 +34,20 @@
 		[manualAddItem setKeyEquivalentModifierMask:NSAlternateKeyMask];
 		[manualAddItem setAlternate:YES];
 		
-		NSInteger separatorIndex = [bookmarksMenu indexOfItem:[NSMenuItem separatorItem]];
-		if (separatorIndex == -1) {
+		NSInteger index = 0;
+		for (NSMenuItem *menuItem in [bookmarksMenu itemArray]) {
+			if ([menuItem isSeparatorItem]) {
+				[bookmarksMenu insertItem:autodiscoverItem atIndex:index];
+				[bookmarksMenu insertItem:manualAddItem atIndex:index+1];
+				break;
+			}
+			++index;
+		}
+		
+		if ([autodiscoverItem menu] == nil) {
+			// This isn't a great fallback, but it shouldn't ever happen anyway.
 			[bookmarksMenu addItem:autodiscoverItem];
 			[bookmarksMenu addItem:manualAddItem];
-		} else {
-			[bookmarksMenu insertItem:autodiscoverItem atIndex:separatorIndex];
-			[bookmarksMenu insertItem:manualAddItem atIndex:separatorIndex+1];
 		}
 
 		[autodiscoverItem release];
