@@ -6,6 +6,7 @@
 
 #import "AddCompletionController.h"
 #import "BookmarksControllerAdditions.h"
+#import "BrowserWindowController+JavaScript.h"
 #import "UpdateController.h"
 #import "DefaultsDomain.h"
 
@@ -27,8 +28,8 @@ static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
 
-static const int kLatestSafariSystem = 6000;
-static const int kLatestTestedVersionOfSafari = 533;
+static const int kLatestSafariSystem = 6;
+static const int kLatestTestedVersionOfSafari = 534;
 
 #define kSafariVersionNumber5 533
 static BOOL isSafari5 = NO;
@@ -45,19 +46,15 @@ enum {
 - (BOOL)loadSogudiCompletions;
 - (void)loadDefaultCompletions;
 
-- (void)autodiscoveryLoadDidStart:(NSNotification *)note;
-- (void)autodiscoveryLoadDidFinish:(NSNotification *)note;
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
 @property(readonly) NSString *URLString;
-@property(readonly) WebView *currentWebView;
-@property(readonly) WebView *currentBrowserWebView;
-@end
+@property(readonly) NSURL *currentURL;
 
-@interface DOMDocument (ComBelkadanKeystone_IKnowYoureInThere)
-@property(readonly) DOMNode *activeElement;
+@property(readonly) NSWindowController *browserWindowControllerMac;
+@property(readonly) NSWindowController *browserWindowController;
 @end
 
 @interface SUUpdater (ComBelkadanKeystone_IKnowYoureInThere)
@@ -82,8 +79,9 @@ enum {
 	[[NSClassFromString(@"WBPreferences") sharedPreferences] addPreferenceNamed:NSLocalizedStringFromTableInBundle(@"Keystone", @"Localizable", [NSBundle bundleForClass:[self class]], @"The preferences pane title") owner:[self sharedInstance]];
 
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
+	isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
+
 	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
-		isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
 		
 		NSNumber *autocompleteMode = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesAutocompletionModeKey];
 		if (autocompleteMode) {
@@ -98,6 +96,8 @@ enum {
 		} else {
 			(void)[ComBelkadanKeystone_URLCompletionController class]; // force +initialize
 		}
+		(void)[ComBelkadanKeystone_BrowserWindowController_JavaScript class]; // force +initialize
+		
 	} else {
 		[self alertUntested];
 	}
@@ -236,32 +236,34 @@ enum {
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)item {
 	if ([item action] == @selector(attemptAutodiscovery:)) {
 		NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-		WebView *webView = nil;
-		if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
-			webView = [doc currentBrowserWebView];
+		id windowController;
+		if ([doc respondsToSelector:@selector(browserWindowControllerMac)]) {
+			windowController = [doc browserWindowControllerMac];
 		} else {
-			webView = [doc currentWebView];
+			windowController = [doc browserWindowController];
 		}
+		
+		if (![doc currentURL]) return NO;
 
-		DOMDocument *currentPage = [webView mainFrameDocument];
-		DOMNode *activeNode = currentPage.activeElement;
-		NSString *nodeName = activeNode.localName;
+		NSString *valid = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:4] javaScript:
+			@"var ComBelkadanKeystone_status = false;"
+			@"if (document.activeElement && document.activeElement.form) {"
+				@"if (document.activeElement.nodeName == 'TEXTAREA') {"
+					@"ComBelkadanKeystone_status = true;"
+				@"} else if (document.activeElement.nodeName == 'INPUT') {"
+					@"if (document.activeElement.type == 'text' || document.activeElement.type == 'search') {"
+						@"ComBelkadanKeystone_status = true;"
+					@"}"
+				@"}"
+			@"}"
+			@"return ComBelkadanKeystone_status ? 'YES' : 'NO'"];
 
-		DOMHTMLFormElement *form = nil;
-		if ([nodeName isEqual:@"input"]) {
-			NSString *type = ((DOMHTMLInputElement *)activeNode).type;
-			if ([[NSArray arrayWithObjects:@"text", @"search", nil] containsObject:type]) {
-				form = ((DOMHTMLInputElement *)activeNode).form;
-			}
-			
-		} else if ([nodeName isEqual:@"textarea"]) {
-			form = ((DOMHTMLTextAreaElement *)activeNode).form;
-		}
+		return [valid boolValue];
 
-		return form != nil;
 	} else if ([item action] == @selector(newCompletionForCurrentPage:)) {
 		NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-		return ![[doc URLString] isEqual:@""];
+		return [doc currentURL] != nil;
+
 	} else {
 		return YES;
 	}
@@ -269,82 +271,94 @@ enum {
 
 - (IBAction)attemptAutodiscovery:(id)sender {
 	NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-	WebView *webView = nil;
-	if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
-		webView = [doc currentBrowserWebView];
+	id windowController;
+	if ([doc respondsToSelector:@selector(browserWindowControllerMac)]) {
+		windowController = [doc browserWindowControllerMac];
 	} else {
-		webView = [doc currentWebView];
-	}
-
-	DOMDocument *currentPage = [webView mainFrameDocument];
-	DOMNode *activeNode = currentPage.activeElement;
-	NSString *nodeName = activeNode.localName;
-	
-	DOMHTMLFormElement *form = nil;
-	if ([nodeName isEqual:@"input"] || [nodeName isEqual:@"textarea"]) {
-		[activeNode setValue:kAutodiscoverySearch];
-		form = ((DOMHTMLTextAreaElement *)activeNode).form;
+		windowController = [doc browserWindowController];
 	}
 	
-	if (form) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidFinish:) name:WebViewProgressFinishedNotification object:webView];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autodiscoveryLoadDidStart:) name:WebViewProgressStartedNotification object:webView];
-		[form submit];
-	} else {
-		NSBeep(); // should not happen (menu item should be disabled)
-	}
-}
-
-- (void)autodiscoveryLoadDidStart:(NSNotification *)note {
-	// TODO: verify that this is the search the user wanted to do
-	WebView *webView = [note object];
-	NSString *completionURLString = [webView mainFrameURL];
-	NSRange queryRange = [completionURLString rangeOfString:kAutodiscoverySearch options:NSCaseInsensitiveSearch];
-	if (queryRange.location != NSNotFound) {
-		[self autodiscoveryLoadDidFinish:note];
-	}
-}	
-
-- (void)autodiscoveryLoadDidFinish:(NSNotification *)note {
-	// TODO: verify that this is the search the user wanted to do
-	WebView *webView = [note object];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressStartedNotification object:webView];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:WebViewProgressFinishedNotification object:webView];
-
+	NSString *formURLString = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:4] javaScript:
+		@"var form = document.activeElement.form;"
+		@"if ('' == form.method || 'get' == form.method.toLowerCase()) {"
+			@"var old = document.activeElement.value;"
+			@"document.activeElement.value = '---Keystone---';"
+			@"var action = '';"
+			@"if (form.action != '' && form.action[0] != '#') {"
+				@"action = form.action;"
+			@"}"
+			@"action += '?';"
+			@"for (var i = 0; i < form.elements.length; ++i) {"
+				@"var elem = form.elements[i];"
+				@"if (!elem.name) continue;"
+				@"if (elem.type == 'button' || elem.type == 'file' || "
+					@"elem.type == 'reset' || elem.type == 'submit' ||" // FIXME: <submit>
+					@"elem.type == 'select-one' || elem.type == 'select-multiple') continue;" // FIXME: <select>
+				@"if ((elem.type == 'checkbox' || elem.type == 'radio') && !elem.checked) continue;"
+				@"action += encodeURIComponent(elem.name);"
+				@"action += '=';"
+				@"action += encodeURIComponent(elem.value);"
+				@"action += '&';"
+			@"}"
+			@"document.activeElement.value = old;"
+			@"return action;"
+		@"} else {"
+			@"return ' GET';"
+		@"}"];
+	
 	id <ComBelkadanKeystone_SheetRequest> sheetRequest;
-	NSString *completionURLString = [webView mainFrameURL];
-	NSRange queryRange = [completionURLString rangeOfString:kAutodiscoverySearch options:NSCaseInsensitiveSearch];
-	if (queryRange.location == NSNotFound) {
+	if ([formURLString isEqual:@" GET"]) {
 		ComBelkadanKeystone_AlertSheetRequest *request = [[ComBelkadanKeystone_AlertSheetRequest alloc] initWithModalDelegate:self didCloseSelector:@selector(alertSheetRequestDidEnd:returnCode:unused:) contextInfo:NULL];
 		
 		NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
 		
 		request.label = NSLocalizedStringFromTableInBundle(@"Failed to create completion", @"Localizable", keystoneBundle, @"Title for completion autodiscovery failures");
 		[request.alert setMessageText:NSLocalizedStringFromTableInBundle(@"Could not create a completion for this search.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
-		[request.alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Keystone could not figure out what part of the URL represents the query.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
-
+		[request.alert setInformativeText:NSLocalizedStringFromTableInBundle(@"This form does not encode its query in a URL.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
+		
 		sheetRequest = request;
 
 	} else {
-		WebHistory *history = [[NSClassFromString(@"GlobalHistory") sharedGlobalHistory] webHistory];
-		WebHistoryItem *historyItem = [history itemForURL:[NSURL URLWithString:completionURLString]];
-		if (historyItem) {
-			[history removeItems:[NSArray arrayWithObject:historyItem]];
-		}
-
-		completionURLString = [completionURLString stringByReplacingOccurrencesOfString:kAutodiscoverySearch withString:ComBelkadanKeystone_kSubstitutionMarker options:NSCaseInsensitiveSearch range:NSMakeRange(0, [completionURLString length])];
-
-		sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
-	}
+		if ([formURLString rangeOfString:kAutodiscoverySearch options:0].location == NSNotFound) {
+			// The query doesn't actually include the active search field.
+			// (This case also handles a failure in the JavaScript.)
+			ComBelkadanKeystone_AlertSheetRequest *request = [[ComBelkadanKeystone_AlertSheetRequest alloc] initWithModalDelegate:self didCloseSelector:@selector(alertSheetRequestDidEnd:returnCode:unused:) contextInfo:NULL];
 			
-	[pendingConfirmations addObject:sheetRequest];
-	[sheetRequest release];
-	
-	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
-		[webView setSheetRequest:sheetRequest];
-	} else {
-		[sheetRequest displaySheetInWindow:[webView window]];
+			NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
+			
+			request.label = NSLocalizedStringFromTableInBundle(@"Failed to create completion", @"Localizable", keystoneBundle, @"Title for completion autodiscovery failures");
+			[request.alert setMessageText:NSLocalizedStringFromTableInBundle(@"Could not create a completion for this search.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
+			[request.alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Keystone could not figure out what part of the URL represents the query.", @"Localizable", keystoneBundle, @"Error message for completion autodiscovery failures")];
+			
+			sheetRequest = request;
+			
+		} else {
+			// We have a good query (hopefully)
+			NSMutableString *completionURLString = [formURLString mutableCopy];
+
+			// Remove final '&' and possible initial fragid
+			[completionURLString deleteCharactersInRange:NSMakeRange([completionURLString length]-1, 1)];
+			if ([completionURLString characterAtIndex:0] == '#') {
+				NSUInteger qIndex = [completionURLString rangeOfString:@"?"].location;
+				NSAssert(qIndex != NSNotFound, @"all searches should have query parts");
+				[completionURLString deleteCharactersInRange:NSMakeRange(0, qIndex)];				
+			}
+
+			// Resolve relative URLs, then replace our query
+			NSURL *url = [NSURL URLWithString:completionURLString relativeToURL:[doc currentURL]];
+			NSAssert1(url, @"Malformed completion URL: %@", completionURLString);
+
+			[completionURLString setString:[url absoluteString]];
+			[completionURLString replaceOccurrencesOfString:kAutodiscoverySearch withString:ComBelkadanKeystone_kSubstitutionMarker options:0 range:NSMakeRange(0, [completionURLString length])];
+			
+			sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
+			[completionURLString release];
+		}
 	}
+	
+	[pendingConfirmations addObject:sheetRequest];
+	[sheetRequest displaySheetInWindow:[doc windowForSheet]];
+	[sheetRequest release];
 }
 
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused {
@@ -360,23 +374,15 @@ enum {
 
 - (IBAction)newCompletionForCurrentPage:(id)sender {
 	NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-	WebView *webView = nil;
-	if ([doc respondsToSelector:@selector(currentBrowserWebView)]) {
-		webView = [doc currentBrowserWebView];
-	} else {
-		webView = [doc currentWebView];
-	}
-	NSString *completionURLString = [webView mainFrameURL];
 
-	id <ComBelkadanKeystone_SheetRequest> sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[webView mainFrameTitle] URL:completionURLString];
+	NSString *completionURLString = [doc URLString];
+	if (!completionURLString) return;
+
+	id <ComBelkadanKeystone_SheetRequest> sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
 	[pendingConfirmations addObject:sheetRequest];
 	[sheetRequest release];
 	
-	if ([webView respondsToSelector:@selector(setSheetRequest:)]) {
-		[webView setSheetRequest:sheetRequest];
-	} else {
-		[sheetRequest displaySheetInWindow:[webView window]];
-	}
+	[sheetRequest displaySheetInWindow:[doc windowForSheet]];
 }
 
 - (void)addCompletionItem:(ComBelkadanKeystone_QueryCompletionItem *)item {

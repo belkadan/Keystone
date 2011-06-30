@@ -5,6 +5,7 @@
 /* Error message for completion autodiscovery failures */
 "Could not create a completion for this search." = "Could not create a completion for this search.";
 "Keystone could not figure out what part of the URL represents the query." = "Keystone could not figure out what part of the URL represents the query. This website may not support URL-based searches.";
+"This form does not encode its query in a URL." = "This form does not encode its query in a URL. This website may not support URL-based searches.";
 
 /* Unsupported alert */
 "Keystone is not yet supported in this version of Safari." = "Keystone is not yet supported in this version of Safari.";

@@ -33,8 +33,10 @@
 		8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C8DB2E01215F402008D41B8 /* CompletionTable.xib */; };
 		8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 8C9239F81113AD17001A38BE /* dsa_pub.pem */; };
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
+		8C9D218413A44EED00C169FF /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C9D218313A44EED00C169FF /* ScriptingBridge.framework */; };
 		8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
+		8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */; };
 		8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */; };
 		8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC3380D1235C0480053E52F /* CompletionServer.m */; };
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
@@ -109,9 +111,12 @@
 		8C8DB3BB121603C9008D41B8 /* TextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextCell.h; sourceTree = "<group>"; };
 		8C9239F81113AD17001A38BE /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = "../Sparkle 1/dsa_pub.pem"; sourceTree = SOURCE_ROOT; };
 		8C986F520F80526400383384 /* keystone.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = keystone.icns; sourceTree = "<group>"; };
+		8C9D218313A44EED00C169FF /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+EndEditingGracefully.h"; sourceTree = "<group>"; };
 		8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+EndEditingGracefully.m"; sourceTree = "<group>"; };
 		8CB6143F0F8046B800A84155 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8CBE2D4A13BC460800C493E6 /* BrowserWindowController+JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserWindowController+JavaScript.h"; sourceTree = "<group>"; };
+		8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "BrowserWindowController+JavaScript.m"; sourceTree = "<group>"; };
 		8CC1FE37120493260022CA05 /* BrowserWindowControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserWindowControllerAdditions.h; sourceTree = "<group>"; };
 		8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserWindowControllerAdditions.m; sourceTree = "<group>"; };
 		8CC1FEB0120498B00022CA05 /* LocationTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationTextField.h; sourceTree = "<group>"; };
@@ -160,6 +165,7 @@
 			files = (
 				8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */,
 				8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */,
+				8C9D218413A44EED00C169FF /* ScriptingBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,6 +248,7 @@
 			children = (
 				8C27FDE1104A14BF00A96844 /* Cocoa.framework */,
 				8CD11C860FBFAA250063607C /* WebKit.framework */,
+				8C9D218313A44EED00C169FF /* ScriptingBridge.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -303,6 +310,8 @@
 				8C3A309F0F7EABE500C37703 /* QueryCompletionItem.m */,
 				8C3A313F0F7EB20E00C37703 /* KeystoneController.h */,
 				8C3A31400F7EB20E00C37703 /* KeystoneController.m */,
+				8CBE2D4A13BC460800C493E6 /* BrowserWindowController+JavaScript.h */,
+				8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */,
 				8CFF7F9C111407B1003B5DB5 /* UpdateController.h */,
 				8CFF7F9D111407B1003B5DB5 /* UpdateController.m */,
 				8CF220C010E02A97009074CD /* AddCompletionController.h */,
@@ -400,7 +409,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "Keystone" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* Keystone */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -521,6 +537,7 @@
 				8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */,
 				8C8DB28C1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.m in Sources */,
 				8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */,
+				8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
