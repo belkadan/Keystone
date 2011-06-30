@@ -44,10 +44,11 @@ static BOOL shouldShowFavicon () {
 + (void)initialize {
 	if (self == [ComBelkadanKeystone_BrowserWindowController class]) {
 		Class toClass = NSClassFromString(@"BrowserWindowController");
+		if (!toClass) toClass = NSClassFromString(@"BrowserWindowControllerMac");
 
 		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemSelected:forQuery:);
 		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemChosen:forQuery:);
-		
+
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, goToToolbarLocation:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidChange:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
@@ -128,8 +129,13 @@ static BOOL shouldShowFavicon () {
 			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
 
 		// Special case for cancelOperation: -- clear the location field detail string.
-		if (command == @selector(cancelOperation:))
-			[self _updateLocationFieldIconNow];
+		if (command == @selector(cancelOperation:)) {
+			if ([self respondsToSelector:@selector(_updateLocationFieldIconNow)]) {
+				[self _updateLocationFieldIconNow];
+			} else {
+				[control setDetailString:@""];
+			}
+		}
 
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
