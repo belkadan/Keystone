@@ -246,7 +246,7 @@ enum {
 
 		NSString *valid = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:4] javaScript:
 			@"var ComBelkadanKeystone_status = false;"
-			@"if (document.activeElement && document.activeElement.form) {"
+			@"if (document && document.activeElement && document.activeElement.form) {"
 				@"if (document.activeElement.nodeName == 'TEXTAREA') {"
 					@"ComBelkadanKeystone_status = true;"
 				@"} else if (document.activeElement.nodeName == 'INPUT') {"
