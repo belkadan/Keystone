@@ -20,7 +20,6 @@
 		8C6C8BBB10E0C8260058B36E /* SheetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6C8BBA10E0C8260058B36E /* SheetRequest.m */; };
 		8C6F065E0F981C1900216A72 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8C6F06640F981C1900216A72 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
-		8C6F06650F981C1900216A72 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
 		8C6F06660F981C1900216A72 /* FakeCompletionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A30910F7EA8BB00C37703 /* FakeCompletionItem.m */; };
 		8C6F06690F981C1900216A72 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
 		8C6F06880F981D1D00216A72 /* KeystoneNamesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F06860F981D1D00216A72 /* KeystoneNamesController.m */; };
@@ -35,6 +34,7 @@
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
 		8C9D218413A44EED00C169FF /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C9D218313A44EED00C169FF /* ScriptingBridge.framework */; };
 		8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */; };
+		8CAED69213BD638C000275D7 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAED65C13BD638C000275D7 /* JRSwizzle.m */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
 		8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */; };
 		8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */; };
@@ -42,7 +42,6 @@
 		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
 		8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29B470F7EF1C400D146C3 /* defaults.plist */; };
 		8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */; };
-		8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */; };
 		8CF220A810E01338009074CD /* AddCompletion.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CF220A610E01338009074CD /* AddCompletion.xib */; };
 		8CF220C210E02A97009074CD /* AddCompletionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF220C110E02A97009074CD /* AddCompletionController.m */; };
 		8CFF7FB311140B0F003B5DB5 /* UpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CFF7F9D111407B1003B5DB5 /* UpdateController.m */; };
@@ -98,7 +97,6 @@
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
 		8C74C92511A20CA70062AD6E /* DefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsDomain.m; sourceTree = "<group>"; };
 		8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.0.3.h; path = ../Disassembly/Safari.4.0.3.h; sourceTree = SOURCE_ROOT; };
-		8C8945C9104352530051A988 /* SwizzleMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzleMacros.h; sourceTree = "<group>"; };
 		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
 		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
 		8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarksControllerAdditions.m; sourceTree = "<group>"; };
@@ -114,6 +112,9 @@
 		8C9D218313A44EED00C169FF /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+EndEditingGracefully.h"; sourceTree = "<group>"; };
 		8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+EndEditingGracefully.m"; sourceTree = "<group>"; };
+		8CAED65B13BD638C000275D7 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		8CAED65C13BD638C000275D7 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		8CAED67213BD638C000275D7 /* SwizzleMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwizzleMacros.h; sourceTree = "<group>"; };
 		8CB6143F0F8046B800A84155 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8CBE2D4A13BC460800C493E6 /* BrowserWindowController+JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserWindowController+JavaScript.h"; sourceTree = "<group>"; };
 		8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "BrowserWindowController+JavaScript.m"; sourceTree = "<group>"; };
@@ -130,8 +131,6 @@
 		8CD29C1F0F7EFF8000D146C3 /* NSPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSPreferences.h; sourceTree = "<group>"; };
 		8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.h; path = ../Disassembly/Safari.4.h; sourceTree = SOURCE_ROOT; };
 		8CDE7C6D0F7E054F004CFE14 /* CompletionControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllers.h; sourceTree = "<group>"; };
-		8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
-		8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		8CF220A710E01338009074CD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AddCompletion.xib; sourceTree = "<group>"; };
 		8CF220C010E02A97009074CD /* AddCompletionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddCompletionController.h; sourceTree = "<group>"; };
 		8CF220C110E02A97009074CD /* AddCompletionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddCompletionController.m; sourceTree = "<group>"; };
@@ -238,7 +237,6 @@
 				8CC1FEB0120498B00022CA05 /* LocationTextField.h */,
 				8C8DB3BB121603C9008D41B8 /* TextCell.h */,
 				8CD29C1F0F7EFF8000D146C3 /* NSPreferences.h */,
-				8C8945C9104352530051A988 /* SwizzleMacros.h */,
 			);
 			name = "Keystone Core";
 			sourceTree = "<group>";
@@ -276,8 +274,7 @@
 		32C88E010371C26100C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				8CDE7ED00F7E277A004CFE14 /* JRSwizzle.h */,
-				8CDE7ED10F7E278D004CFE14 /* JRSwizzle.m */,
+				8CAED62413BD638C000275D7 /* JRSwizzle */,
 				8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */,
 				8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */,
 				8CD0A6A511C447B90053FB8C /* Safari.5.h */,
@@ -342,6 +339,17 @@
 			);
 			name = "Keystone Names";
 			sourceTree = "<group>";
+		};
+		8CAED62413BD638C000275D7 /* JRSwizzle */ = {
+			isa = PBXGroup;
+			children = (
+				8CAED65B13BD638C000275D7 /* JRSwizzle.h */,
+				8CAED65C13BD638C000275D7 /* JRSwizzle.m */,
+				8CAED67213BD638C000275D7 /* SwizzleMacros.h */,
+			);
+			name = JRSwizzle;
+			path = ../TMQuickLook/JRSwizzle;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -509,7 +517,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C6F06640F981C1900216A72 /* CompletionControllerAdditions.m in Sources */,
-				8C6F06650F981C1900216A72 /* JRSwizzle.m in Sources */,
 				8C6F06660F981C1900216A72 /* FakeCompletionItem.m in Sources */,
 				8C6F06690F981C1900216A72 /* SortedArray.m in Sources */,
 				8C6F06880F981D1D00216A72 /* KeystoneNamesController.m in Sources */,
@@ -523,7 +530,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */,
-				8CDE7ED20F7E278D004CFE14 /* JRSwizzle.m in Sources */,
 				8C3A30920F7EA8BB00C37703 /* FakeCompletionItem.m in Sources */,
 				8C3A30A00F7EABE500C37703 /* QueryCompletionItem.m in Sources */,
 				8C3A31410F7EB20E00C37703 /* KeystoneController.m in Sources */,
@@ -538,6 +544,7 @@
 				8C8DB28C1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.m in Sources */,
 				8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */,
 				8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */,
+				8CAED69213BD638C000275D7 /* JRSwizzle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
