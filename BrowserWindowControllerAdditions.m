@@ -29,7 +29,6 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_controlTextDidEndEditing:(NSNotification *)note;
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command;
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window;
-- (void)ComBelkadanKeystone__updateLocationFieldIconNow;
 @end
 
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
@@ -37,7 +36,6 @@ static BOOL shouldShowFavicon () {
 - (struct CompletionController *)_URLCompletionController;
 
 - (IBAction)goToToolbarLocation:(id)sender;
-- (void)_updateLocationFieldIconNow;
 @end
 
 @implementation ComBelkadanKeystone_BrowserWindowController
@@ -54,7 +52,6 @@ static BOOL shouldShowFavicon () {
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, control:textView:doCommandBySelector:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
-		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, _updateLocationFieldIconNow);
 
 		smallKeystoneIcon = [[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"] copy];
 		[smallKeystoneIcon setSize:NSMakeSize(16, 16)];
@@ -111,14 +108,12 @@ static BOOL shouldShowFavicon () {
 
 	LocationTextField *locationField = [note object];
 	if (locationField == [self locationField]) {
-		[locationField setDetailString:@""];
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 	}	
 }
 
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window {
 	[self ComBelkadanKeystone_windowDidResignKey:window];
-	[[self locationField] setDetailString:@""];
 	[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 }
 
@@ -127,15 +122,6 @@ static BOOL shouldShowFavicon () {
 		// FIXME: This method is atrocious.
 		if (completionIsActive([self _URLCompletionController]))
 			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
-
-		// Special case for cancelOperation: -- clear the location field detail string.
-		if (command == @selector(cancelOperation:)) {
-			if ([self respondsToSelector:@selector(_updateLocationFieldIconNow)]) {
-				[self _updateLocationFieldIconNow];
-			} else {
-				[control setDetailString:@""];
-			}
-		}
 
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
 
@@ -200,12 +186,6 @@ static BOOL shouldShowFavicon () {
 	[self ComBelkadanKeystone_goToToolbarLocation:sender];
 }
 
-- (void)ComBelkadanKeystone__updateLocationFieldIconNow {
-	LocationTextField *locationField = [self locationField];
-	[locationField setDetailString:@""];
-	[self ComBelkadanKeystone__updateLocationFieldIconNow];
-}
-
 #pragma mark -
 
 - (void)ComBelkadanKeystone_completionItemSelected:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
@@ -230,11 +210,8 @@ static BOOL shouldShowFavicon () {
 			[editor setSelectedRange:selection];
 		}
 		
-		//[locationField setDetailString:[completion previewURLStringForQueryString:query]];
 		if (shouldShowFavicon())
 			[locationField setIcon:smallKeystoneIcon];
-	} else {
-		[locationField setDetailString:@""];
 	}
 }
 
