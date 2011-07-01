@@ -319,7 +319,7 @@ enum {
 		sheetRequest = request;
 
 	} else {
-		if ([formURLString rangeOfString:kAutodiscoverySearch options:0].location == NSNotFound) {
+		if (!formURLString || [formURLString rangeOfString:kAutodiscoverySearch options:0].location == NSNotFound) {
 			// The query doesn't actually include the active search field.
 			// (This case also handles a failure in the JavaScript.)
 			ComBelkadanKeystone_AlertSheetRequest *request = [[ComBelkadanKeystone_AlertSheetRequest alloc] initWithModalDelegate:self didCloseSelector:@selector(alertSheetRequestDidEnd:returnCode:unused:) contextInfo:NULL];

@@ -3,7 +3,6 @@
 #import "BrowserWindowController+JavaScript.h"
 
 @interface ComBelkadanKeystone_BrowserWindowController_JavaScript ()
-- (void)ComBelkadanKeystone_setStatusCatcher:(NSMutableString *)str;
 - (void)ComBelkadanKeystone__setStatusMessage:(NSString *)status ellipsize:(BOOL)shouldEllipsize;
 @end
 
@@ -23,7 +22,6 @@
 		if (!toClass) toClass = NSClassFromString(@"BrowserWindowControllerMac");
 
 		COPY_METHOD(self, toClass, ComBelkadanKeystone_evaluateBeforeDate:javaScript:);
-		COPY_METHOD(self, toClass, ComBelkadanKeystone_setStatusCatcher:);
 		COPY_AND_EXCHANGE(self, toClass, ComBelkadanKeystone_, _setStatusMessage:ellipsize:);
 	}
 }
@@ -31,20 +29,25 @@
 #pragma mark -
 
 - (NSString *)ComBelkadanKeystone_evaluateBeforeDate:(NSDate *)date javaScript:(NSString *)js {
+	if (objc_getAssociatedObject(self, (void*)[ComBelkadanKeystone_BrowserWindowController_JavaScript class])) {
+		// No nested JavaScript
+		return nil;
+	}
+	
 	NSMutableString *status = [NSMutableString new];
-	[self ComBelkadanKeystone_setStatusCatcher:status];
-	[[self document] evaluateJavaScript:[NSString stringWithFormat:@"window.status = (function(){%@})()", js]];
+	objc_setAssociatedObject(self, (void*)[ComBelkadanKeystone_BrowserWindowController_JavaScript class], status, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+
+	id document = [self document];
+	[document evaluateJavaScript:[NSString stringWithFormat:@"window.status = (function(){%@})()", js]];
 	
 	while ([status isEqual:@""] && [date timeIntervalSinceNow] > 0) {
 		[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:date];
 	}
 
-	[self ComBelkadanKeystone_setStatusCatcher:nil];
-	return [status autorelease];
-}
+	[document evaluateJavaScript:@"window.status = ''"];
 
-- (void)ComBelkadanKeystone_setStatusCatcher:(NSMutableString *)str {
-	objc_setAssociatedObject(self, (void*)[ComBelkadanKeystone_BrowserWindowController_JavaScript class], str, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	objc_setAssociatedObject(self, (void*)[ComBelkadanKeystone_BrowserWindowController_JavaScript class], nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	return [status autorelease];
 }
 
 - (void)ComBelkadanKeystone__setStatusMessage:(NSString *)status ellipsize:(BOOL)shouldEllipsize {
