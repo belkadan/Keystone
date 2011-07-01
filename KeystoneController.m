@@ -110,7 +110,7 @@ enum {
 			[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease],
 			[[[NSSortDescriptor alloc] initWithKey:@"URL" ascending:YES] autorelease],
 			nil];
-		sortedCompletionPossibilities = [[ComBelkadanUtils_SortedArray alloc] initWithSortDescriptors:descriptors];
+		sortedCompletionPossibilities = [[SortedArray alloc] initWithSortDescriptors:descriptors];
 		[descriptors release];
 
 		pendingConfirmations = [[NSMutableArray alloc] init];

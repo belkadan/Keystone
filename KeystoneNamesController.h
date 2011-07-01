@@ -2,10 +2,10 @@
 #import "CompletionHandler.h"
 #import "NSPreferences.h"
 
-@class ComBelkadanUtils_SortedArray;
+@class SortedArray;
 
 @interface ComBelkadanKeystoneNames_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
-	ComBelkadanUtils_SortedArray *nameItems;
+	SortedArray *nameItems;
 }
 //+ (id)sharedInstance; // inherited from NSPreferencesModule
 - (id)completionsForQueryString:(NSString *)query single:(BOOL)onlyOne;

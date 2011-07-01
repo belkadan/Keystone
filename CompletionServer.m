@@ -18,7 +18,7 @@ static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKe
 	if (self != [ComBelkadanKeystone_CompletionServer class])
 		return;
 	
-	additionalCompletions = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
+	additionalCompletions = [[SortedArray alloc] initWithPrimarySortKey:@"headerTitle"];
 }
 
 + (void)addCompletionHandler:(id <ComBelkadanKeystone_CompletionHandler>)handler {

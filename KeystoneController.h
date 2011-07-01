@@ -11,7 +11,7 @@
  * completion handler, also manages the menu items and preference panes.
  */
 @interface ComBelkadanKeystone_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
-	ComBelkadanUtils_SortedArray *sortedCompletionPossibilities;
+	SortedArray *sortedCompletionPossibilities;
 	
 	IBOutlet NSTableView *completionTable;
 	IBOutlet NSSegmentedControl *addRemoveControl;

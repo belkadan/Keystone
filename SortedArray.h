@@ -55,7 +55,7 @@
 - (NSUInteger)objectDidChangeAtIndex:(NSUInteger)index;
 
 /*! The array's sort descriptors. If changed, the array is resorted. */
-@property(readwrite,copy) NSArray *sortDescriptors;
+@property(readwrite,copy,nonatomic) NSArray *sortDescriptors;
 @end
 
 #pragma mark -
@@ -86,3 +86,7 @@
 /*! As can normal mutable arrays */
 @interface NSMutableArray (ComBelkadanUtils_OrderedArray) <ComBelkadanUtils_OrderedMutableArray>
 @end
+
+#pragma mark -
+
+@compatibility_alias SortedArray ComBelkadanUtils_SortedArray;

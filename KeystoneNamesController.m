@@ -21,7 +21,7 @@ static NSUInteger maxResultCount = 5;
 			[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES],
 			[[NSSortDescriptor alloc] initWithKey:@"userID" ascending:YES],
 			nil];
-		nameItems = [[ComBelkadanUtils_SortedArray alloc] initWithSortDescriptors:descriptors];
+		nameItems = [[SortedArray alloc] initWithSortDescriptors:descriptors];
 		[descriptors makeObjectsPerformSelector:@selector(release)];
 		[descriptors release];
 		

@@ -2,13 +2,13 @@
 #import "SortedArray.h"
 
 @interface SortedArrayTests : SenTestCase {
-	ComBelkadanUtils_SortedArray *evens;
+	SortedArray *evens;
 }
 @end
 
 @implementation SortedArrayTests
 - (void)setUp {
-	evens = [[ComBelkadanUtils_SortedArray alloc] init];
+	evens = [[SortedArray alloc] init];
 	for (int i = 2; i < 100; i += 2) {
 		[evens addObject:[NSNumber numberWithInt:i]];
 	}
@@ -21,13 +21,13 @@
 #pragma mark -
 
 - (void)testSimpleInit {
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] init];
+	SortedArray *array = [[SortedArray alloc] init];
 	STAssertEqualObjects(array.sortDescriptors, [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"self" ascending:YES] autorelease]], @"");
 	[array release];
 }
 
 - (void)testSingleKeyInit {
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] initWithPrimarySortKey:@"identifier"];
+	SortedArray *array = [[SortedArray alloc] initWithPrimarySortKey:@"identifier"];
 	STAssertEqualObjects(array.sortDescriptors, [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"identifier" ascending:YES] autorelease]], @"");
 	[array release];
 }
@@ -38,7 +38,7 @@
 		[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease],
 		[[[NSSortDescriptor alloc] initWithKey:@"source" ascending:YES] autorelease],
 		nil];
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] initWithSortDescriptors:descriptors];
+	SortedArray *array = [[SortedArray alloc] initWithSortDescriptors:descriptors];
 	STAssertEqualObjects(array.sortDescriptors, descriptors, @"");
 	[array release];
 }
@@ -112,7 +112,7 @@
 }
 
 - (void)testUpdatingFirstElement {
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] init];
+	SortedArray *array = [[SortedArray alloc] init];
 	for (int i = 1; i < 100; i += 1) {
 		[array addObject:[NSMutableString stringWithFormat:@"%02d", i]];
 	}
@@ -138,7 +138,7 @@
 }
 
 - (void)testUpdatingMiddleElement {
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] init];
+	SortedArray *array = [[SortedArray alloc] init];
 	for (int i = 1; i < 100; i += 1) {
 		[array addObject:[NSMutableString stringWithFormat:@"%02d", i]];
 	}
@@ -176,7 +176,7 @@
 }
 
 - (void)testUpdatingLastElement {
-	ComBelkadanUtils_SortedArray *array = [[ComBelkadanUtils_SortedArray alloc] init];
+	SortedArray *array = [[SortedArray alloc] init];
 	for (int i = 1; i < 100; i += 1) {
 		[array addObject:[NSMutableString stringWithFormat:@"%02d", i]];
 	}
