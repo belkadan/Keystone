@@ -19,6 +19,7 @@
 static NSString * const kKeystonePreferencesDomain = @"com.belkadan.Keystone";
 static NSString * const kPreferencesCompletionKey = @"SortedCompletions";
 static NSString * const kPreferencesUntestedAlertSuppressionKey = @"SuppressUntestedAlert";
+static NSString * const kPreferencesLoadUntestedKey = @"LoadUntested";
 static NSString * const kPreferencesAutocompletionModeKey = @"AutocompleteMode";
 static NSString * const kDefaultPreferencesFile = @"defaults"; // extension must be .plist
 
@@ -40,7 +41,7 @@ enum {
 };
 
 @interface ComBelkadanKeystone_Controller () <NSUserInterfaceValidations>
-+ (void)alertUntested;
++ (BOOL)alertUntested;
 
 - (BOOL)loadCompletions;
 - (BOOL)loadSogudiCompletions;
@@ -60,6 +61,14 @@ enum {
 @interface SUUpdater (ComBelkadanKeystone_IKnowYoureInThere)
 - (void)applicationDidFinishLaunching:(NSNotification *)note; // only in older Sparkles
 @end
+
+static inline BOOL isOptionKeyDown ()
+{
+	CGEventRef tempEvent = CGEventCreate(NULL /*default event source*/);
+	BOOL result = ((CGEventGetFlags(tempEvent) & kCGEventFlagMaskAlternate) != 0);
+	CFRelease(tempEvent);
+	return result;
+}
 
 
 @implementation ComBelkadanKeystone_Controller
@@ -81,8 +90,14 @@ enum {
 	int safariMajorVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey] intValue];
 	isSafari5 = (safariMajorVersion % 1000) >= kSafariVersionNumber5;
 
-	if ((safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari && (safariMajorVersion / 1000) <= kLatestSafariSystem) {
-		
+	BOOL shouldLoad = (safariMajorVersion % 1000) <= kLatestTestedVersionOfSafari;
+	shouldLoad = shouldLoad && (safariMajorVersion / 1000) <= kLatestSafariSystem;
+	
+	if (!shouldLoad) {
+		shouldLoad = [self alertUntested];
+	}
+
+	if (shouldLoad) {
 		NSNumber *autocompleteMode = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesAutocompletionModeKey];
 		if (autocompleteMode) {
 			[ComBelkadanKeystone_CompletionServer setAutocompletionMode:[autocompleteMode unsignedIntegerValue]];
@@ -97,9 +112,6 @@ enum {
 			(void)[ComBelkadanKeystone_URLCompletionController class]; // force +initialize
 		}
 		(void)[ComBelkadanKeystone_BrowserWindowController_JavaScript class]; // force +initialize
-		
-	} else {
-		[self alertUntested];
 	}
 }
 
@@ -143,34 +155,52 @@ enum {
 	[super dealloc];
 }
 
-+ (void)alertUntested {
++ (BOOL)alertUntested {
 	NSBundle *keystoneBundle = [NSBundle bundleForClass:[ComBelkadanKeystone_Controller class]];
-	BOOL isSuppressed = NO;
-
 	NSString *currentVersion = [keystoneBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-	NSString *suppressedVersion = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] objectForKey:kPreferencesCompletionKey];
+
+	BOOL isSuppressed = NO;
+	BOOL shouldLoadAnyway = NO;
+
+	ComBelkadanUtils_DefaultsDomain *defaults = [ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain];
+	NSString *suppressedVersion = [defaults objectForKey:kPreferencesUntestedAlertSuppressionKey];
 	if (suppressedVersion) {
 		isSuppressed = [suppressedVersion isEqual:currentVersion];
+		if (isSuppressed) {
+			shouldLoadAnyway = [[defaults objectForKey:kPreferencesLoadUntestedKey] boolValue];
+		}
 	}
 
-	if (!isSuppressed) {
+	if (!isSuppressed || isOptionKeyDown()) {
 		NSAlert *alert = [[NSAlert alloc] init];
 		
 		[alert setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
 		[alert setMessageText:NSLocalizedStringFromTableInBundle(@"Keystone is not yet supported in this version of Safari.", @"Localizable", keystoneBundle, @"Unsupported alert")];
 		[alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Check the Keystone preference pane for updates.", @"Localizable", keystoneBundle, @"Unsupported alert")];
 		
-		if ([alert respondsToSelector:@selector(setShowsSuppressionButton:)]) {
-			[alert setShowsSuppressionButton:YES];
-			[[alert suppressionButton] setTitle:NSLocalizedStringFromTableInBundle(@"Do not show this message again for this version", @"Localizable", keystoneBundle, @"Unsupported alert")];
-		}
+		NSButton *continueButton = [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Load Keystone", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		[continueButton setKeyEquivalent:@""];
+		NSButton *cancelButton = [alert addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		[cancelButton setKeyEquivalent:@"\r"]; // Mac OS Classic lingers on...!
 		
-		[alert runModal];
-		if ([[alert suppressionButton] state] == NSOnState) {
-			[[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] setObject:currentVersion forKey:kPreferencesUntestedAlertSuppressionKey];
+		[alert setShowsSuppressionButton:YES];
+		NSButton *suppressionButton = [alert suppressionButton];
+		[suppressionButton setTitle:NSLocalizedStringFromTableInBundle(@"Do not show this message again for this version", @"Localizable", keystoneBundle, @"Unsupported alert")];
+		if (isSuppressed) [suppressionButton setState:NSOnState];
+		
+		NSInteger choice = [alert runModal];
+		shouldLoadAnyway = (choice == [continueButton tag]);
+
+		if ([suppressionButton state] == NSOnState) {
+			[defaults setObject:currentVersion forKey:kPreferencesUntestedAlertSuppressionKey];
+			[defaults setObject:[NSNumber numberWithBool:shouldLoadAnyway] forKey:kPreferencesLoadUntestedKey];
+		} else if (suppressedVersion) {
+			[defaults removeObjectForKey:kPreferencesUntestedAlertSuppressionKey];
 		}
 		[alert release];
 	}
+	
+	return shouldLoadAnyway;
 }
 
 #pragma mark -

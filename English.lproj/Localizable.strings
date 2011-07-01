@@ -9,8 +9,10 @@
 
 /* Unsupported alert */
 "Keystone is not yet supported in this version of Safari." = "Keystone is not yet supported in this version of Safari.";
-"Check the Keystone preference pane for updates." = "As a precaution, Keystone has been disabled. Check the Keystone preference pane for updates, or contact Belkadan Software at keystone@belkadan.com for more information.";
+"Check the Keystone preference pane for updates." = "Using this version of Keystone may cause Safari to crash. Check the Keystone preference pane for updates, or contact Belkadan Software at keystone@belkadan.com for more information.";
 "Do not show this message again for this version" = "Do not show this message again for this version";
+"Load Keystone" = "Load Keystone";
+"Cancel" = "Cancel";
 
 /* Updater messages */
 "Should Keystone automatically check for updates?" = "Should Keystone automatically check for updates? You can always check for updates manually through the Keystone preference pane.";
