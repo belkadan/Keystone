@@ -106,12 +106,11 @@ enum {
 - (id)init {
 	if ((self = [super init])) {
 		NSArray *descriptors = [[NSArray alloc] initWithObjects:
-			[[NSSortDescriptor alloc] initWithKey:@"keyword" ascending:YES],
-			[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES],
-			[[NSSortDescriptor alloc] initWithKey:@"URL" ascending:YES],
+			[[[NSSortDescriptor alloc] initWithKey:@"keyword" ascending:YES] autorelease],
+			[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease],
+			[[[NSSortDescriptor alloc] initWithKey:@"URL" ascending:YES] autorelease],
 			nil];
 		sortedCompletionPossibilities = [[ComBelkadanUtils_SortedArray alloc] initWithSortDescriptors:descriptors];
-		[descriptors makeObjectsPerformSelector:@selector(release)];
 		[descriptors release];
 
 		pendingConfirmations = [[NSMutableArray alloc] init];
