@@ -37,7 +37,7 @@
 	return YES;
 }
 
-- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {	
+- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSUInteger *)selectionStart {	
 	*selectionStart = [query length];
 
 	NSString *name = self.name;

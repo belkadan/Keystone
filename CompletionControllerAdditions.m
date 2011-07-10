@@ -139,7 +139,7 @@
 - (void)ComBelkadanKeystone_reflectSelectedListItem {
 	ComBelkadanKeystone_FakeCompletionItem *item = [self selectedListItem];
 	if ([item isKindOfClass:[ComBelkadanKeystone_FakeCompletionItem class]]) {
-		NSInteger selectIndex = -1;
+		NSUInteger selectIndex = -1;
 		NSString *replacement = [item reflectedStringForQueryString:[self queryString] withSelectionFrom:&selectIndex];
 		[self replaceSourceFieldCharactersInRange:NSMakeRange(0, [[self sourceFieldString] length]) withString:replacement selectingFromIndex:selectIndex];
  

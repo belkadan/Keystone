@@ -126,7 +126,7 @@ static NSCharacterSet *nonWhitespaceSet = nil;
 	return result;
 }
 
-- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart {
+- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSUInteger *)selectionStart {
 	NSUInteger queryLength = [query length];
 
 	*selectionStart = queryLength;

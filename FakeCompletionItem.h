@@ -88,7 +88,7 @@
  * By default this returns self.name, highlighting the part of the name that's not
  * part of the user's query.
  */
-- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSInteger *)selectionStart;
+- (NSString *)reflectedStringForQueryString:(NSString *)query withSelectionFrom:(NSUInteger *)selectionStart;
 
 @end
 
