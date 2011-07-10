@@ -20,7 +20,8 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 }
 
 static BOOL shouldShowFavicon () {
-	return [[NSUserDefaults standardUserDefaults] boolForKey:@"WebIconDatabaseEnabled"];
+	id value = [[NSUserDefaults standardUserDefaults] objectForKey:@"WebIconDatabaseEnabled"];
+	return !value || [value boolValue];
 }
 
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
@@ -33,11 +34,20 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:(NSTextView *)fieldEditor;
 @end
 
+@protocol ComBelkadanKeystone_WKView
+- (void *)pageRef;
+@end
+
+
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
 - (LocationTextField *)locationField;
 - (struct CompletionController *)_URLCompletionController;
 
 - (IBAction)goToToolbarLocation:(id)sender;
+- (void)_updateLocationFieldIconNow;
+
+- (void)safariBrowserWindowUpdateLocationFieldIconNow:(void *)pageRef;
+- (id <ComBelkadanKeystone_WKView>)currentBrowserOrOverlayWebView;
 @end
 
 @implementation ComBelkadanKeystone_BrowserWindowController
@@ -55,6 +65,10 @@ static BOOL shouldShowFavicon () {
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, control:textView:doCommandBySelector:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
+		
+		if (![toClass instancesRespondToSelector:@selector(_updateLocationFieldIconNow)]) {
+			COPY_METHOD(self, toClass, _updateLocationFieldIconNow);
+		}
 
 		smallKeystoneIcon = [[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"] copy];
 		[smallKeystoneIcon setSize:NSMakeSize(16, 16)];
@@ -213,28 +227,32 @@ static BOOL shouldShowFavicon () {
 #pragma mark -
 
 - (void)ComBelkadanKeystone_completionItemSelected:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
-	LocationTextField *locationField = [self locationField];
-	if (completion) {
-		NSTextView *editor = (NSTextView *)[locationField currentEditor];
-		NSAssert(editor, @"Completion item selected but location field is not being edited.");
-		NSRange oldSelection = [editor selectedRange];
-		NSRange selection = NSMakeRange(0, 0);
-
-		NSString *replacement = [completion reflectedStringForQueryString:query withSelectionFrom:&selection.location];
-		[editor shouldChangeTextInRange:NSMakeRange(0, [[editor string] length]) replacementString:replacement];
-		[editor setString:replacement];
-
-		NSUInteger replacementLength = [replacement length];
-		if (selection.location == replacementLength && oldSelection.location < [replacement length]) {
-			[editor setSelectedRange:oldSelection];
-		} else {
-			selection.length = replacementLength - selection.location;
-			[editor setSelectedRange:selection];
-		}
-		
-		if (shouldShowFavicon())
-			[locationField setIcon:smallKeystoneIcon];
+	if (!completion) {
+		[self _updateLocationFieldIconNow];
+		return;
 	}
+
+	LocationTextField *locationField = [self locationField];
+
+	NSTextView *editor = (NSTextView *)[locationField currentEditor];
+	NSAssert(editor, @"Completion item selected but location field is not being edited.");
+	NSRange oldSelection = [editor selectedRange];
+	NSRange selection = NSMakeRange(0, 0);
+
+	NSString *replacement = [completion reflectedStringForQueryString:query withSelectionFrom:&selection.location];
+	[editor shouldChangeTextInRange:NSMakeRange(0, [[editor string] length]) replacementString:replacement];
+	[editor setString:replacement];
+
+	NSUInteger replacementLength = [replacement length];
+	if (selection.location == replacementLength && oldSelection.location < [replacement length]) {
+		[editor setSelectedRange:oldSelection];
+	} else {
+		selection.length = replacementLength - selection.location;
+		[editor setSelectedRange:selection];
+	}
+	
+	if (shouldShowFavicon())
+		[locationField setIcon:smallKeystoneIcon];
 }
 
 - (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
@@ -242,6 +260,12 @@ static BOOL shouldShowFavicon () {
 	LocationTextField *locationField = [self locationField];
 	[locationField setStringValue:[completion urlStringForQueryString:query]];
 	[locationField performClick:nil];
+}
+
+- (void)_updateLocationFieldIconNow {
+	if ([self respondsToSelector:@selector(safariBrowserWindowUpdateLocationFieldIconNow:)]) {
+		[self safariBrowserWindowUpdateLocationFieldIconNow:[[self currentBrowserOrOverlayWebView] pageRef]];
+	}
 }
 
 @end
