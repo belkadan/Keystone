@@ -365,13 +365,10 @@ static inline BOOL isOptionKeyDown ()
 			// We have a good query (hopefully)
 			NSMutableString *completionURLString = [formURLString mutableCopy];
 
-			// Remove final '&' and possible initial fragid
+			// Remove final '&', do some very stupid validation
 			[completionURLString deleteCharactersInRange:NSMakeRange([completionURLString length]-1, 1)];
-			if ([completionURLString characterAtIndex:0] == '#') {
-				NSUInteger qIndex = [completionURLString rangeOfString:@"?"].location;
-				NSAssert(qIndex != NSNotFound, @"all searches should have query parts");
-				[completionURLString deleteCharactersInRange:NSMakeRange(0, qIndex)];				
-			}
+			NSAssert([completionURLString characterAtIndex:0] != '#', @"fragment targets should have been stripped");
+			NSAssert([completionURLString rangeOfString:@"?"].location != NSNotFound, @"all searches should have query parts");
 
 			// Resolve relative URLs, then replace our query
 			NSURL *url = [NSURL URLWithString:completionURLString relativeToURL:[doc currentURL]];
