@@ -85,9 +85,8 @@ static BOOL shouldShowFavicon () {
 		if ([additionalDataSource isVisible]) {
 			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
 			
-		} else if (shouldAutocomplete &&
-				   [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString] &&
-				   ![additionalDataSource wasCancelled]) {
+		} else if (shouldAutocomplete && ![additionalDataSource wasCancelled] &&
+				   [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString]) {
 			if (completionIsVisible([self _URLCompletionController])) {
 				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
 			}
@@ -120,10 +119,13 @@ static BOOL shouldShowFavicon () {
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command {
 	if (control == [self locationField]) {
 		// FIXME: This method is atrocious.
-		if (completionIsActive([self _URLCompletionController]))
-			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
-
 		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
+
+		if (completionIsActive([self _URLCompletionController])) {
+			// If the default completions are active, we should NOT take over the completions.
+			[additionalDataSource cancelOperation:nil];
+			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
+		}
 
 		BOOL response = [additionalDataSource tryToPerform:command with:nil];
 		if (response) return YES;
@@ -131,6 +133,7 @@ static BOOL shouldShowFavicon () {
 		// Special case for deletion, which hides the completions but also needs to delete.
 		if (command == @selector(deleteBackward:) || command == @selector(deleteForward:)) {
 			[additionalDataSource cancelOperation:nil];
+			// Fall through to original message.
 			
 		} else if (command == @selector(moveUp:)) {
 			// Special case for moveUp: -- this is how we toggle from one set of shortcuts to the other.
@@ -168,7 +171,7 @@ static BOOL shouldShowFavicon () {
 			else
 				// If there's no selection, just send a notification ourself.
 				[self ComBelkadanKeystone_controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
-			return YES;
+			return YES;				
 		}
 	}
 	return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
