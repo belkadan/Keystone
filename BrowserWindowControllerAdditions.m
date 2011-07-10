@@ -67,6 +67,8 @@ static BOOL shouldShowFavicon () {
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
 		
 		if (![toClass instancesRespondToSelector:@selector(_updateLocationFieldIconNow)]) {
+			// This method was replaced in Safari 5.1 to deal with the new multiprocess rendering model.
+			// We emulate the old behavior.
 			COPY_METHOD(self, toClass, _updateLocationFieldIconNow);
 		}
 
@@ -263,6 +265,8 @@ static BOOL shouldShowFavicon () {
 }
 
 - (void)_updateLocationFieldIconNow {
+	// This method was replaced in Safari 5.1 to deal with the new multiprocess rendering model.
+	// We emulate the old behavior by reaching in and finding the current page.
 	if ([self respondsToSelector:@selector(safariBrowserWindowUpdateLocationFieldIconNow:)]) {
 		[self safariBrowserWindowUpdateLocationFieldIconNow:[[self currentBrowserOrOverlayWebView] pageRef]];
 	}
