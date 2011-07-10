@@ -29,6 +29,8 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_controlTextDidEndEditing:(NSNotification *)note;
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command;
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window;
+
+- (void)ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:(NSTextView *)fieldEditor;
 @end
 
 @interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
@@ -46,6 +48,7 @@ static BOOL shouldShowFavicon () {
 
 		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemSelected:forQuery:);
 		COPY_METHOD(self, toClass, ComBelkadanKeystone_completionItemChosen:forQuery:);
+		COPY_METHOD(self, toClass, ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:);
 
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, goToToolbarLocation:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidChange:);
@@ -61,44 +64,48 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_controlTextDidChange:(NSNotification *)note {
 	LocationTextField *locationField = [note object];
 	if (locationField != [self locationField]) {
-		// Don't catch other fields' warnings.
+		// Don't catch other fields' notifications.
 		[self ComBelkadanKeystone_controlTextDidChange:note];
+		return;
+	}
+		
+	ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
+
+	NSTextView *editor = (NSTextView *)[locationField currentEditor];
+	NSAssert(editor, @"Location field changed but it's not being edited.");
+	NSString *completionString = [editor string];
+	
+	// Don't autocomplete if the insertion point is in the middle of a string.
+	// Also, ignore anything selected at the end of the string.
+	BOOL shouldAutocomplete;
+
+	NSRange selection = [editor selectedRange];
+	if (selection.length > 0) {
+		completionString = [completionString substringToIndex:selection.location];
+		shouldAutocomplete = YES;
+	} else {
+		shouldAutocomplete = (selection.location == [completionString length]);
+	}
+
+	if ([additionalDataSource isVisible]) {
+		// If Keystone's data source is up, just update it.
+		[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
+		
+	} else if (shouldAutocomplete && ![additionalDataSource wasCancelled] &&
+			   [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString]) {
+		// If Keystone's data source is not up but should be, show it.
+		if (completionIsVisible([self _URLCompletionController])) {
+			[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
+		}
+		[additionalDataSource setDelegate:self];
+		[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
+		[additionalDataSource showWindowForField:locationField];
 		
 	} else {
-		// FIXME: This method is nearing atrocious (but isn't there yet).
-		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
-
-		NSTextView *editor = (NSTextView *)[locationField currentEditor];
-		NSAssert(editor, @"Location field changed but it's not being edited.");
-		NSString *completionString = [editor string];
-		
-		BOOL shouldAutocomplete;
-
-		NSRange selection = [editor selectedRange];
-		if (selection.length > 0) {
-			completionString = [completionString substringToIndex:selection.location];
-			shouldAutocomplete = YES;
-		} else {
-			shouldAutocomplete = (selection.location == [completionString length]);
-		}
-
-		if ([additionalDataSource isVisible]) {
-			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
-			
-		} else if (shouldAutocomplete && ![additionalDataSource wasCancelled] &&
-				   [ComBelkadanKeystone_CompletionServer autocompleteForQueryString:completionString]) {
-			if (completionIsVisible([self _URLCompletionController])) {
-				[self ComBelkadanKeystone_control:locationField textView:editor doCommandBySelector:@selector(cancelOperation:)];				
-			}
-			[additionalDataSource setDelegate:self];
-			[additionalDataSource updateQuery:completionString autocomplete:shouldAutocomplete];
-			[additionalDataSource showWindowForField:locationField];
-			
-		} else {
-			// Don't do all the work of updating the query if we're not gonna show the window.
-			[additionalDataSource clearCancelledIfChanged:completionString];
-			[self ComBelkadanKeystone_controlTextDidChange:note];
-		}
+		// Otherwise, let the default completions go ahead.
+		// Don't do all the work of updating the query if we're not gonna show the window.
+		[additionalDataSource clearCancelledIfChanged:completionString];
+		[self ComBelkadanKeystone_controlTextDidChange:note];
 	}
 }
 
@@ -117,64 +124,78 @@ static BOOL shouldShowFavicon () {
 }
 
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command {
-	if (control == [self locationField]) {
-		// FIXME: This method is atrocious.
-		ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
-
-		if (completionIsActive([self _URLCompletionController])) {
-			// If the default completions are active, we should NOT take over the completions.
-			[additionalDataSource cancelOperation:nil];
-			return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
-		}
-
-		BOOL response = [additionalDataSource tryToPerform:command with:nil];
-		if (response) return YES;
-
-		// Special case for deletion, which hides the completions but also needs to delete.
-		if (command == @selector(deleteBackward:) || command == @selector(deleteForward:)) {
-			[additionalDataSource cancelOperation:nil];
-			// Fall through to original message.
-			
-		} else if (command == @selector(moveUp:)) {
-			// Special case for moveUp: -- this is how we toggle from one set of shortcuts to the other.
-			if ([additionalDataSource isVisible]) {
-				[additionalDataSource cancelOperation:nil];
-
-				// Bring back the regular set by deleting the selection.
-				if ([fieldEditor selectedRange].length > 0)
-					[fieldEditor deleteBackward:nil];
-				else
-					// If there's no selection, just send a notification ourself.
-					// We use the original version so as not to clear the cancel flag.
-					[self ComBelkadanKeystone_controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
-				return YES;
-
-			} else {
-				[self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:@selector(cancelOperation:)];
-				[additionalDataSource setDelegate:self];
-
-				NSString *completionString = [fieldEditor string];
-				NSRange selection = [fieldEditor selectedRange];
-				if (selection.length > 0)
-					completionString = [completionString substringToIndex:selection.location];
-				[additionalDataSource updateQuery:completionString autocomplete:YES];
-			
-				[additionalDataSource showWindowForField:control];
-				return YES;
-			}
-
-		} else if (command == @selector(moveDown:) && !completionIsVisible([self _URLCompletionController])) {
-			// If neither completion set is visible, moveDown: brings back the default ones...
-			// ...by deleting the selection.
-			if ([fieldEditor selectedRange].length > 0)
-				[fieldEditor deleteBackward:nil];
-			else
-				// If there's no selection, just send a notification ourself.
-				[self ComBelkadanKeystone_controlTextDidChange:[NSNotification notificationWithName:NSControlTextDidChangeNotification object:control]];
-			return YES;				
-		}
+	if (control != [self locationField]) {
+		// Don't catch other fields' commands.
+		return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
 	}
-	return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
+	
+	ComBelkadanKeystone_AdditionalCompletionTableDataSource *additionalDataSource = [ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance];
+
+	// If the default completions are active, we should NOT take over the completions.
+	if (completionIsActive([self _URLCompletionController])) {
+		[additionalDataSource cancelOperation:nil];
+		return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
+	}
+
+	// If our completions are active, give them first crack at the command.
+	// This is (roughly) the same behavior as when Safari's completion window is active.
+	BOOL response = [additionalDataSource tryToPerform:command with:nil];
+	if (response) return YES;
+
+	// Handle certain commands specially.
+	if (command == @selector(deleteBackward:) || command == @selector(deleteForward:)) {
+		// Deletion hides Keystone's completions before actually deleting.
+		[additionalDataSource cancelOperation:nil];
+		return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
+		
+	} else if (command == @selector(moveUp:)) {
+		// moveUp: toggles from one set of shortcuts to the other.
+		if ([additionalDataSource isVisible]) {
+			// Kill our completions, show Safari's.
+			[additionalDataSource cancelOperation:nil];
+			[self ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:fieldEditor];
+			return YES;
+
+		} else {
+			// Kill Safari's completions, show Keystone's.
+			[self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:@selector(cancelOperation:)];
+
+			// Claim the Keystone completions.
+			[additionalDataSource setDelegate:self];
+
+			// Figure out what we're supposed to be completing.
+			NSString *completionString = [fieldEditor string];
+			NSRange selection = [fieldEditor selectedRange];
+			if (selection.length > 0)
+				completionString = [completionString substringToIndex:selection.location];
+			[additionalDataSource updateQuery:completionString autocomplete:YES];
+
+			// Show our completions.
+			[additionalDataSource showWindowForField:control];
+			return YES;
+		}
+
+	} else if (command == @selector(moveDown:) && !completionIsVisible([self _URLCompletionController])) {
+		// If neither completion set is visible, moveDown: brings back the default ones...
+		[self ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:fieldEditor];
+		return YES;				
+
+	} else {
+		// Give up. Let Safari handle this command as usual.
+		return [self ComBelkadanKeystone_control:control textView:fieldEditor doCommandBySelector:command];
+	}
+}
+
+- (void)ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:(NSTextView *)fieldEditor {	
+	// Bring back the regular completions by deleting the selection.
+	if ([fieldEditor selectedRange].length > 0) {
+		[fieldEditor deleteBackward:nil];		
+	} else {
+		// If there's no selection, just send a fake notification ourself.
+		// We use the original version so as not to clear the cancel flag.
+		NSNotification *note = [NSNotification notificationWithName:NSControlTextDidChangeNotification object:[self locationField] userInfo:[NSDictionary dictionaryWithObject:fieldEditor forKey:@"NSFieldEditor"]];
+		[self ComBelkadanKeystone_controlTextDidChange:note];
+	}
 }
 
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender {
