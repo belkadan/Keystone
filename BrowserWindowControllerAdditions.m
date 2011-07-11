@@ -260,6 +260,7 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
 	NSAssert(completion != nil, @"Nil completion item chosen");
 	LocationTextField *locationField = [self locationField];
+	[locationField abortEditing];
 	[locationField setStringValue:[completion urlStringForQueryString:query]];
 	[locationField performClick:nil];
 }

@@ -64,6 +64,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 - (void)completionListTableView:(CompletionListTableView *)tableView mouseUpInRow:(NSInteger)row {
 	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:row];
 	[self.delegate ComBelkadanKeystone_completionItemChosen:item forQuery:self.query];
+	[window orderOut:nil];
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(TextCell *)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -126,6 +127,7 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	NSAssert(selection != -1, @"No item selected");
 	ComBelkadanKeystone_FakeCompletionItem *item = [currentCompletions objectAtIndex:selection];
 	[self.delegate ComBelkadanKeystone_completionItemChosen:item forQuery:self.query];
+	[window orderOut:nil];
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
