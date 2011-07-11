@@ -259,10 +259,12 @@ static BOOL shouldShowFavicon () {
 
 - (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
 	NSAssert(completion != nil, @"Nil completion item chosen");
+
 	LocationTextField *locationField = [self locationField];
-	[locationField abortEditing];
-	[locationField setStringValue:[completion urlStringForQueryString:query]];
-	[locationField performClick:nil];
+	NSTextView *editor = (NSTextView *)[locationField currentEditor];
+	NSAssert(editor, @"Completion item selected but location field is not being edited.");
+	[editor setString:[completion urlStringForQueryString:query]];
+	[editor insertNewline:nil];
 }
 
 - (void)_updateLocationFieldIconNow {
