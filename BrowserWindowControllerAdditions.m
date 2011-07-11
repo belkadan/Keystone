@@ -7,9 +7,20 @@
 #import "CompletionAdapter.h"
 #import "SwizzleMacros.h"
 
+
 #define KEYSTONE_PREFIX ComBelkadanKeystone_
 
 static NSImage *smallKeystoneIcon = nil;
+static BOOL hasEasyIconReset = NO;
+
+@interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
+- (LocationTextField *)locationField;
+- (struct CompletionController *)_URLCompletionController;
+
+- (IBAction)goToToolbarLocation:(id)sender;
+- (void)_updateLocationFieldIconNow;
+@end
+
 
 static BOOL completionIsVisible (struct CompletionController *completionController) {
 	return [completionController->_window isVisible];
@@ -19,10 +30,39 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	return [completionController->_window isVisible] && ([completionController->_table selectedRow] != -1);
 }
 
+
+extern void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy) WEAK_IMPORT_ATTRIBUTE;
+extern id objc_getAssociatedObject(id object, void *key) WEAK_IMPORT_ATTRIBUTE;
+
 static BOOL shouldShowFavicon () {
+	// Only show a favicon if we can switch it back!
+	if (objc_getAssociatedObject == NULL && !hasEasyIconReset) {
+		return NO;
+	}
+	
 	id value = [[NSUserDefaults standardUserDefaults] objectForKey:@"WebIconDatabaseEnabled"];
 	return !value || [value boolValue];
 }
+
+static void saveIconIfNeeded (LocationTextField *locationField) {
+	id savedIcon = objc_getAssociatedObject(locationField, &smallKeystoneIcon);
+	if (!savedIcon) {
+		objc_setAssociatedObject(locationField, &smallKeystoneIcon, [locationField icon], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+}
+
+static void clearSavedIcon (LocationTextField *locationField) {
+	objc_setAssociatedObject(locationField, &smallKeystoneIcon, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+static void restoreIcon (LocationTextField *locationField) {
+	id savedIcon = objc_getAssociatedObject(locationField, &smallKeystoneIcon);
+	if (savedIcon) {
+		[locationField setIcon:savedIcon];
+		clearSavedIcon(locationField);
+	}
+}
+
 
 @interface ComBelkadanKeystone_BrowserWindowController () <ComBelkadanKeystone_AdditionalCompletionsDelegate>
 - (IBAction)ComBelkadanKeystone_goToToolbarLocation:(id)sender;
@@ -34,21 +74,6 @@ static BOOL shouldShowFavicon () {
 - (void)ComBelkadanKeystone_showSafariCompletionsWithFieldEditor:(NSTextView *)fieldEditor;
 @end
 
-@protocol ComBelkadanKeystone_WKView
-- (void *)pageRef;
-@end
-
-
-@interface ComBelkadanKeystone_BrowserWindowController (ActuallyInBrowserWindowController)
-- (LocationTextField *)locationField;
-- (struct CompletionController *)_URLCompletionController;
-
-- (IBAction)goToToolbarLocation:(id)sender;
-- (void)_updateLocationFieldIconNow;
-
-- (void)safariBrowserWindowUpdateLocationFieldIconNow:(void *)pageRef;
-- (id <ComBelkadanKeystone_WKView>)currentBrowserOrOverlayWebView;
-@end
 
 @implementation ComBelkadanKeystone_BrowserWindowController
 + (void)initialize {
@@ -65,15 +90,11 @@ static BOOL shouldShowFavicon () {
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, controlTextDidEndEditing:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, control:textView:doCommandBySelector:);
 		COPY_AND_EXCHANGE(self, toClass, KEYSTONE_PREFIX, windowDidResignKey:);
-		
-		if (![toClass instancesRespondToSelector:@selector(_updateLocationFieldIconNow)]) {
-			// This method was replaced in Safari 5.1 to deal with the new multiprocess rendering model.
-			// We emulate the old behavior.
-			COPY_METHOD(self, toClass, _updateLocationFieldIconNow);
-		}
 
 		smallKeystoneIcon = [[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"] copy];
 		[smallKeystoneIcon setSize:NSMakeSize(16, 16)];
+		
+		hasEasyIconReset = [toClass instancesRespondToSelector:@selector(_updateLocationFieldIconNow)];
 	}	
 }
 
@@ -130,6 +151,8 @@ static BOOL shouldShowFavicon () {
 
 	LocationTextField *locationField = [note object];
 	if (locationField == [self locationField]) {
+		// This isn't "cancel" because we don't want to mess with the location field anymore.
+		clearSavedIcon(locationField);
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 	}	
 }
@@ -229,12 +252,16 @@ static BOOL shouldShowFavicon () {
 #pragma mark -
 
 - (void)ComBelkadanKeystone_completionItemSelected:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
+	LocationTextField *locationField = [self locationField];
+
 	if (!completion) {
-		[self _updateLocationFieldIconNow];
+		if (hasEasyIconReset) {
+			[self _updateLocationFieldIconNow];
+		} else {
+			restoreIcon(locationField);
+		}
 		return;
 	}
-
-	LocationTextField *locationField = [self locationField];
 
 	NSTextView *editor = (NSTextView *)[locationField currentEditor];
 	NSAssert(editor, @"Completion item selected but location field is not being edited.");
@@ -253,8 +280,10 @@ static BOOL shouldShowFavicon () {
 		[editor setSelectedRange:selection];
 	}
 	
-	if (shouldShowFavicon())
+	if (shouldShowFavicon()) {
+		if (!hasEasyIconReset) saveIconIfNeeded(locationField);
 		[locationField setIcon:smallKeystoneIcon];
+	}
 }
 
 - (void)ComBelkadanKeystone_completionItemChosen:(ComBelkadanKeystone_FakeCompletionItem *)completion forQuery:(NSString *)query {
@@ -265,14 +294,6 @@ static BOOL shouldShowFavicon () {
 	NSAssert(editor, @"Completion item selected but location field is not being edited.");
 	[editor setString:[completion urlStringForQueryString:query]];
 	[editor insertNewline:nil];
-}
-
-- (void)_updateLocationFieldIconNow {
-	// This method was replaced in Safari 5.1 to deal with the new multiprocess rendering model.
-	// We emulate the old behavior by reaching in and finding the current page.
-	if ([self respondsToSelector:@selector(safariBrowserWindowUpdateLocationFieldIconNow:)]) {
-		[self safariBrowserWindowUpdateLocationFieldIconNow:[[self currentBrowserOrOverlayWebView] pageRef]];
-	}
 }
 
 @end
