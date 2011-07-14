@@ -229,15 +229,18 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	NSInteger rowCount = [self.currentCompletions count];
 	if (rowCount == 0) {
 		[self cancelOperation:nil];
-	} else if (shouldAutocomplete) {
-		// Select the first row.
-		[self moveDown:nil];
+
+	} else if (shouldAutocomplete || [self isVisible]) {
+		if (shouldAutocomplete) {
+			// Select the first row.
+			[self moveDown:nil];
+		}
 
 		NSRect firstRowRect = [table rectOfRow:0];
 		NSRect lastRowRect = [table rectOfRow:rowCount-1];
 		CGFloat newHeight = (NSMaxY(lastRowRect) - NSMinY(firstRowRect));
 		newHeight += 2 * [window cornerRadius];
-
+		
 		NSRect frame = [window frame];
 		frame.origin.y -= (newHeight - frame.size.height);
 		frame.size.height = newHeight;
