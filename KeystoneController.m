@@ -29,7 +29,7 @@ static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
 static NSString * const kSogudiSubstitutionMarker = @"@@@";
 
-static const int kLatestSafariSystem = 6;
+static const int kLatestSafariSystem = 7;
 static const int kLatestTestedVersionOfSafari = 534;
 
 #define kSafariVersionNumber5 533
