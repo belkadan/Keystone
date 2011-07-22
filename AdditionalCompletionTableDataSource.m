@@ -177,9 +177,8 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 		[window setCornersAreRounded:YES];
 		[window setBackgroundColor:[NSColor clearColor]];
 		[window setAcceptsMouseMovedEvents:YES];
-		if ([window respondsToSelector:@selector(setCollectionBehavior:)]) {
-			[window setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
-		}
+		[window setLevel:NSFloatingWindowLevel];
+		[window setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
 
 		NSView *contentView = [window contentView];
 		NSScrollView *scrollView = (NSScrollView *)[self view];
