@@ -151,15 +151,14 @@ static void restoreIcon (LocationTextField *locationField) {
 
 	LocationTextField *locationField = [note object];
 	if (locationField == [self locationField]) {
-		// This isn't "cancel" because we don't want to mess with the location field anymore.
-		clearSavedIcon(locationField);
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
+		clearSavedIcon(locationField);
 	}	
 }
 
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window {
 	[self ComBelkadanKeystone_windowDidResignKey:window];
-	[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
+	[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] close];
 }
 
 - (BOOL)ComBelkadanKeystone_control:(LocationTextField *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)command {

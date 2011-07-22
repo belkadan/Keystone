@@ -113,12 +113,16 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 	}
 }
 
-- (IBAction)cancelOperation:(id)sender {
+- (void)close {
 	if ([self isVisible])
 		[self.delegate ComBelkadanKeystone_completionItemSelected:nil forQuery:self.query];
-
+	
 	// This is deliberately /not/ using self.window; if the window is nil, it's not active.
-	[window orderOut:sender];
+	[window orderOut:nil];
+}
+
+- (IBAction)cancelOperation:(id)sender {
+	[self close];
 	wasCancelled = YES;
 }
 
@@ -173,6 +177,9 @@ static CGFloat const kURLFontSize = 11.0f; // pt
 		[window setCornersAreRounded:YES];
 		[window setBackgroundColor:[NSColor clearColor]];
 		[window setAcceptsMouseMovedEvents:YES];
+		if ([window respondsToSelector:@selector(setCollectionBehavior:)]) {
+			[window setCollectionBehavior:NSWindowCollectionBehaviorMoveToActiveSpace];
+		}
 
 		NSView *contentView = [window contentView];
 		NSScrollView *scrollView = (NSScrollView *)[self view];
