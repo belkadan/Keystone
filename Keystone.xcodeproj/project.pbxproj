@@ -32,14 +32,12 @@
 		8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C8DB2E01215F402008D41B8 /* CompletionTable.xib */; };
 		8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 8C9239F81113AD17001A38BE /* dsa_pub.pem */; };
 		8C986F530F80526400383384 /* keystone.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8C986F520F80526400383384 /* keystone.icns */; };
-		8C9D218413A44EED00C169FF /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C9D218313A44EED00C169FF /* ScriptingBridge.framework */; };
 		8C9E9CD6110C036E00BD7153 /* NSWindow+EndEditingGracefully.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */; };
 		8CAED69213BD638C000275D7 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CAED65C13BD638C000275D7 /* JRSwizzle.m */; };
 		8CB614420F8046BC00A84155 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CB614410F8046BC00A84155 /* Localizable.strings */; };
 		8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE2D4B13BC460800C493E6 /* BrowserWindowController+JavaScript.m */; };
 		8CC1FE39120493260022CA05 /* BrowserWindowControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC1FE38120493260022CA05 /* BrowserWindowControllerAdditions.m */; };
 		8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CC3380D1235C0480053E52F /* CompletionServer.m */; };
-		8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CD11C860FBFAA250063607C /* WebKit.framework */; };
 		8CD29B480F7EF1C400D146C3 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29B470F7EF1C400D146C3 /* defaults.plist */; };
 		8CD29DF00F7F28A000D146C3 /* KeystonePreferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CD29DEF0F7F28A000D146C3 /* KeystonePreferences.xib */; };
 		8CF220A810E01338009074CD /* AddCompletion.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8CF220A610E01338009074CD /* AddCompletion.xib */; };
@@ -121,7 +119,6 @@
 		8C8DB3BB121603C9008D41B8 /* TextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextCell.h; sourceTree = "<group>"; };
 		8C9239F81113AD17001A38BE /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dsa_pub.pem; path = "../Sparkle 1/dsa_pub.pem"; sourceTree = SOURCE_ROOT; };
 		8C986F520F80526400383384 /* keystone.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = keystone.icns; sourceTree = "<group>"; };
-		8C9D218313A44EED00C169FF /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+EndEditingGracefully.h"; sourceTree = "<group>"; };
 		8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+EndEditingGracefully.m"; sourceTree = "<group>"; };
 		8CAED65B13BD638C000275D7 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
@@ -174,9 +171,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CD11C870FBFAA250063607C /* WebKit.framework in Frameworks */,
 				8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */,
-				8C9D218413A44EED00C169FF /* ScriptingBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,8 +252,6 @@
 			isa = PBXGroup;
 			children = (
 				8C27FDE1104A14BF00A96844 /* Cocoa.framework */,
-				8CD11C860FBFAA250063607C /* WebKit.framework */,
-				8C9D218313A44EED00C169FF /* ScriptingBridge.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -266,6 +259,7 @@
 		1058C7AEFEA557BF11CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8CD11C860FBFAA250063607C /* WebKit.framework */,
 				089C167FFE841241C02AAC07 /* AppKit.framework */,
 				D2F7E65807B2D6F200F64583 /* CoreData.framework */,
 				089C1672FE841209C02AAC07 /* Foundation.framework */,
