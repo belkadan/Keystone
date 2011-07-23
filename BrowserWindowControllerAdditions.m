@@ -159,7 +159,8 @@ static BOOL shouldShowFavicon () {
 	LocationTextField *locationField = [note object];
 	if (locationField == [self locationField]) {
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
-		clearSavedIcon(locationField);
+		if (shouldShowFavicon() && !hasEasyIconReset)
+			clearSavedIcon(locationField);
 	}
 }
 
