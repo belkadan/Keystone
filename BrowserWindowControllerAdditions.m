@@ -30,19 +30,9 @@ static BOOL completionIsActive (struct CompletionController *completionControlle
 	return [completionController->_window isVisible] && ([completionController->_table selectedRow] != -1);
 }
 
-
+#if defined(MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_10_6 <= MAC_OS_X_VERSION_MAX_ALLOWED
 extern void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy) WEAK_IMPORT_ATTRIBUTE;
 extern id objc_getAssociatedObject(id object, void *key) WEAK_IMPORT_ATTRIBUTE;
-
-static BOOL shouldShowFavicon () {
-	// Only show a favicon if we can switch it back!
-	if (objc_getAssociatedObject == NULL && !hasEasyIconReset) {
-		return NO;
-	}
-	
-	id value = [[NSUserDefaults standardUserDefaults] objectForKey:@"WebIconDatabaseEnabled"];
-	return !value || [value boolValue];
-}
 
 static void saveIconIfNeeded (LocationTextField *locationField) {
 	id savedIcon = objc_getAssociatedObject(locationField, &smallKeystoneIcon);
@@ -61,6 +51,23 @@ static void restoreIcon (LocationTextField *locationField) {
 		[locationField setIcon:savedIcon];
 		clearSavedIcon(locationField);
 	}
+}
+#else
+# define objc_getAssociatedObject NULL
+# define objc_setAssociatedObject NULL
+# define saveIconIfNeeded(X)
+# define clearSavedIcon(X)
+# define restoreIcon(X)
+#endif
+
+static BOOL shouldShowFavicon () {
+	// Only show a favicon if we can switch it back!
+	if (objc_getAssociatedObject == NULL && !hasEasyIconReset) {
+		return NO;
+	}
+	
+	id value = [[NSUserDefaults standardUserDefaults] objectForKey:@"WebIconDatabaseEnabled"];
+	return !value || [value boolValue];
 }
 
 
@@ -153,7 +160,7 @@ static void restoreIcon (LocationTextField *locationField) {
 	if (locationField == [self locationField]) {
 		[[ComBelkadanKeystone_AdditionalCompletionTableDataSource sharedInstance] cancelOperation:nil];
 		clearSavedIcon(locationField);
-	}	
+	}
 }
 
 - (void)ComBelkadanKeystone_windowDidResignKey:(NSWindow *)window {

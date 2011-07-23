@@ -23,7 +23,10 @@ struct STimer_CompletionController {
 	} m_function;
 } /* STimer_7d4eea56 */;
 
-@interface CompletionControllerObjCAdapter : NSObject <NSTableViewDataSource, NSTableViewDelegate>
+@interface CompletionControllerObjCAdapter : NSObject
+#if defined(MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_10_6 <= MAC_OS_X_VERSION_MAX_ALLOWED
+<NSTableViewDataSource, NSTableViewDelegate>
+#endif
 {
     struct CompletionController {
         void **_vptr;
