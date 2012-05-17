@@ -2,11 +2,19 @@
 #import "QueryCompletionItem.h"
 #import "SheetRequest.h"
 
+@protocol ComBelkadanKeystone_AddCompletionDelegate
+
+- (NSArray *)completionsForKeyword:(NSString *)keyword;
+
+@end
+
+
 /*!
  * Handles the popup for adding new completions, and reports back to the main
  * controller once the user has made a choice.
  */
 @interface ComBelkadanKeystone_AddCompletionController : NSWindowController <ComBelkadanKeystone_SheetRequest> {
+	id <ComBelkadanKeystone_AddCompletionDelegate> delegate;
 	ComBelkadanKeystone_QueryCompletionItem *newCompletion;
 }
 /*! 
@@ -24,6 +32,10 @@
 /*! The completion being edited. */
 @property(readonly) ComBelkadanKeystone_QueryCompletionItem *newCompletion;
 
+@property(readwrite,nonatomic,assign) id <ComBelkadanKeystone_AddCompletionDelegate> delegate;
+
 /*! Called to close the sheet. The tag of the sender is used as the return code. */
 - (IBAction)close:(id)sender;
+
+- (IBAction)showToolTip:(id)sender;
 @end

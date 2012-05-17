@@ -40,7 +40,7 @@ enum {
 	kRemoveButtonPosition
 };
 
-@interface ComBelkadanKeystone_Controller () <NSUserInterfaceValidations>
+@interface ComBelkadanKeystone_Controller () <NSUserInterfaceValidations, ComBelkadanKeystone_AddCompletionDelegate>
 + (BOOL)alertUntested;
 
 - (BOOL)loadCompletions;
@@ -384,8 +384,11 @@ static inline BOOL isOptionKeyDown ()
 			[completionURLString setString:[url absoluteString]];
 			[completionURLString replaceOccurrencesOfString:kAutodiscoverySearch withString:ComBelkadanKeystone_kSubstitutionMarker options:0 range:NSMakeRange(0, [completionURLString length])];
 			
-			sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
+			ComBelkadanKeystone_AddCompletionController *addSheet = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
+			addSheet.delegate = self;
 			[completionURLString release];
+
+			sheetRequest = addSheet;
 		}
 	}
 	
@@ -488,6 +491,24 @@ static inline BOOL isOptionKeyDown ()
 	} else {
 		return (onlyOne ? nil : [NSArray array]);
 	}
+}
+
+- (NSArray *)completionsForKeyword:(NSString *)keyword {
+	NSUInteger index = [sortedCompletionPossibilities indexOfObjectWithPrimarySortValue:keyword];
+	if (index == NSNotFound) return [NSArray array];
+
+	NSMutableArray *results = [NSMutableArray arrayWithCapacity:2];
+	NSUInteger max = [sortedCompletionPossibilities count];
+
+	do {
+		ComBelkadanKeystone_QueryCompletionItem *next = [sortedCompletionPossibilities objectAtIndex:index];
+		if (![keyword isEqual:next.keyword])
+			break;
+		[results addObject:next];
+		++index;
+	} while (index < max);
+
+	return results;
 }
 
 #pragma mark -

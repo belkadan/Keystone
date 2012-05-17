@@ -75,6 +75,61 @@
 
 #pragma mark -
 
+- (NSArray *)existingCompletions {
+	if (delegate) {
+		return [delegate completionsForKeyword:newCompletion.keyword];
+	} else {
+		return [NSArray array];
+	}
+}
+
++ (NSSet *)keyPathsForValuesAffectingExistingCompletions {
+	return [NSSet setWithObject:@"newCompletion.keyword"];
+}
+
+- (NSString *)existingCompletionWarning {
+	NSArray *existingCompletions = [self existingCompletions];
+
+	if (!newCompletion.keyword) {
+		switch ([existingCompletions count]) {
+			case 0:
+				return nil;
+			case 1: {
+				ComBelkadanKeystone_QueryCompletionItem *completion = [existingCompletions objectAtIndex:0];
+				return [NSString stringWithFormat:@"There is already a default search shortcut: '%@'", completion.name];		
+			}
+			default:
+				return [NSString stringWithFormat:@"There are already default search shortucts: '%@'", [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
+		}		
+	} else {
+		switch ([existingCompletions count]) {
+			case 0:
+				return nil;
+			case 1: {
+				ComBelkadanKeystone_QueryCompletionItem *completion = [existingCompletions objectAtIndex:0];
+				return [NSString stringWithFormat:@"'%@' is already using this keyword.", completion.name];		
+			}
+			case 2: {
+				ComBelkadanKeystone_QueryCompletionItem *first = [existingCompletions objectAtIndex:0];
+				ComBelkadanKeystone_QueryCompletionItem *second = [existingCompletions objectAtIndex:1];
+				return [NSString stringWithFormat:@"This keyword is already in use by '%@' and '%@'.", first.name, second.name];		
+			}
+			default:
+				return [NSString stringWithFormat:@"This keyword is already in use. ('%@')", [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
+		}		
+	}
+}
+
++ (NSSet *)keyPathsForValuesAffectingExistingCompletionWarning {
+	return [NSSet setWithObject:@"existingCompletions"];
+}
+
+- (IBAction)showToolTip:(id)sender {
+	[[NSHelpManager sharedHelpManager] showContextHelpForObject:sender locationHint:NSMakePoint(25,25)];
+}
+
+#pragma mark -
+
 - (IBAction)close:(id)sender {
 	if (!newCompletion.keyword) newCompletion.keyword = @"";
 	if (!newCompletion.name) newCompletion.name = @"";
@@ -87,7 +142,7 @@
 	[window orderOut:self];
 }
 
-@synthesize newCompletion;
+@synthesize newCompletion, delegate;
 @dynamic window; // just to stop warnings! we have one inherited from NSWindowController
 
 @end
