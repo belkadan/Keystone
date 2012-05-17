@@ -324,6 +324,13 @@ static inline BOOL isOptionKeyDown ()
 					@"elem.type == 'reset' || elem.type == 'submit' ||" // FIXME: <submit>
 					@"elem.type == 'select-one' || elem.type == 'select-multiple') continue;" // FIXME: <select>
 				@"if ((elem.type == 'checkbox' || elem.type == 'radio') && !elem.checked) continue;"
+				// HACK: Disable presumed AJAX mode on Google Maps.
+				// "output=js" seems unlikely to show up desired somewhere else,
+				// so rather than a site-specific exception, we just ban all such keys.
+				// It is more likely someone at Google will reuse this code than
+				// someone legitimately requiring "output=js" for a successful search.
+				// Unfortunately, we don't have anything to replace it with.
+				@"if (elem.name == 'output' && elem.value == 'js') continue;"
 				@"action += encodeURIComponent(elem.name);"
 				@"action += '=';"
 				@"action += encodeURIComponent(elem.value);"
