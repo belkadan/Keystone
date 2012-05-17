@@ -66,7 +66,7 @@ static ComBelkadanKeystone_AutocompletionMode autocompletionMode = ComBelkadanKe
 		}
 	}
 	
-	if (autocompletionMode & ComBelkadanKeystone_AutocompletionKeywords) {
+	if (!needsExactMatch || (autocompletionMode & ComBelkadanKeystone_AutocompletionKeywords)) {
 		for (id <ComBelkadanKeystone_CompletionHandler> nextHandler in additionalCompletions) {
 			ComBelkadanKeystone_FakeCompletionItem *supplied = [nextHandler firstCompletionForQueryString:query];
 			if (supplied) {
