@@ -523,8 +523,8 @@
 				"~/Library/Application Support/SIMBL/Plugins/$(WRAPPER_NAME)",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "[ -L \"$SCRIPT_OUTPUT_FILE_0\" ] && rm \"$SCRIPT_OUTPUT_FILE_0\"\n\nif [ ! -e \"$SCRIPT_OUTPUT_FILE_0\" ]; then\n\techo ln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\n\tln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\nelse\n\techo warning: \"$SCRIPT_OUTPUT_FILE_0\" \"exists;\" an older version of $PRODUCT_NAME may be in the way\nfi";
+			shellPath = /bin/zsh;
+			shellScript = "if [[ -L \"$SCRIPT_OUTPUT_FILE_0\" ]]; then\n\tif [[ $(readlink \"$SCRIPT_OUTPUT_FILE_0\") == \"$SCRIPT_INPUT_FILE_0\" ]]; then\n\t\texit 0\n\tfi\n\trm \"$SCRIPT_OUTPUT_FILE_0\" 2>/dev/null\nfi\n\nif [[ ! -e \"$SCRIPT_OUTPUT_FILE_0\" ]]; then\n\techo ln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\n\tln -s \"$SCRIPT_INPUT_FILE_0\" \"$SCRIPT_OUTPUT_FILE_0\"\nelse\n\techo warning: \"$SCRIPT_OUTPUT_FILE_0\" \"exists;\" an older version of $PRODUCT_NAME may be in the way\nfi";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
