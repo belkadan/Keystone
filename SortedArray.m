@@ -1,8 +1,10 @@
 #import "SortedArray.h"
 
+#ifndef MAC_OS_X_VERSION_10_6
 @interface NSObject ()
-- (id)forwardingTargetForSelector:(SEL)selector; /* why isn't this in the NSObject headers yet? */
+- (id)forwardingTargetForSelector:(SEL)selector;
 @end
+#endif
 
 static NSComparisonResult compareUsingSortDescriptors (id left, id right, NSArray *descriptors) {
 	NSComparisonResult result = NSOrderedSame;

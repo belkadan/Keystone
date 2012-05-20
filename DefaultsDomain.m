@@ -9,6 +9,12 @@
 #define __has_feature(x) 0
 #endif
 
+#ifndef MAC_OS_X_VERSION_10_6
+@interface NSObject ()
+- (id)forwardingTargetForSelector:(SEL)selector;
+@end
+#endif
+
 static NSMutableDictionary *domains = nil;
 
 @interface ComBelkadanUtils_DefaultsDomain ()
@@ -102,17 +108,28 @@ static NSMutableDictionary *domains = nil;
 
 #pragma mark -
 
+- (id)forwardingTargetForSelector:(SEL)cmd {
+	if ([[NSDictionary class] instancesRespondToSelector:cmd]) {
+		return values;
+	} else {
+		return [super forwardingTargetForSelector:cmd];
+	}
+}
+
 - (void)forwardInvocation:(NSInvocation *)invocation {
 	SEL cmd = [invocation selector];
-	if ([[NSDictionary class] instancesRespondToSelector:cmd]) {
-		[invocation invokeWithTarget:values];
-
-	} else if ([[NSMutableDictionary class] instancesRespondToSelector:cmd]) {
+	if ([[NSMutableDictionary class] instancesRespondToSelector:cmd]) {
 		[invocation invokeWithTarget:values];
 		[self save];
 		
 	} else {
-		[self doesNotRecognizeSelector:cmd];
+		[super forwardInvocation:invocation];
 	}
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)cmd {
+	NSMethodSignature *result = [super methodSignatureForSelector:cmd];
+	if (!result) result = [values methodSignatureForSelector:cmd];
+	return result;
 }
 @end
