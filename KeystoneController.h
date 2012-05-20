@@ -31,5 +31,8 @@
 - (IBAction)newCompletionForCurrentPage:(id)sender;
 - (void)newCompletionSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode controller:(id)controller;
 
+- (IBAction)exportSettings:(id)sender;
+- (IBAction)importSettings:(id)sender;
+
 @property(readonly) SUUpdater *updater;
 @end

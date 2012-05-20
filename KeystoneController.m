@@ -48,6 +48,9 @@ enum {
 - (void)loadDefaultCompletions;
 
 - (void)alertSheetRequestDidEnd:(ComBelkadanKeystone_AlertSheetRequest *)sheetRequest returnCode:(NSInteger)returnCode unused:(void *)unused;
+
+- (void)exportSettingsPanelDidEnd:(NSSavePanel *)savePanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused;
+- (void)importSettingsPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused;
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
@@ -523,6 +526,64 @@ static inline BOOL isOptionKeyDown ()
 - (NSString *)permissionPromptDescriptionTextForUpdater:(SUUpdater *)updater {
 	// A WebKit Sparkle branch extension
 	return NSLocalizedStringFromTableInBundle(@"Should Keystone automatically check for updates?", @"Localizable", [NSBundle bundleForClass:[self class]], @"Updater messages");
+}
+
+#pragma mark -
+
+- (IBAction)exportSettings:(id)sender {
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"plist"]];
+	[savePanel setAllowsOtherFileTypes:NO];
+	[savePanel beginSheetForDirectory:nil file:@"Keystone Settings" modalForWindow:[completionTable window] modalDelegate:self didEndSelector:@selector(exportSettingsPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];	
+}
+
+- (void)exportSettingsPanelDidEnd:(NSSavePanel *)savePanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused {
+	if (returnCode == NSCancelButton) return;
+
+	NSMutableDictionary *settings = [[ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain] mutableCopy];
+	NSString *bundleVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+	[settings setObject:bundleVersion forKey:kKeystonePreferencesDomain];
+
+	[settings writeToURL:[savePanel URL] atomically:YES];
+	[settings release];
+}
+
+- (IBAction)importSettings:(id)sender {
+	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+	[openPanel beginSheetForDirectory:nil file:nil types:[NSArray arrayWithObject:@"plist"] modalForWindow:[completionTable window] modalDelegate:self didEndSelector:@selector(importSettingsPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+}
+
+- (void)importSettingsPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused {
+	if (returnCode == NSCancelButton) return;
+	[openPanel orderOut:nil];
+
+	NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfURL:[openPanel URL]];
+	NSString *settingsVersion = [settings objectForKey:kKeystonePreferencesDomain];
+
+	if (!settingsVersion && ![settings objectForKey:kPreferencesCompletionKey]) {
+		NSBundle *keystoneBundle = [NSBundle bundleForClass:[self class]];
+
+		NSAlert *sorry = [[[NSAlert alloc] init] autorelease];
+		[sorry setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[sorry setMessageText:NSLocalizedStringFromTableInBundle(@"Could not read settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
+		[sorry setInformativeText:NSLocalizedStringFromTableInBundle(@"This does not appear to be a Keystone settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
+
+		[sorry beginSheetModalForWindow:[completionTable window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+
+	} else if ([settingsVersion compare:@"2" options:NSCaseInsensitiveSearch|NSNumericSearch] != NSOrderedAscending) {
+		NSBundle *keystoneBundle = [NSBundle bundleForClass:[self class]];
+
+		NSAlert *sorry = [[[NSAlert alloc] init] autorelease];
+		[sorry setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[sorry setMessageText:NSLocalizedStringFromTableInBundle(@"Could not read settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
+		[sorry setInformativeText:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"These settings are for Keystone %@, but you have %@.", @"Localizable", keystoneBundle, @"Settings import/export"), settingsVersion, [keystoneBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]]];
+
+		[sorry beginSheetModalForWindow:[completionTable window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+	} else {
+		// actually update stuff
+	}
+	
+	[settings release];
 }
 
 #pragma mark -

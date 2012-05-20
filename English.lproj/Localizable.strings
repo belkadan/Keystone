@@ -17,6 +17,11 @@
 /* Updater messages */
 "Should Keystone automatically check for updates?" = "Should Keystone automatically check for updates? You can always check for updates manually through the Keystone preference pane.";
 
+/* Settings import/export */
+"Could not read settings file." = "Could not read settings file.";
+"This does not appear to be a Keystone settings file." = "This does not appear to be a Keystone settings file. Try re-exporting your settings.";
+"These settings are for Keystone %@, but you have %@." = "These settings are for Keystone %1$@, but you have version %2$@. Update Keystone to the latest version and try again.";
+
 /* The header title in the completions list */
 "Keystone Shortcuts" = "Keystone Shortcuts";
 
