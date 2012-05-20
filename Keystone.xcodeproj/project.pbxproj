@@ -94,18 +94,6 @@
 		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
 		8C74C92511A20CA70062AD6E /* DefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsDomain.m; sourceTree = "<group>"; };
-		8C7679EA13CBA81100FBB919 /* MARTNSObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MARTNSObject.h; sourceTree = "<group>"; };
-		8C7679EB13CBA81100FBB919 /* MARTNSObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MARTNSObject.m; sourceTree = "<group>"; };
-		8C7679ED13CBA81100FBB919 /* RTIvar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTIvar.h; sourceTree = "<group>"; };
-		8C7679EE13CBA81100FBB919 /* RTIvar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTIvar.m; sourceTree = "<group>"; };
-		8C7679EF13CBA81100FBB919 /* RTMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTMethod.h; sourceTree = "<group>"; };
-		8C7679F013CBA81100FBB919 /* RTMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTMethod.m; sourceTree = "<group>"; };
-		8C7679F113CBA81100FBB919 /* RTProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTProperty.h; sourceTree = "<group>"; };
-		8C7679F213CBA81100FBB919 /* RTProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTProperty.m; sourceTree = "<group>"; };
-		8C7679F313CBA81100FBB919 /* RTProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTProtocol.h; sourceTree = "<group>"; };
-		8C7679F413CBA81100FBB919 /* RTProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTProtocol.m; sourceTree = "<group>"; };
-		8C7679F513CBA81100FBB919 /* RTUnregisteredClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTUnregisteredClass.h; sourceTree = "<group>"; };
-		8C7679F613CBA81100FBB919 /* RTUnregisteredClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTUnregisteredClass.m; sourceTree = "<group>"; };
 		8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.0.3.h; path = ../Disassembly/Safari.4.0.3.h; sourceTree = SOURCE_ROOT; };
 		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
 		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
@@ -281,7 +269,6 @@
 			isa = PBXGroup;
 			children = (
 				8CAED62413BD638C000275D7 /* JRSwizzle */,
-				8C7679C013CBA81100FBB919 /* MAObjCRuntime */,
 				8CDE7C6B0F7E0523004CFE14 /* Safari.4.h */,
 				8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */,
 				8CD0A6A511C447B90053FB8C /* Safari.5.h */,
@@ -346,26 +333,6 @@
 			);
 			name = "Keystone Names";
 			sourceTree = "<group>";
-		};
-		8C7679C013CBA81100FBB919 /* MAObjCRuntime */ = {
-			isa = PBXGroup;
-			children = (
-				8C7679EA13CBA81100FBB919 /* MARTNSObject.h */,
-				8C7679EB13CBA81100FBB919 /* MARTNSObject.m */,
-				8C7679ED13CBA81100FBB919 /* RTIvar.h */,
-				8C7679EE13CBA81100FBB919 /* RTIvar.m */,
-				8C7679EF13CBA81100FBB919 /* RTMethod.h */,
-				8C7679F013CBA81100FBB919 /* RTMethod.m */,
-				8C7679F113CBA81100FBB919 /* RTProperty.h */,
-				8C7679F213CBA81100FBB919 /* RTProperty.m */,
-				8C7679F313CBA81100FBB919 /* RTProtocol.h */,
-				8C7679F413CBA81100FBB919 /* RTProtocol.m */,
-				8C7679F513CBA81100FBB919 /* RTUnregisteredClass.h */,
-				8C7679F613CBA81100FBB919 /* RTUnregisteredClass.m */,
-			);
-			name = MAObjCRuntime;
-			path = ../MAObjCRuntime;
-			sourceTree = SOURCE_ROOT;
 		};
 		8CAED62413BD638C000275D7 /* JRSwizzle */ = {
 			isa = PBXGroup;
