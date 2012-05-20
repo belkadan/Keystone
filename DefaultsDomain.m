@@ -60,7 +60,18 @@ static NSMutableDictionary *domains = nil;
 }
 
 - (void)save {
-	[[NSUserDefaults standardUserDefaults] setPersistentDomain:values forName:self.domain];
+	if (!inTransaction) {
+		[[NSUserDefaults standardUserDefaults] setPersistentDomain:values forName:self.domain];
+	}
+}
+
+- (void)beginTransaction {
+	inTransaction = YES;
+}
+
+- (void)endTransaction {
+	inTransaction = NO;
+	[self save];
 }
 
 #pragma mark -
