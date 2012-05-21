@@ -24,6 +24,7 @@ static NSString * const kPreferencesAutocompletionModeKey = @"AutocompleteMode";
 static NSString * const kDefaultPreferencesFile = @"defaults"; // extension must be .plist
 
 static NSString * const kAutodiscoverySearch = @"---Keystone---";
+static NSString * const kKeystoneIconName = @"ComBelkadanKeystone_Preferences";
 
 static NSString * const kSogudiCompletionsFile = @"SogudiShortcuts.plist";
 static NSString * const kSogudiDefaultActionKeyword = @"default";
@@ -82,10 +83,10 @@ static inline BOOL isOptionKeyDown ()
 {
 	static NSImage *prefIcon = nil;
 	if (!prefIcon) {
-		prefIcon = [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
+		prefIcon = [NSImage imageNamed:kKeystoneIconName];
 		if (!prefIcon) {
 			prefIcon = [[NSImage alloc] initByReferencingFile:[[NSBundle bundleForClass:[self class]] pathForImageResource:@"keystone"]];
-			[prefIcon setName:@"ComBelkadanKeystone_Preferences"];
+			[prefIcon setName:kKeystoneIconName];
 		}
 	}
 
@@ -178,7 +179,7 @@ static inline BOOL isOptionKeyDown ()
 	if (!isSuppressed || isOptionKeyDown()) {
 		NSAlert *alert = [[NSAlert alloc] init];
 		
-		[alert setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[alert setIcon:[NSImage imageNamed:kKeystoneIconName]];
 		[alert setMessageText:NSLocalizedStringFromTableInBundle(@"Keystone is not yet supported in this version of Safari.", @"Localizable", keystoneBundle, @"Unsupported alert")];
 		[alert setInformativeText:NSLocalizedStringFromTableInBundle(@"Check the Keystone preference pane for updates.", @"Localizable", keystoneBundle, @"Unsupported alert")];
 		
@@ -278,7 +279,7 @@ static inline BOOL isOptionKeyDown ()
 		
 		if (![doc currentURL]) return NO;
 
-		NSString *valid = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:4] javaScript:
+		NSString *valid = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:1] javaScript:
 			@"var ComBelkadanKeystone_status = false;"
 			@"if (document && document.activeElement && document.activeElement.form) {"
 				@"if (document.activeElement.nodeName == 'TEXTAREA') {"
@@ -291,7 +292,8 @@ static inline BOOL isOptionKeyDown ()
 			@"}"
 			@"return ComBelkadanKeystone_status ? 'YES' : 'NO'"];
 
-		return [valid boolValue];
+		// If we couldn't complete the JavaScript, /enable the menu anyway/.
+		return valid ? [valid boolValue] : YES;
 
 	} else if ([item action] == @selector(newCompletionForCurrentPage:)) {
 		NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
@@ -312,38 +314,42 @@ static inline BOOL isOptionKeyDown ()
 	}
 	
 	NSString *formURLString = [windowController ComBelkadanKeystone_evaluateBeforeDate:[NSDate dateWithTimeIntervalSinceNow:4] javaScript:
-		@"var form = document.activeElement.form;"
-		@"if ('' == form.method || 'get' == form.method.toLowerCase()) {"
-			@"var old = document.activeElement.value;"
-			@"document.activeElement.value = '---Keystone---';"
-			@"var action = '';"
-			@"if (form.action != '' && form.action[0] != '#') {"
-				@"action = form.action;"
+		@"if (document && document.activeElement && document.activeElement.form) {"
+			@"var form = document.activeElement.form;"
+			@"if ('' == form.method || 'get' == form.method.toLowerCase()) {"
+				@"var old = document.activeElement.value;"
+				@"document.activeElement.value = '---Keystone---';"
+				@"var action = '';"
+				@"if (form.action != '' && form.action[0] != '#') {"
+					@"action = form.action;"
+				@"}"
+				@"action += '?';"
+				@"for (var i = 0; i < form.elements.length; ++i) {"
+					@"var elem = form.elements[i];"
+					@"if (!elem.name) continue;"
+					@"if (elem.type == 'button' || elem.type == 'file' || "
+						@"elem.type == 'reset' || elem.type == 'submit' ||" // FIXME: <submit>
+						@"elem.type == 'select-one' || elem.type == 'select-multiple') continue;" // FIXME: <select>
+					@"if ((elem.type == 'checkbox' || elem.type == 'radio') && !elem.checked) continue;"
+					// HACK: Disable presumed AJAX mode on Google Maps.
+					// "output=js" seems unlikely to show up desired somewhere else,
+					// so rather than a site-specific exception, we just ban all such keys.
+					// It is more likely someone at Google will reuse this code than
+					// someone legitimately requiring "output=js" for a successful search.
+					// Unfortunately, we don't have anything to replace it with.
+					@"if (elem.name == 'output' && elem.value == 'js') continue;"
+					@"action += encodeURIComponent(elem.name);"
+					@"action += '=';"
+					@"action += encodeURIComponent(elem.value);"
+					@"action += '&';"
+				@"}"
+				@"document.activeElement.value = old;"
+				@"return action;"
+			@"} else {"
+				@"return ' GET';"
 			@"}"
-			@"action += '?';"
-			@"for (var i = 0; i < form.elements.length; ++i) {"
-				@"var elem = form.elements[i];"
-				@"if (!elem.name) continue;"
-				@"if (elem.type == 'button' || elem.type == 'file' || "
-					@"elem.type == 'reset' || elem.type == 'submit' ||" // FIXME: <submit>
-					@"elem.type == 'select-one' || elem.type == 'select-multiple') continue;" // FIXME: <select>
-				@"if ((elem.type == 'checkbox' || elem.type == 'radio') && !elem.checked) continue;"
-				// HACK: Disable presumed AJAX mode on Google Maps.
-				// "output=js" seems unlikely to show up desired somewhere else,
-				// so rather than a site-specific exception, we just ban all such keys.
-				// It is more likely someone at Google will reuse this code than
-				// someone legitimately requiring "output=js" for a successful search.
-				// Unfortunately, we don't have anything to replace it with.
-				@"if (elem.name == 'output' && elem.value == 'js') continue;"
-				@"action += encodeURIComponent(elem.name);"
-				@"action += '=';"
-				@"action += encodeURIComponent(elem.value);"
-				@"action += '&';"
-			@"}"
-			@"document.activeElement.value = old;"
-			@"return action;"
 		@"} else {"
-			@"return ' GET';"
+			@"return '';"
 		@"}"];
 	
 	id <ComBelkadanKeystone_SheetRequest> sheetRequest;
@@ -570,7 +576,7 @@ static inline BOOL isOptionKeyDown ()
 		NSBundle *keystoneBundle = [NSBundle bundleForClass:[self class]];
 
 		NSAlert *sorry = [[[NSAlert alloc] init] autorelease];
-		[sorry setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[sorry setIcon:[NSImage imageNamed:kKeystoneIconName]];
 		[sorry setMessageText:NSLocalizedStringFromTableInBundle(@"Could not read settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
 		[sorry setInformativeText:NSLocalizedStringFromTableInBundle(@"This does not appear to be a Keystone settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
 
@@ -580,7 +586,7 @@ static inline BOOL isOptionKeyDown ()
 		NSBundle *keystoneBundle = [NSBundle bundleForClass:[self class]];
 
 		NSAlert *sorry = [[[NSAlert alloc] init] autorelease];
-		[sorry setIcon:[NSImage imageNamed:@"ComBelkadanKeystone_Preferences"]];
+		[sorry setIcon:[NSImage imageNamed:kKeystoneIconName]];
 		[sorry setMessageText:NSLocalizedStringFromTableInBundle(@"Could not read settings file.", @"Localizable", keystoneBundle, @"Settings import/export")];
 		[sorry setInformativeText:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"These settings are for Keystone %@, but you have %@.", @"Localizable", keystoneBundle, @"Settings import/export"), settingsVersion, [keystoneBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey]]];
 
@@ -662,7 +668,7 @@ static inline BOOL isOptionKeyDown ()
 }
 
 - (NSImage *)imageForPreferenceNamed:(NSString *)name {
-	return [NSImage imageNamed:@"ComBelkadanKeystone_Preferences"];
+	return [NSImage imageNamed:kKeystoneIconName];
 }
 
 - (void)setPreferencesView:(NSView *)view {
