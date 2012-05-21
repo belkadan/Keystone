@@ -27,6 +27,10 @@
 		8C6F08160F98559E00216A72 /* FacebookREST.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6F08150F98559E00216A72 /* FacebookREST.m */; };
 		8C71A4180F7E018400E3CC05 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
 		8C74C92611A20CA70062AD6E /* DefaultsDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C74C92511A20CA70062AD6E /* DefaultsDomain.m */; };
+		8C75EA631569AD0A00D68373 /* DBBackgroundView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */; };
+		8C75EA711569AD4100D68373 /* DBBackgroundView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */; };
+		8C75EA931569E0A500D68373 /* drop.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8C75EA921569E0A500D68373 /* drop.pdf */; };
+		8C75EAC61569ED3000D68373 /* DropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C75EAC51569ED3000D68373 /* DropOverlayView.m */; };
 		8C8A922410FE7FFA00DC0D4C /* BookmarksControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8A922310FE7FFA00DC0D4C /* BookmarksControllerAdditions.m */; };
 		8C8DB28C1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8DB28B1215ECF0008D41B8 /* AdditionalCompletionTableDataSource.m */; };
 		8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8C8DB2E01215F402008D41B8 /* CompletionTable.xib */; };
@@ -53,6 +57,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8C75EA711569AD4100D68373 /* DBBackgroundView.framework in Copy Frameworks */,
 				8C2ABEB71112CCEF00EF077B /* Sparkle.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -94,6 +99,10 @@
 		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
 		8C74C92511A20CA70062AD6E /* DefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsDomain.m; sourceTree = "<group>"; };
+		8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DBBackgroundView.framework; path = ../DBBackgroundView/build/Release/DBBackgroundView.framework; sourceTree = SOURCE_ROOT; };
+		8C75EA921569E0A500D68373 /* drop.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = drop.pdf; sourceTree = "<group>"; };
+		8C75EAC41569ED3000D68373 /* DropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropOverlayView.h; sourceTree = "<group>"; };
+		8C75EAC51569ED3000D68373 /* DropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DropOverlayView.m; sourceTree = "<group>"; };
 		8C87FBDA10427B2400DB015A /* Safari.4.0.3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Safari.4.0.3.h; path = ../Disassembly/Safari.4.0.3.h; sourceTree = SOURCE_ROOT; };
 		8C894673104358860051A988 /* CompletionAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionAdapter.h; sourceTree = "<group>"; };
 		8C8A922210FE7FFA00DC0D4C /* BookmarksControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarksControllerAdditions.h; sourceTree = "<group>"; };
@@ -160,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C27FDE2104A14BF00A96844 /* Cocoa.framework in Frameworks */,
+				8C75EA631569AD0A00D68373 /* DBBackgroundView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +214,7 @@
 				8CF220A610E01338009074CD /* AddCompletion.xib */,
 				8C8DB2E01215F402008D41B8 /* CompletionTable.xib */,
 				8C9239F81113AD17001A38BE /* dsa_pub.pem */,
+				8C75EA921569E0A500D68373 /* drop.pdf */,
 				8C986F520F80526400383384 /* keystone.icns */,
 			);
 			name = Resources;
@@ -280,6 +291,7 @@
 		8C2ABE8C1112BFAE00EF077B /* Embedded Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */,
 				8C2ABE321112BF6300EF077B /* Sparkle.framework */,
 			);
 			name = "Embedded Frameworks";
@@ -309,6 +321,8 @@
 				8CF220C110E02A97009074CD /* AddCompletionController.m */,
 				8C32884010E0930300C2D25C /* SheetRequest.h */,
 				8C6C8BBA10E0C8260058B36E /* SheetRequest.m */,
+				8C75EAC41569ED3000D68373 /* DropOverlayView.h */,
+				8C75EAC51569ED3000D68373 /* DropOverlayView.m */,
 				8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */,
 				8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */,
 				8C74C92411A20CA70062AD6E /* DefaultsDomain.h */,
@@ -458,6 +472,7 @@
 				8CF220A810E01338009074CD /* AddCompletion.xib in Resources */,
 				8C9239F91113AD17001A38BE /* dsa_pub.pem in Resources */,
 				8C8DB2E21215F402008D41B8 /* CompletionTable.xib in Resources */,
+				8C75EA931569E0A500D68373 /* drop.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -539,6 +554,7 @@
 				8CC3380E1235C0480053E52F /* CompletionServer.m in Sources */,
 				8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */,
 				8CAED69213BD638C000275D7 /* JRSwizzle.m in Sources */,
+				8C75EAC61569ED3000D68373 /* DropOverlayView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +621,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Sparkle 1/With Garbage Collection\"",
+					"\"$(SRCROOT)/../DBBackgroundView/build/Release\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -634,6 +651,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Sparkle 1/With Garbage Collection\"",
+					"\"$(SRCROOT)/../DBBackgroundView/build/Release\"",
 				);
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_MODEL_TUNING = G5;

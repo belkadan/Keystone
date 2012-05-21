@@ -2,6 +2,7 @@
 #import "SortedArray.h"
 #import "QueryCompletionItem.h"
 #import "CompletionHandler.h"
+#import "DropOverlayView.h"
 #import "NSPreferences.h"
 
 @class SUUpdater;
@@ -10,11 +11,12 @@
  * The main controller for Keystone query completions. In addition to being a
  * completion handler, also manages the menu items and preference panes.
  */
-@interface ComBelkadanKeystone_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler> {
+@interface ComBelkadanKeystone_Controller : NSPreferencesModule <ComBelkadanKeystone_CompletionHandler, ComBelkadanUtils_DropOverlayViewDelegate> {
 	SortedArray *sortedCompletionPossibilities;
 	
 	IBOutlet NSTableView *completionTable;
 	IBOutlet NSSegmentedControl *addRemoveControl;
+	IBOutlet ComBelkadanUtils_DropOverlayView *dropOverlay;
 
 	NSMutableArray *pendingConfirmations;
 	

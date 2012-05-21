@@ -51,6 +51,7 @@ enum {
 
 - (void)exportSettingsPanelDidEnd:(NSSavePanel *)savePanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused;
 - (void)importSettingsPanelDidEnd:(NSOpenPanel *)openPanel returnCode:(NSInteger)returnCode contextInfo:(void *)unused;
+- (void)importSettingsFromURL:(NSURL *)url;
 @end
 
 @interface NSDocument (ComBelkadanKeystone_IKnowYoureInThere)
@@ -557,7 +558,11 @@ static inline BOOL isOptionKeyDown ()
 	if (returnCode == NSCancelButton) return;
 	[openPanel orderOut:nil];
 
-	NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfURL:[openPanel URL]];
+	[self importSettingsFromURL:[openPanel URL]];
+}
+
+- (void)importSettingsFromURL:(NSURL *)url {
+	NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfURL:url];
 	NSString *settingsVersion = [settings objectForKey:kKeystonePreferencesDomain];
 
 	if (!settingsVersion && ![settings objectForKey:kPreferencesCompletionKey]) {
@@ -586,6 +591,32 @@ static inline BOOL isOptionKeyDown ()
 	[settings release];
 }
 
+- (NSDragOperation)dropOverlayView:(ComBelkadanUtils_DropOverlayView *)view validateDrop:(id <NSDraggingInfo>)info {
+	NSPasteboard *pboard = [info draggingPasteboard];
+	NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObject:NSFilenamesPboardType]];
+	NSAssert([type isEqual:NSFilenamesPboardType], @"Only our drag type should be enabled.");
+
+	NSArray *array = [pboard propertyListForType:type];
+	if ([array count] != 1) return NSDragOperationNone;
+
+	if (![[[array objectAtIndex:0] pathExtension] isEqual:@"plist"]) return NSDragOperationNone;
+
+	return NSDragOperationCopy;
+}
+
+- (BOOL)dropOverlayView:(ComBelkadanUtils_DropOverlayView *)view acceptDrop:(id <NSDraggingInfo>)info {
+	NSPasteboard *pboard = [info draggingPasteboard];
+	NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObject:NSFilenamesPboardType]];
+	NSAssert([type isEqual:NSFilenamesPboardType], @"Only our drag type should be enabled.");
+	
+	NSArray *array = [pboard propertyListForType:type];
+	[self importSettingsFromURL:[NSURL fileURLWithPath:[array objectAtIndex:0]]];
+
+	// Whether or not we succeeded in importing the file, the drag icon should
+	// still not slide back.
+	return YES;
+}
+
 #pragma mark -
 
 - (NSString *)preferencesNibName {
@@ -605,6 +636,11 @@ static inline BOOL isOptionKeyDown ()
 	}
 
 	[super setPreferencesView:view];
+}
+
+- (void)moduleWasInstalled {
+	[super moduleWasInstalled];
+	[dropOverlay registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 }
 
 - (BOOL)isResizable {
