@@ -523,7 +523,7 @@
 										<float key="backgroundAlpha">1</float>
 										<object class="NSColor" key="backgroundColor">
 											<int key="NSColorSpace">1</int>
-											<bytes key="NSRGB">MC42NzM3Njc4MDUxIDAuNzA5NjQ2OTk5OCAwLjc4MzMzNjg3NzggMC41AA</bytes>
+											<bytes key="NSRGB">MC42NzM3Njc4MDUxIDAuNzA5NjQ2OTk5OCAwLjc4MzMzNjg3NzggMC43AA</bytes>
 										</object>
 										<nil key="backgroundPattern"/>
 										<object class="NSImage" key="backgroundImage">
