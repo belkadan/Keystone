@@ -94,6 +94,7 @@
 }
 
 - (NSString *)existingCompletionWarning {
+	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
 	NSArray *existingCompletions = [self existingCompletions];
 
 	if (!newCompletion.keyword) {
