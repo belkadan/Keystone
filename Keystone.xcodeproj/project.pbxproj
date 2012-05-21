@@ -17,6 +17,7 @@
 		8C3A320D0F7EC33500C37703 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
 		8C3A33BA0F7EE24F00C37703 /* SortedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A320C0F7EC33500C37703 /* SortedArray.m */; };
 		8C3A33BE0F7EE26C00C37703 /* SortedArrayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */; };
+		8C583D62156AA3F400966F97 /* ActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C583D61156AA3F400966F97 /* ActionView.m */; };
 		8C6C8BBB10E0C8260058B36E /* SheetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C6C8BBA10E0C8260058B36E /* SheetRequest.m */; };
 		8C6F065E0F981C1900216A72 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8C6F06640F981C1900216A72 /* CompletionControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */; };
@@ -85,6 +86,8 @@
 		8C3A33AA0F7EE21900C37703 /* KeystoneTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeystoneTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C3A33AB0F7EE21900C37703 /* KeystoneTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KeystoneTests-Info.plist"; sourceTree = "<group>"; };
 		8C3A33BD0F7EE26C00C37703 /* SortedArrayTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortedArrayTests.m; sourceTree = "<group>"; };
+		8C583D60156AA3F400966F97 /* ActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionView.h; sourceTree = "<group>"; };
+		8C583D61156AA3F400966F97 /* ActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionView.m; sourceTree = "<group>"; };
 		8C6C8B4310E0B82E0058B36E /* BookmarkSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkSources.h; sourceTree = "<group>"; };
 		8C6C8BBA10E0C8260058B36E /* SheetRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SheetRequest.m; sourceTree = "<group>"; };
 		8C6F066F0F981C1900216A72 /* Keystone Names.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keystone Names.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -323,6 +326,8 @@
 				8C6C8BBA10E0C8260058B36E /* SheetRequest.m */,
 				8C75EAC41569ED3000D68373 /* DropOverlayView.h */,
 				8C75EAC51569ED3000D68373 /* DropOverlayView.m */,
+				8C583D60156AA3F400966F97 /* ActionView.h */,
+				8C583D61156AA3F400966F97 /* ActionView.m */,
 				8C9E9CD4110C036E00BD7153 /* NSWindow+EndEditingGracefully.h */,
 				8C9E9CD5110C036E00BD7153 /* NSWindow+EndEditingGracefully.m */,
 				8C74C92411A20CA70062AD6E /* DefaultsDomain.h */,
@@ -555,6 +560,7 @@
 				8CBE2D4C13BC460800C493E6 /* BrowserWindowController+JavaScript.m in Sources */,
 				8CAED69213BD638C000275D7 /* JRSwizzle.m in Sources */,
 				8C75EAC61569ED3000D68373 /* DropOverlayView.m in Sources */,
+				8C583D62156AA3F400966F97 /* ActionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,7 +622,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -646,7 +651,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = /Applications/Safari.app/Contents/MacOS/Safari;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

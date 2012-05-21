@@ -16,6 +16,9 @@
 @interface ComBelkadanKeystone_AddCompletionController : NSWindowController <ComBelkadanKeystone_SheetRequest> {
 	id <ComBelkadanKeystone_AddCompletionDelegate> delegate;
 	ComBelkadanKeystone_QueryCompletionItem *newCompletion;
+
+	NSPanel *tooltipFloatWindow;
+	IBOutlet NSTextView *warningView;
 }
 /*! 
  * Creates a new controller for the given site name and URL, using a reasonable
@@ -37,5 +40,5 @@
 /*! Called to close the sheet. The tag of the sender is used as the return code. */
 - (IBAction)close:(id)sender;
 
-- (IBAction)showToolTip:(id)sender;
+- (IBAction)showWarning:(id)sender;
 @end
