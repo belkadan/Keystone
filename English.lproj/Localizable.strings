@@ -7,6 +7,14 @@
 "Keystone could not figure out what part of the URL represents the query." = "Keystone could not figure out what part of the URL represents the query. This website may not support URL-based searches.";
 "This form does not encode its query in a URL." = "This form does not encode its query in a URL. This website may not support URL-based searches.";
 
+/* Existing completion warnings */
+"There is already a default search shortcut: '%@'" = "There is already a default search shortcut: '%@'";
+"There are already default search shortcuts: '%@' and '%@'." = "There are already default search shortcuts: '%1$@' and '%2$@'.";
+"There are already default search shortcuts: '%@'" = "There are already default search shortcuts: '%@'";
+"'%@' is already using this keyword." = "'%@' is already using this keyword.";
+"This keyword is already in use by '%@' and '%@'." = "This keyword is already in use by '%1$@' and '%2$@'.";
+"This keyword is already in use. ('%@')" = "This keyword is already in use. ('%@')";
+
 /* Unsupported alert */
 "Keystone is not yet supported in this version of Safari." = "Keystone is not yet supported in this version of Safari.";
 "Check the Keystone preference pane for updates." = "Using this version of Keystone may cause Safari to crash. Check the Keystone preference pane for updates, or contact Belkadan Software at keystone@belkadan.com for more information.";

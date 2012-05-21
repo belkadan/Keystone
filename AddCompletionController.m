@@ -102,32 +102,32 @@
 			return nil;
 		case 1: {
 			ComBelkadanKeystone_QueryCompletionItem *completion = [existingCompletions objectAtIndex:0];
-			return [NSString stringWithFormat:@"There is already a default search shortcut: '%@'", completion.name];		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"There is already a default search shortcut: '%@'", @"Localizable", bundle, @"Existing completion warnings"), completion.name];
 		}
 		case 2: {
 			ComBelkadanKeystone_QueryCompletionItem *first = [existingCompletions objectAtIndex:0];
 			ComBelkadanKeystone_QueryCompletionItem *second = [existingCompletions objectAtIndex:1];
-			return [NSString stringWithFormat:@"There are already default search shortcuts: '%@' and '%@'.", first.name, second.name];		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"There are already default search shortcuts: '%@' and '%@'.", @"Localizable", bundle, @"Existing completion warnings"), first.name, second.name];
 		}
 		default:
-			return [NSString stringWithFormat:@"There are already default search shortcuts: '%@'", [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
-		}		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"There are already default search shortcuts: '%@'", @"Localizable", bundle, @"Existing completion warnings"), [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
+		}
 	} else {
 		switch ([existingCompletions count]) {
 		case 0:
 			return nil;
 		case 1: {
 			ComBelkadanKeystone_QueryCompletionItem *completion = [existingCompletions objectAtIndex:0];
-			return [NSString stringWithFormat:@"'%@' is already using this keyword.", completion.name];		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"'%@' is already using this keyword.", @"Localizable", bundle, @"Existing completion warnings"), completion.name];
 		}
 		case 2: {
 			ComBelkadanKeystone_QueryCompletionItem *first = [existingCompletions objectAtIndex:0];
 			ComBelkadanKeystone_QueryCompletionItem *second = [existingCompletions objectAtIndex:1];
-			return [NSString stringWithFormat:@"This keyword is already in use by '%@' and '%@'.", first.name, second.name];		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"This keyword is already in use by '%@' and '%@'.", @"Localizable", bundle, @"Existing completion warnings"), first.name, second.name];
 		}
 		default:
-			return [NSString stringWithFormat:@"This keyword is already in use. ('%@')", [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
-		}		
+			return [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"This keyword is already in use. ('%@')", @"Localizable", bundle, @"Existing completion warnings"), [[existingCompletions valueForKey:@"name"] componentsJoinedByString:@"', '"]];
+		}
 	}
 }
 
