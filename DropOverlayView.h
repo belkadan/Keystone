@@ -3,12 +3,10 @@
 @class ComBelkadanUtils_DropOverlayView;
 
 @protocol ComBelkadanUtils_DropOverlayViewDelegate <NSObject>
-
 - (BOOL)dropOverlayView:(ComBelkadanUtils_DropOverlayView *)view acceptDrop:(id <NSDraggingInfo>)info;
 
 @optional
 - (NSDragOperation)dropOverlayView:(ComBelkadanUtils_DropOverlayView *)view validateDrop:(id <NSDraggingInfo>)info;
-
 @end
 
 

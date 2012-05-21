@@ -1,8 +1,3 @@
-//
-//  DefaultsDomain.h
-//  Keystone
-//
-
 #import <Foundation/Foundation.h>
 
 @interface ComBelkadanUtils_DefaultsDomain : NSMutableDictionary {

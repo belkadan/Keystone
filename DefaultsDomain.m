@@ -1,8 +1,3 @@
-//
-//  DefaultsDomain.m
-//  Keystone
-//
-
 #import "DefaultsDomain.h"
 
 #ifndef __has_feature
