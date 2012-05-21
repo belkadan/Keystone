@@ -564,8 +564,9 @@ static inline BOOL isOptionKeyDown ()
 - (void)importSettingsFromURL:(NSURL *)url {
 	NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfURL:url];
 	NSString *settingsVersion = [settings objectForKey:kKeystonePreferencesDomain];
+	NSArray *completions = [settings objectForKey:kPreferencesCompletionKey];
 
-	if (!settingsVersion && ![settings objectForKey:kPreferencesCompletionKey]) {
+	if (!settingsVersion && !completions) {
 		NSBundle *keystoneBundle = [NSBundle bundleForClass:[self class]];
 
 		NSAlert *sorry = [[[NSAlert alloc] init] autorelease];
@@ -585,7 +586,44 @@ static inline BOOL isOptionKeyDown ()
 
 		[sorry beginSheetModalForWindow:[completionTable window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
 	} else {
-		// actually update stuff
+		BOOL changed = NO;
+		for (NSDictionary *dict in completions) {
+			ComBelkadanKeystone_QueryCompletionItem *item = [[ComBelkadanKeystone_QueryCompletionItem alloc] initWithDictionary:dict];
+			NSUInteger index = [sortedCompletionPossibilities indexOfObjectWithPrimarySortValue:item.keyword];
+			NSUInteger count = [sortedCompletionPossibilities count];
+			BOOL found = NO;
+			while (index < count) {
+				ComBelkadanKeystone_QueryCompletionItem *existing = [sortedCompletionPossibilities objectAtIndex:index];
+				if (![existing.keyword isEqual:item.keyword]) {
+					break;
+				} else if ([existing.URL isEqual:item.URL]) {
+					found = YES;
+					break;
+				}
+				++index;
+			}
+
+			if (!found) {
+				[sortedCompletionPossibilities addObject:item];
+				changed = YES;
+			}
+
+			[item release];
+		}
+
+		if (changed) {
+			[self save];
+			[completionTable reloadData];
+		}
+
+		// Even though this is a secret setting right now, we should handle it.
+		NSNumber *autocompletionMode = [settings objectForKey:kPreferencesAutocompletionModeKey];
+		if (autocompletionMode) {
+			ComBelkadanUtils_DefaultsDomain *defaults = [ComBelkadanUtils_DefaultsDomain domainForName:kKeystonePreferencesDomain];
+			if (![autocompletionMode isEqual:[defaults objectForKey:kPreferencesAutocompletionModeKey]]) {
+				[defaults setObject:autocompletionMode forKey:kPreferencesAutocompletionModeKey];
+			}
+		}
 	}
 	
 	[settings release];
