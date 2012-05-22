@@ -1,3 +1,6 @@
+Keystone
+=======
+
 Keystone is a [SIMBL][] plugin that provides keyword search for Safari. That is, you can type 'wiki Safari' into the location bar, and get the Wikipedia page for "Safari".
 
   [SIMBL]: http://www.culater.net/software/SIMBL/SIMBL.php
@@ -8,9 +11,9 @@ Building
 
 Keystone is currently set up to build with Xcode 3.1 or later; it is still using the Xcode 3 series in order to build for Mac OS X v10.5 (for PowerPC Macs as well as 32- and 64-bit Intel). It should be possible to build Keystone for Mac OS X v10.6 or later using Xcode 4.
 
-Keystone has integrated support for [Sparkle][], but it's carefully cordoned off from the actual Sparkle framework to avoid conflicts if some other plugin has already loaded it.[^webkit] It should be possible to build Keystone without Sparkle support with minimal source modifications.
+Keystone has integrated support for [Sparkle][], but it's carefully cordoned off from the actual Sparkle framework to avoid conflicts if someone else has already loaded it. (In particular, [WebKit nightly builds][] have been known to use Sparkle for updates.)
 
-  [^webkit]: In particular, [WebKit nightly builds][] have been known to use Sparkle for updates.
+It should be possible to build Keystone without Sparkle support with minimal source modifications.
 
   [Sparkle]: https://github.com/andymatuschak/Sparkle
   [WebKit nightly builds]: http://nightly.webkit.org/
