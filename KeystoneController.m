@@ -424,7 +424,8 @@ static inline BOOL isOptionKeyDown ()
 	NSString *completionURLString = [doc URLString];
 	if (!completionURLString) return;
 
-	id <ComBelkadanKeystone_SheetRequest> sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
+	ComBelkadanKeystone_AddCompletionController *sheetRequest = [[ComBelkadanKeystone_AddCompletionController alloc] initWithName:[doc displayName] URL:completionURLString];
+	sheetRequest.delegate = self;
 	[pendingConfirmations addObject:sheetRequest];
 	[sheetRequest release];
 	
