@@ -82,7 +82,6 @@
 		8C583D61156AA3F400966F97 /* ActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionView.m; sourceTree = "<group>"; };
 		8C6C8B4310E0B82E0058B36E /* BookmarkSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkSources.h; sourceTree = "<group>"; };
 		8C6C8BBA10E0C8260058B36E /* SheetRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SheetRequest.m; sourceTree = "<group>"; };
-		8C6F06700F981C1900216A72 /* Info-Names.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-Names.plist"; sourceTree = "<group>"; };
 		8C71A4160F7E018400E3CC05 /* CompletionControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompletionControllerAdditions.h; sourceTree = "<group>"; };
 		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
@@ -185,7 +184,6 @@
 			isa = PBXGroup;
 			children = (
 				8D5B49B7048680CD000E48DA /* Info.plist */,
-				8C6F06700F981C1900216A72 /* Info-Names.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				8CB614410F8046BC00A84155 /* Localizable.strings */,
 				8CD29B470F7EF1C400D146C3 /* defaults.plist */,
