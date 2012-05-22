@@ -86,7 +86,7 @@
 		8C71A4170F7E018400E3CC05 /* CompletionControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompletionControllerAdditions.m; sourceTree = "<group>"; };
 		8C74C92411A20CA70062AD6E /* DefaultsDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsDomain.h; sourceTree = "<group>"; };
 		8C74C92511A20CA70062AD6E /* DefaultsDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsDomain.m; sourceTree = "<group>"; };
-		8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DBBackgroundView.framework; path = ../DBBackgroundView/build/Release/DBBackgroundView.framework; sourceTree = SOURCE_ROOT; };
+		8C75EA621569AD0A00D68373 /* DBBackgroundView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DBBackgroundView.framework; sourceTree = "<group>"; };
 		8C75EA921569E0A500D68373 /* drop.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = drop.pdf; sourceTree = "<group>"; };
 		8C75EAC41569ED3000D68373 /* DropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropOverlayView.h; sourceTree = "<group>"; };
 		8C75EAC51569ED3000D68373 /* DropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DropOverlayView.m; sourceTree = "<group>"; };
@@ -320,9 +320,8 @@
 				8CAED65C13BD638C000275D7 /* JRSwizzle.m */,
 				8CAED67213BD638C000275D7 /* SwizzleMacros.h */,
 			);
-			name = JRSwizzle;
-			path = ../TMQuickLook/JRSwizzle;
-			sourceTree = SOURCE_ROOT;
+			path = JRSwizzle;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
