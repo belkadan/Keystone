@@ -23,6 +23,10 @@ This should go without saying, but **Keystone is basically a hack** that has bro
 
 For *really* major updates (e.g. new OS), SIMBL will refuse to load Keystone at all. If you want to experiment with newer versions of Safari, you can change the `MaxBundleVersion` listed under `SIMBLTargetApplications` in the Info.plist file.
 
+_Keystone is not undergoing active development. [Read why][blog]._
+
+  [blog]: http://belkadan.com/blog/2012/05/Big-News/
+
 
 Credits
 -------
